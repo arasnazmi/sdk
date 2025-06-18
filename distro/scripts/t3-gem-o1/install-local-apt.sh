@@ -46,6 +46,7 @@ apt-get install -y \
     kernel-module-usb-f-hid \
     kernel-module-usb-f-mass-storage \
     kernel-module-usb-f-ncm \
+    kernel-module-usb-f-rndis \
     kernel-module-usb-f-serial \
     kernel-module-usb-f-ss-lb \
     kernel-module-usb-f-uac1 \
