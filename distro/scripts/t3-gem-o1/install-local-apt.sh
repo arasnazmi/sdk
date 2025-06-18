@@ -19,6 +19,8 @@ fi
 apt-get update -y
 apt-get install -y \
     gemstone-boot-files \
+    u-boot \
+    kernel-image-image \
     kernel-module-at24 \
     kernel-module-rpmsg-pru \
     kernel-module-rpmsg-char \

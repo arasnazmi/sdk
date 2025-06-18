@@ -19,6 +19,8 @@ fi
 apt-get update -y
 apt-get install -y \
     gemstone-boot-files \
+    u-boot \
+    kernel-image-image \
     kernel-module-cc33xx \
     kernel-module-cc33xx-sdio \
     kernel-module-at24 \

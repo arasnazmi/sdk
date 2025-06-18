@@ -213,11 +213,19 @@ actions:
 
 {{ if eq $machine "beagley-ai" }}
   - action: run
+    chroot: true
+    script: scripts/beagley-ai/setup-bootfiles.sh
+
+  - action: run
     chroot: false
     script: scripts/beagley-ai/install-firmware.sh {{ $workdir }} $ROOTDIR
 {{ end }}
 
 {{ if eq $machine "t3-gem-o1" }}
+  - action: run
+    chroot: true
+    script: scripts/t3-gem-o1/setup-bootfiles.sh
+
   - action: run
     chroot: false
     script: scripts/t3-gem-o1/install-firmware.sh {{ $workdir }} $ROOTDIR
