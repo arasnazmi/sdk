@@ -166,7 +166,7 @@ actions:
     command: |
       cd $(mktemp -d)
       wget http://archive.raspberrypi.org/debian/pool/main/p/pixflat-icons/pixflat-icons_0.26_all.deb
-      apt-get install -y ./pixflat-icons_0.26_all.deb
+      DEBIAN_FRONTEND=noninteractive apt-get install -y ./pixflat-icons_0.26_all.deb
 
 {{ end }}
 
@@ -206,6 +206,18 @@ actions:
   - action: run
     chroot: true
     script: scripts/{{ $machine }}/install-local-apt.sh {{ $machine }} {{ $type }} {{ $ci }}
+
+{{ if eq $type "desktop" }}
+{{ if eq $machine "beagley-ai" "t3-gem-o1" }}
+  - action: run
+    description: Install t3-gem-vnc from deb
+    chroot: true
+    command: |
+      cd $(mktemp -d)
+      wget "https://packages.t3gemstone.org/apt/{{ $machine }}/pool/main/t/t3-gem-vnc/t3-gem-vnc_0.0.1-1_all.deb"
+      DEBIAN_FRONTEND=noninteractive apt-get install -y ./t3-gem-vnc_0.0.1-1_all.deb
+{{ end }}
+{{ end }}
 
   - action: run
     chroot: true

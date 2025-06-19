@@ -84,12 +84,22 @@ EOF
             sed -i 's/\(<property name="XkbVariant"[^>]*value="\)[^"]*"/\1'""'"/' "$kb_layout_file"
             sed -i 's/XKBLAYOUT=.*/XKBLAYOUT='"${keyboardlayout}"'/' /etc/default/keyboard
         fi
+
+        if [ -n "$vnc" ] && [ -n "$vncpassword" ]; then
+            vnc_passwd_dir="/home/gemstone/.vnc/passwd"
+            printf '%s' "$vncpassword" | xxd -r -p > "$vnc_passwd_dir"
+            chown gemstone:gemstone "$vnc_passwd_dir"
+            chmod 0600 "$vnc_passwd_dir"
+
+            systemctl enable --now t3-gem-vnc.service
+        fi
     fi
 
     sed -i '/firstboot=/d' $configfile
     sed -i '/userpasswd=/d' $configfile
     sed -i '/wifiname=/d' $configfile
     sed -i '/wifipasswd=/d' $configfile
+    sed -i '/vncpasswd=/d' $configfile
 fi
 
 systemctl disable gem-first-boot.service
