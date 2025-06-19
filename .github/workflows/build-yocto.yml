@@ -1,7 +1,7 @@
 name: Build Yocto Images
 
 on:
-  pull_request:
+  workflow_dispatch:
 
 jobs:
   build:
