@@ -27,6 +27,8 @@ apt-get install -y \
     kernel-module-ti-k3-dsp-remoteproc \
     kernel-module-ti-k3-r5-remoteproc \
     kernel-module-bluetooth \
+    kernel-module-btqca \
+    kernel-module-hci-uart \
     kernel-module-wl18xx \
     kernel-module-wlcore-sdio \
     kernel-module-wlcore \

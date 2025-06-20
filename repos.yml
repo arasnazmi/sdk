@@ -49,3 +49,8 @@ repositories:
     type: git
     url: https://git.ti.com/git/wilink8-wlan/wl18xx_fw.git
     version: 685097375c6530c98ce052fcd160001abaa1b256
+
+  src/wl18xx-bt-fw:
+    type: git
+    url: https://git.ti.com/git/ti-bt/service-packs.git
+    version: 3aa1d75f3c2ae77f6e4d36194e3d281b899ab149
