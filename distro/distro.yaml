@@ -78,6 +78,7 @@ actions:
       - wget
       - wpasupplicant
       - zip
+      - bluez
 
   - action: apt
     recommends: false
