@@ -21,6 +21,13 @@ apt-get install -y \
     gemstone-boot-files \
     u-boot \
     kernel-image-image \
+    kernel-module-cdns-csi2rx \
+    kernel-module-e5010-jpeg-enc \
+    kernel-module-imx219 \
+    kernel-module-imx290 \
+    kernel-module-imx390 \
+    kernel-module-j721e-csi2rx \
+    kernel-module-cdns-dphy-rx \
     kernel-module-cc33xx \
     kernel-module-cc33xx-sdio \
     kernel-module-at24 \

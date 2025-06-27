@@ -27,9 +27,18 @@ apt-get install -y \
     kernel-module-ti-k3-dsp-remoteproc \
     kernel-module-ti-k3-r5-remoteproc \
     kernel-module-bluetooth \
+    kernel-module-btqca \
+    kernel-module-hci-uart \
     kernel-module-wl18xx \
     kernel-module-wlcore-sdio \
     kernel-module-wlcore \
+    kernel-module-cdns-csi2rx \
+    kernel-module-e5010-jpeg-enc \
+    kernel-module-imx219 \
+    kernel-module-imx290 \
+    kernel-module-imx390 \
+    kernel-module-j721e-csi2rx \
+    kernel-module-cdns-dphy-rx \
     kernel-module-btusb \
     kernel-module-fusb302 \
     kernel-module-gb-usb \
