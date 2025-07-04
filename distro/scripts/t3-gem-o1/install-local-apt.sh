@@ -32,6 +32,10 @@ apt-get install -y \
     kernel-module-wl18xx \
     kernel-module-wlcore-sdio \
     kernel-module-wlcore \
+    kernel-module-panel-raspberrypi-touchscreen \
+    kernel-module-panel-simple \
+    kernel-module-rpi-panel-attiny-regulator \
+    kernel-module-tc358762 \
     kernel-module-cdns-csi2rx \
     kernel-module-e5010-jpeg-enc \
     kernel-module-imx219 \
