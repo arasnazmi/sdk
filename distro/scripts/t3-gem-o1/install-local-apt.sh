@@ -19,35 +19,44 @@ fi
 apt-get update -y
 apt-get install -y \
     gemstone-boot-files \
-    u-boot \
     kernel-image-image \
     kernel-module-at24 \
-    kernel-module-rpmsg-pru \
-    kernel-module-rpmsg-char \
-    kernel-module-ti-k3-dsp-remoteproc \
-    kernel-module-ti-k3-r5-remoteproc \
+    kernel-module-at24 \
     kernel-module-bluetooth \
     kernel-module-btqca \
-    kernel-module-hci-uart \
-    kernel-module-wl18xx \
-    kernel-module-wlcore-sdio \
-    kernel-module-wlcore \
+    kernel-module-btusb \
+    kernel-module-can \
+    kernel-module-can-dev \
+    kernel-module-can-raw \
     kernel-module-cdns-csi2rx \
+    kernel-module-cdns-dphy-rx \
     kernel-module-e5010-jpeg-enc \
+    kernel-module-fusb302 \
+    kernel-module-gb-usb \
+    kernel-module-hci-uart \
+    kernel-module-imx219 \
     kernel-module-imx219 \
     kernel-module-imx290 \
     kernel-module-imx390 \
     kernel-module-j721e-csi2rx \
-    kernel-module-cdns-dphy-rx \
-    kernel-module-btusb \
-    kernel-module-fusb302 \
-    kernel-module-gb-usb \
+    kernel-module-m-can \
+    kernel-module-m-can-platform \
     kernel-module-musb-hdrc \
+    kernel-module-omap-mailbox \
+    kernel-module-phy-can-transceiver \
     kernel-module-plusb \
+    kernel-module-pwm-fan \
+    kernel-module-rpmsg-char \
+    kernel-module-rpmsg-ctrl \
+    kernel-module-rpmsg-ns \
+    kernel-module-rpmsg-pru \
     kernel-module-snd-usb-audio \
+    kernel-module-st-lsm6dsx \
+    kernel-module-st-lsm6dsx-i2c \
+    kernel-module-ti-k3-dsp-remoteproc \
+    kernel-module-ti-k3-r5-remoteproc \
     kernel-module-ti-usb-3410-5052 \
     kernel-module-ums-usbat \
-    kernel-module-usb3503 \
     kernel-module-usb-conn-gpio \
     kernel-module-usb-f-acm \
     kernel-module-usb-f-ecm \
@@ -63,26 +72,21 @@ apt-get install -y \
     kernel-module-usb-f-uac1 \
     kernel-module-usb-f-uac2 \
     kernel-module-usb-f-uvc \
-    kernel-module-usbnet \
-    kernel-module-usbserial \
     kernel-module-usb-serial-simple \
     kernel-module-usb-storage \
     kernel-module-usb-wwan \
-    kernel-module-wpanusb \
-    kernel-module-imx219 \
+    kernel-module-usb3503 \
+    kernel-module-usbnet \
+    kernel-module-usbserial \
     kernel-module-v4l2-async \
     kernel-module-v4l2-dv-timings \
     kernel-module-v4l2-fwnode \
     kernel-module-v4l2-mem2mem \
     kernel-module-videobuf2-v4l2 \
-    kernel-module-can \
-    kernel-module-can-dev \
-    kernel-module-can-raw \
-    kernel-module-m-can \
-    kernel-module-m-can-platform \
-    kernel-module-phy-can-transceiver \
-    kernel-module-pwm-fan \
-    kernel-module-at24 \
-    kernel-module-st-lsm6dsx \
-    kernel-module-st-lsm6dsx-i2c \
-    ti-img-rogue-driver
+    kernel-module-virtio-rpmsg-bus \
+    kernel-module-wl18xx \
+    kernel-module-wlcore \
+    kernel-module-wlcore-sdio \
+    kernel-module-wpanusb \
+    ti-img-rogue-driver \
+    u-boot
