@@ -21,7 +21,6 @@ apt-get install -y \
     gemstone-boot-files \
     kernel-image-image \
     kernel-module-at24 \
-    kernel-module-at24 \
     kernel-module-bluetooth \
     kernel-module-btqca \
     kernel-module-btusb \
@@ -43,9 +42,12 @@ apt-get install -y \
     kernel-module-m-can-platform \
     kernel-module-musb-hdrc \
     kernel-module-omap-mailbox \
+    kernel-module-panel-raspberrypi-touchscreen \
+    kernel-module-panel-simple \
     kernel-module-phy-can-transceiver \
     kernel-module-plusb \
     kernel-module-pwm-fan \
+    kernel-module-rpi-panel-attiny-regulator \
     kernel-module-rpmsg-char \
     kernel-module-rpmsg-ctrl \
     kernel-module-rpmsg-ns \
@@ -53,6 +55,7 @@ apt-get install -y \
     kernel-module-snd-usb-audio \
     kernel-module-st-lsm6dsx \
     kernel-module-st-lsm6dsx-i2c \
+    kernel-module-tc358762 \
     kernel-module-ti-k3-dsp-remoteproc \
     kernel-module-ti-k3-r5-remoteproc \
     kernel-module-ti-usb-3410-5052 \
