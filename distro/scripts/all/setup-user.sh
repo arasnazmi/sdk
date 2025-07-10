@@ -7,6 +7,9 @@ adduser \
   --disabled-password \
   --shell /bin/bash gemstone
 
-usermod gemstone -G sudo,dialout,tty,video,i2c
+getent group gpio >/dev/null || groupadd gpio
+getent group spi >/dev/null || groupadd spi
+
+usermod gemstone -G sudo,dialout,tty,video,i2c,gpio,spi
 
 echo "gemstone:t3" | chpasswd
