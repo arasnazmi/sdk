@@ -19,27 +19,33 @@ fi
 apt-get update -y
 apt-get install -y \
     gemstone-boot-files \
-    u-boot \
     kernel-image-image \
+    kernel-module-at24 \
+    kernel-module-bluetooth \
+    kernel-module-cc33xx \
+    kernel-module-cc33xx-sdio \
+    kernel-module-cdc-acm \
     kernel-module-cdns-csi2rx \
+    kernel-module-cdns-dphy-rx \
     kernel-module-e5010-jpeg-enc \
     kernel-module-imx219 \
     kernel-module-imx290 \
     kernel-module-imx390 \
     kernel-module-j721e-csi2rx \
-    kernel-module-cdns-dphy-rx \
-    kernel-module-cc33xx \
-    kernel-module-cc33xx-sdio \
-    kernel-module-at24 \
-    kernel-module-rpmsg-pru \
+    kernel-module-libcomposite \
+    kernel-module-omap-mailbox \
     kernel-module-rpmsg-char \
+    kernel-module-rpmsg-ctrl \
+    kernel-module-rpmsg-ns \
+    kernel-module-rpmsg-pru \
+    kernel-module-spidev \
     kernel-module-ti-k3-dsp-remoteproc \
     kernel-module-ti-k3-r5-remoteproc \
-    kernel-module-bluetooth \
-    kernel-module-usb-f-mass-storage \
-    kernel-module-usb-f-acm \
-    kernel-module-usb-f-rndis \
     kernel-module-u-ether \
     kernel-module-u-serial \
-    kernel-module-libcomposite \
-    ti-img-rogue-driver
+    kernel-module-usb-f-acm \
+    kernel-module-usb-f-mass-storage \
+    kernel-module-usb-f-rndis \
+    kernel-module-virtio-rpmsg-bus \
+    ti-img-rogue-driver \
+    u-boot

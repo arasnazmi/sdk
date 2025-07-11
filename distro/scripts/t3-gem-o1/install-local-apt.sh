@@ -27,6 +27,7 @@ apt-get install -y \
     kernel-module-can \
     kernel-module-can-dev \
     kernel-module-can-raw \
+    kernel-module-cdc-acm \
     kernel-module-cdns-csi2rx \
     kernel-module-cdns-dphy-rx \
     kernel-module-e5010-jpeg-enc \
@@ -53,6 +54,7 @@ apt-get install -y \
     kernel-module-rpmsg-ns \
     kernel-module-rpmsg-pru \
     kernel-module-snd-usb-audio \
+    kernel-module-spidev \
     kernel-module-st-lsm6dsx \
     kernel-module-st-lsm6dsx-i2c \
     kernel-module-tc358762 \
