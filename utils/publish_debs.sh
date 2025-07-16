@@ -121,10 +121,11 @@ create_snapshot()
 
 publish_snapshot()
 {
-    local repo snapshot resp ret code
+    local repo snapshot resp ret code distribution
 
     repo=$1
     snapshot=$2
+    distribution=$3
 
     json_str=$(
     cat <<EOF
@@ -133,6 +134,7 @@ publish_snapshot()
     "Sources": [
         {"Name": "$snapshot", "Component": "main"}
     ],
+    "Distribution": "$distribution",
     "Signing": {
         "Passphrase": "$APTLY_GPG_PASS"
     }
@@ -226,7 +228,7 @@ print_progress "Unpublishing old snapshot"
 unpublish_repo "$MACHINE" "$DISTRO" && print_ok "Unpublished old snapshot" || exit 1
 
 print_progress "Publishing new snapshot"
-publish_snapshot "$MACHINE" "$snapshot_name" && print_ok "Published newly created snapshot" || exit 1
+publish_snapshot "$MACHINE" "$snapshot_name" "$DISTRO" && print_ok "Published newly created snapshot" || exit 1
 
 echo -e "\nCheck new content from: ${SERVER_URL}/${MACHINE}"
 
