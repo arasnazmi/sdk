@@ -46,6 +46,6 @@ tasks:
           -device usb-tablet \
           -device usb-kbd \
           -device virtio-vga \
-          -serial stdio \
+          -serial mon:stdio \
           -initrd "{{ .QEMU_INITRAMFS_CPIO }}" \
           -kernel "{{ .QEMU_KERNEL_BIN }}"

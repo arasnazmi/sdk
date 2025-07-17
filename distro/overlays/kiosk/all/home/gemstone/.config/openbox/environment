@@ -4,9 +4,10 @@
 export PATH="$HOME/bin:$PATH"
 export LD_LIBRARY_PATH="/usr/local/qt6:$LD_LIBRARY_PATH"
 
-# Start uxterm if you want to enter a terminal instead of running application directly
-# export KIOSK_BIN="uxterm"
-export KIOSK_BIN="kiosk"
-export KIOSK_DISPLAY="VGA-1"
-export KIOSK_RESOLUTION="800x600"
-export KIOSK_REFRESH_RATE="60"
+export KIOSK_RESOLUTION=800x600
+export KIOSK_REFRESH_RATE=60
+
+export KIOSK_LOG_PATH="$HOME/kiosk.log"
+export KIOSK_LOG_MAX_SIZE_BYTES=104857600
+
+export KIOSK_BIN=kiosk
