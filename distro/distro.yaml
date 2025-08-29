@@ -29,6 +29,9 @@ actions:
 {{ if eq $base "debian" }}
     components: [ main, contrib ]
     mirror: https://deb.debian.org/debian
+{{ else if eq $base "pardus" }}
+    components: [ main, non-free, contrib ]
+    mirror: http://depo.pardus.org.tr/pardus
 {{ else }}
     components: [ main, multiverse, universe ]
     mirror: {{ if eq $arch "amd64" }}'https://archive.ubuntu.com/ubuntu'{{ else }}'https://ports.ubuntu.com/ubuntu-ports'{{ end }}
@@ -52,6 +55,7 @@ actions:
       - fuse
       - gawk
       - gpg
+      - gnupg
       - gpiod
       - gstreamer1.0-tools
       - htop
@@ -86,12 +90,19 @@ actions:
       - wget
       - wpasupplicant
       - zip
+      - ca-certificates
+
+{{ if eq $base "pardus" }}
+  - action: run
+    chroot: true
+    script: scripts/custom/setup-pardus.sh
+{{ end }}
 
   - action: apt
     recommends: false
     packages: [ iwd, systemd-timesyncd ]
 
-{{ if eq $suite "noble" "bookworm" }}
+{{ if eq $suite "noble" "bookworm" "yirmiuc-deb" }}
   - action: apt
     recommends: false
     packages: [ systemd-resolved ]
