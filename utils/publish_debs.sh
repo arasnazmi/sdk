@@ -142,6 +142,10 @@ publish_snapshot()
 EOF
 )
 
+    if [ "$repo" = "gemstone" ]; then
+        json_str=$(echo "$json_str" | jq '.Architectures = ["amd64", "arm64"]')
+    fi
+
     resp=$(curl -i -s --show-error \
         -X POST -u "$API_AUTH" \
         -H "Content-Type: application/json" \
@@ -182,7 +186,7 @@ unpublish_repo()
 }
 
 DEB_DIR=$1
-MACHINE=$2
+REPO_NAME=$2
 DISTRO=$3
 
 if [ ! -d "$DEB_DIR" ]; then
@@ -190,14 +194,24 @@ if [ ! -d "$DEB_DIR" ]; then
     exit 1
 fi
 
+if [ "$REPO_NAME" = "gemstone" ] && [ "$DISTRO" = "bsp" ]; then
+    print_err "You can't set REPO_NAME to 'gemstone' if you are uploading 'bsp' DEB packages."
+    exit 1
+fi
+
+if [ "$DISTRO" != "bsp" ] && [ "$REPO_NAME" != "gemstone" ]; then
+    print_err "You have to set REPO_NAME to 'gemstone' if you are not uploading 'bsp' DEB packages."
+    exit 1
+fi
+
 DESCRIPTION=$(
     cat <<EOF
   ${BOLD}Server: ${GREEN}${SERVER_URL}${NO_COLOR}
   ${BOLD}DEB Folder: ${GREEN}${DEB_DIR}${NO_COLOR}
-  ${BOLD}Machine: ${GREEN}${MACHINE}${NO_COLOR}
+  ${BOLD}Repository Name: ${GREEN}${REPO_NAME}${NO_COLOR}
   ${BOLD}Distribution: ${GREEN}${DISTRO}${NO_COLOR}
 
-  This script will publish DEB packages under '$DEB_DIR' to '$SERVER_URL/$MACHINE'.
+  This script will publish DEB packages under '$DEB_DIR' to '$SERVER_URL/$REPO_NAME'.
   Check if configuration above is correct.
 EOF
 )
@@ -219,17 +233,17 @@ print_progress "Uploading DEB files"
 upload_debs "$DEB_DIR" && print_ok "Uploaded DEB files to server" || exit 1
 
 print_progress "Importing DEB files"
-import_debs_to_repo "$MACHINE" && print_ok "Imported DEBs to '$MACHINE' repo" || exit 1
+import_debs_to_repo "$REPO_NAME" && print_ok "Imported DEBs to '$REPO_NAME' repo" || exit 1
 
 print_progress "Creating snapshot"
-create_snapshot "$MACHINE" "$DISTRO" && print_ok "Created repo snapshot" || exit 1
+create_snapshot "$REPO_NAME" "$DISTRO" && print_ok "Created repo snapshot" || exit 1
 
 print_progress "Unpublishing old snapshot"
-unpublish_repo "$MACHINE" "$DISTRO" && print_ok "Unpublished old snapshot" || exit 1
+unpublish_repo "$REPO_NAME" "$DISTRO" && print_ok "Unpublished old snapshot" || exit 1
 
 print_progress "Publishing new snapshot"
-publish_snapshot "$MACHINE" "$snapshot_name" "$DISTRO" && print_ok "Published newly created snapshot" || exit 1
+publish_snapshot "$REPO_NAME" "$snapshot_name" "$DISTRO" && print_ok "Published newly created snapshot" || exit 1
 
-echo -e "\nCheck new content from: ${SERVER_URL}/${MACHINE}"
+echo -e "\nCheck new content from: ${SERVER_URL}/${REPO_NAME}"
 
 exit 0

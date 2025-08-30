@@ -221,7 +221,7 @@ actions:
     chroot: true
     command: |
       cd $(mktemp -d)
-      wget "https://packages.t3gemstone.org/apt/{{ $machine }}/pool/main/t/t3-gem-vnc/t3-gem-vnc_0.0.1-1_all.deb"
+      wget "https://packages.t3gemstone.org/apt/gemstone/pool/main/t/t3-gem-vnc/t3-gem-vnc_0.0.1-1_all.deb"
       DEBIAN_FRONTEND=noninteractive apt-get install -y ./t3-gem-vnc_0.0.1-1_all.deb
 {{ end }}
 {{ end }}

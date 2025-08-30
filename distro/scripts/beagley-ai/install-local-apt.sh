@@ -11,7 +11,7 @@ if [ "$CI" = "true" ]; then
 
     curl -fsSL https://packages.t3gemstone.org/apt/gemstone-packages-keyring.gpg -o /etc/apt/keyrings/gemstone-packages-keyring.gpg
 
-    echo "deb [signed-by=/etc/apt/keyrings/gemstone-packages-keyring.gpg] https://packages.t3gemstone.org/apt/beagley-ai jammy main" | tee /etc/apt/sources.list.d/gemstone.list
+    echo "deb [signed-by=/etc/apt/keyrings/gemstone-packages-keyring.gpg] https://packages.t3gemstone.org/apt/beagley-ai bsp main" | tee /etc/apt/sources.list.d/gemstone.list
 else
     echo "deb [trusted=yes] http://0.0.0.0:8000/${MACHINE} ./" | tee /etc/apt/sources.list.d/local-apt.list
 fi
