@@ -22,6 +22,8 @@ apt-get install -y \
     kernel-image-image \
     kernel-module-at24 \
     kernel-module-bluetooth \
+    kernel-module-br-netfilter \
+    kernel-module-bridge \
     kernel-module-btqca \
     kernel-module-btusb \
     kernel-module-can \
@@ -38,11 +40,20 @@ apt-get install -y \
     kernel-module-imx219 \
     kernel-module-imx290 \
     kernel-module-imx390 \
+    kernel-module-ip6-tables \
+    kernel-module-ip6table-filter \
+    kernel-module-iptable-filter \
+    kernel-module-iptable-mangle \
+    kernel-module-iptable-nat \
+    kernel-module-iptable-raw \
+    kernel-module-iptable-security \
     kernel-module-j721e-csi2rx \
     kernel-module-m-can \
     kernel-module-m-can-platform \
     kernel-module-musb-hdrc \
+    kernel-module-nf-nat \
     kernel-module-omap-mailbox \
+    kernel-module-overlay \
     kernel-module-panel-raspberrypi-touchscreen \
     kernel-module-panel-simple \
     kernel-module-phy-can-transceiver \
@@ -87,11 +98,16 @@ apt-get install -y \
     kernel-module-v4l2-dv-timings \
     kernel-module-v4l2-fwnode \
     kernel-module-v4l2-mem2mem \
+    kernel-module-veth \
     kernel-module-videobuf2-v4l2 \
     kernel-module-virtio-rpmsg-bus \
     kernel-module-wl18xx \
     kernel-module-wlcore \
     kernel-module-wlcore-sdio \
     kernel-module-wpanusb \
+    kernel-module-xt-addrtype \
+    kernel-module-xt-conntrack \
+    kernel-module-xt-masquerade \
+    kernel-module-xt-nat \
     ti-img-rogue-driver \
     u-boot

@@ -3,8 +3,7 @@
 export DEBIAN_FRONTEND=noninteractive
 
 DISTRO_TYPE="${1:-minimal}"
-DISTRO_SUITE="${2:-jammy}"
-DISTRO_BASE="${3:-ubuntu}"
+DISTRO_BASE="${2:-ubuntu}"
 
 if [[ "$DISTRO_TYPE" == "desktop" ]]; then
     echo "apt-get purge"

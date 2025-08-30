@@ -22,6 +22,8 @@ apt-get install -y \
     kernel-image-image \
     kernel-module-at24 \
     kernel-module-bluetooth \
+    kernel-module-br-netfilter \
+    kernel-module-bridge \
     kernel-module-cc33xx \
     kernel-module-cc33xx-sdio \
     kernel-module-cdc-acm \
@@ -31,9 +33,18 @@ apt-get install -y \
     kernel-module-imx219 \
     kernel-module-imx290 \
     kernel-module-imx390 \
+    kernel-module-ip6-tables \
+    kernel-module-ip6table-filter \
+    kernel-module-iptable-filter \
+    kernel-module-iptable-mangle \
+    kernel-module-iptable-nat \
+    kernel-module-iptable-raw \
+    kernel-module-iptable-security \
     kernel-module-j721e-csi2rx \
     kernel-module-libcomposite \
+    kernel-module-nf-nat \
     kernel-module-omap-mailbox \
+    kernel-module-overlay \
     kernel-module-rpmsg-char \
     kernel-module-rpmsg-ctrl \
     kernel-module-rpmsg-ns \
@@ -46,6 +57,11 @@ apt-get install -y \
     kernel-module-usb-f-acm \
     kernel-module-usb-f-mass-storage \
     kernel-module-usb-f-rndis \
+    kernel-module-veth \
     kernel-module-virtio-rpmsg-bus \
+    kernel-module-xt-addrtype \
+    kernel-module-xt-conntrack \
+    kernel-module-xt-masquerade \
+    kernel-module-xt-nat \
     ti-img-rogue-driver \
     u-boot

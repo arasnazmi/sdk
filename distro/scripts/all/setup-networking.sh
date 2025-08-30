@@ -28,3 +28,7 @@ fi
 
 # NTP client
 systemctl enable systemd-timesyncd
+
+# Docker needs legacy iptables
+update-alternatives --set iptables /usr/sbin/iptables-legacy || true
+update-alternatives --set ip6tables /usr/sbin/ip6tables-legacy || true
