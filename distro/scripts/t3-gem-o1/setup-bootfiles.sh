@@ -11,5 +11,5 @@ mv tispl.bin-* tispl.bin
 mv u-boot-*.img u-boot.img
 mv Image-* Image
 
-rm fitImage*
-rm u-boot-spl*
+rm -f fitImage*
+rm -f u-boot-spl*
