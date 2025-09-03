@@ -1,6 +1,8 @@
 name: Create Distro Image with Debos
 
 on:
+  pull_request_target:
+    types: [labeled]
   workflow_dispatch:
 
 env:
@@ -11,6 +13,9 @@ jobs:
   build:
     name: ${{ matrix.machine }}/${{ matrix.base }}/${{ matrix.suite }}/${{ matrix.type }}
     runs-on: ubuntu-22.04
+    if: |
+      github.event_name == 'workflow_dispatch' || 
+      (github.event_name == 'pull_request_target' && github.event.label.name == 'run-workflow')
     permissions:
       contents: write
     strategy:
