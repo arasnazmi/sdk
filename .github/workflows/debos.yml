@@ -10,7 +10,7 @@ env:
 jobs:
   build:
     name: ${{ matrix.machine }}/${{ matrix.base }}/${{ matrix.suite }}/${{ matrix.type }}
-    runs-on: [self-hosted, debos-runner]
+    runs-on: ubuntu-22.04
     permissions:
       contents: write
     strategy:
@@ -38,13 +38,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Local Cache on Self-hosted Runner
-        uses: corca-ai/local-cache@v3
-        with:
-          path: .repocache
-          key: repos-${{ hashFiles('repos.yml') }}
-          base: /var/lib/ci/caches
-
       - name: Install python
         uses: actions/setup-python@v5
         with:
@@ -52,9 +45,9 @@ jobs:
 
       - name: Fetch repos
         run: |
-          mkdir -p "$GITHUB_WORKSPACE/.repocache"
+          mkdir -p "$GITHUB_WORKSPACE/.repos"
           python -m pip install vcstool
-          vcs import "$GITHUB_WORKSPACE/.repocache" < ${{ github.workspace }}/repos.yml
+          vcs import "$GITHUB_WORKSPACE/.repos" < ${{ github.workspace }}/repos.yml
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
@@ -78,7 +71,7 @@ jobs:
             --volume /run/udev:/run/udev:ro \
             --volume debos-scratch:/scratch \
             --volume "$GITHUB_WORKSPACE:${{ env.WORKDIR }}" \
-            --volume "$GITHUB_WORKSPACE/.repocache/src:${{ env.WORKDIR }}/src" \
+            --volume "$GITHUB_WORKSPACE/.repos/src:${{ env.WORKDIR }}/src" \
             --workdir "${{ env.WORKDIR }}" \
             t3gemstone/debos:1.1.3.6 \
             --scratchdir=/scratch \
