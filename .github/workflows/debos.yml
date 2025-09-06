@@ -22,16 +22,14 @@ jobs:
       fail-fast: true
       matrix:
         machine: [beagley-ai, t3-gem-o1, intel-corei7-64]
-        base:    [ubuntu]
-        suite:   [jammy]
+        base:    [ubuntu, pardus]
+        suite:   [jammy, yirmiuc-deb]
         type:    [minimal, kiosk, desktop]
         exclude:
-          - base: debian
-            suite: jammy
-          - base: debian
-            suite: noble
           - base: ubuntu
-            suite: bookworm
+            suite: yirmiuc-deb
+          - base: pardus
+            suite: jammy
         include:
           - machine: beagley-ai
             arch: arm64
@@ -65,7 +63,7 @@ jobs:
       - name: Run debos
         env:
           IMG_FILE_NAME: gemstone-${{ matrix.type }}-${{ env.RELEASE }}-${{ matrix.base }}-${{ matrix.suite }}-${{ matrix.machine }}.img
-          IMG_SIZE: ${{ matrix.type == 'minimal' && '800M' || '4096M' }}
+          IMG_SIZE: ${{ matrix.type == 'minimal' && '1024M' || '4096M' }}
         run: |
           docker run --rm \
             --privileged \
@@ -78,7 +76,7 @@ jobs:
             --volume "$GITHUB_WORKSPACE:${{ env.WORKDIR }}" \
             --volume "$GITHUB_WORKSPACE/.repos/src:${{ env.WORKDIR }}/src" \
             --workdir "${{ env.WORKDIR }}" \
-            t3gemstone/debos:1.1.3.6 \
+            t3gemstone/debos:1.1.3.7 \
             --scratchdir=/scratch \
             --disable-fakemachine \
             --artifactdir=${{ env.WORKDIR }} \
