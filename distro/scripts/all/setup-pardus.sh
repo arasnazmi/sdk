@@ -17,5 +17,6 @@ deb https://depo.pardus.org.tr/guvenlik yirmiuc-deb main contrib non-free non-fr
 EOF
 
 apt-get update
+apt-get install usr-is-merged # see debos PR 361
 apt-get upgrade -y
 apt-get dist-upgrade -y
