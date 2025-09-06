@@ -59,6 +59,11 @@ RUN apt-get update && \
         zstd \
     && locale-gen en_US.UTF-8
 
+# add Pardus keyring
+RUN wget -q https://depo.pardus.org.tr/pardus/pool/main/p/pardus-archive-keyring/pardus-archive-keyring_2021.1_all.deb && \
+    dpkg -i pardus-archive-keyring_2021.1_all.deb && \
+    rm pardus-archive-keyring_2021.1_all.deb
+
 # Allow minimum password length of image in Distrobox to be 1 character
 RUN sed -i 's/pam_unix\.so obscure/pam_unix.so minlen=1 obscure/' /etc/pam.d/common-password
 RUN echo gemstone > /etc/hostname

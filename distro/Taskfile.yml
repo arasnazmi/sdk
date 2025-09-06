@@ -46,7 +46,7 @@ tasks:
         - name: MACHINE
           enum: [ beagley-ai, intel-corei7-64, t3-gem-o1, qemuarm64 ]
         - name: DISTRO_BASE
-          enum: [ ubuntu, debian ]
+          enum: [ ubuntu, debian, pardus ]
         - name: DISTRO_TYPE
           enum: [ minimal, kiosk, desktop ]
         - name: DISTRO_ARCH
@@ -57,6 +57,7 @@ tasks:
             - noble     # Ubuntu 24
             - bullseye  # Debian 11
             - bookworm  # Debian 12
+            - yirmiuc-deb # Pardus 23
 
   build:all:ubuntu:
     cmds:
@@ -78,11 +79,21 @@ tasks:
           unset MACHINE
           task distro:build MACHINE={{.MACHINE}} DISTRO_BASE=debian DISTRO_TYPE={{.ITEM.TYPE}} DISTRO_SUITE={{.ITEM.SUITE}}
 
+  build:all:pardus:
+    cmds:
+      - for:
+          matrix:
+            SUITE: [ "yirmiuc-deb"]
+            TYPE: [ "minimal", "kiosk", "desktop" ]
+        cmd: |
+          unset MACHINE
+          task distro:build MACHINE={{.MACHINE}} DISTRO_BASE=pardus DISTRO_TYPE={{.ITEM.TYPE}} DISTRO_SUITE={{.ITEM.SUITE}}
+
   build:all:
     desc: Build every machine and distro
     cmds:
       - for:
           matrix:
-            DISTRO: [ "ubuntu", "debian" ]
+            DISTRO: [ "ubuntu", "debian", "pardus" ]
             MACHINE: [ "beagley-ai", "intel-corei7-64", "t3-gem-o1", "qemuarm64" ]
         cmd: 'task distro:build:all:{{.ITEM.DISTRO}} MACHINE={{.ITEM.MACHINE}}'
