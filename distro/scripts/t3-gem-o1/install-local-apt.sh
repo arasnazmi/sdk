@@ -36,6 +36,7 @@ apt-get install -y \
     kernel-module-fusb302 \
     kernel-module-gb-usb \
     kernel-module-hci-uart \
+    kernel-module-hdc2010 \
     kernel-module-imx219 \
     kernel-module-imx219 \
     kernel-module-imx290 \
@@ -66,8 +67,6 @@ apt-get install -y \
     kernel-module-rpmsg-pru \
     kernel-module-snd-usb-audio \
     kernel-module-spidev \
-    kernel-module-st-lsm6dsx \
-    kernel-module-st-lsm6dsx-i2c \
     kernel-module-tc358762 \
     kernel-module-ti-k3-dsp-remoteproc \
     kernel-module-ti-k3-r5-remoteproc \
