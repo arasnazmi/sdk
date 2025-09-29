@@ -12,7 +12,9 @@ apt-get install -y \
     kernel \
     kernel-image \
     kernel-module-configfs \
-    kernel-module-fuse
+    kernel-module-fuse \
+    kernel-module-loop \
+    kernel-module-squashfs
 
 if [[ "$DISTRO_TYPE" == "desktop" || "$DISTRO_TYPE" == "kiosk" ]]; then
     apt-get install -y \

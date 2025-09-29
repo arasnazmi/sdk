@@ -38,7 +38,6 @@ apt-get install -y \
     kernel-module-hci-uart \
     kernel-module-hdc2010 \
     kernel-module-imx219 \
-    kernel-module-imx219 \
     kernel-module-imx290 \
     kernel-module-imx390 \
     kernel-module-ip6-tables \
@@ -49,6 +48,7 @@ apt-get install -y \
     kernel-module-iptable-raw \
     kernel-module-iptable-security \
     kernel-module-j721e-csi2rx \
+    kernel-module-loop \
     kernel-module-m-can \
     kernel-module-m-can-platform \
     kernel-module-musb-hdrc \
