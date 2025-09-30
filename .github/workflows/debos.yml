@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 env:
-    RELEASE: v2025.10
+    RELEASE: v2025.11
     WORKDIR: /home/workdir
 
 jobs:
@@ -97,7 +97,7 @@ jobs:
       - name: Upload Image
         uses: actions/upload-artifact@v4
         env:
-          IMG_FILE_NAME: gemstone-${{ matrix.type }}-${{ env.RELEASE }}-${{ matrix.base }}-${{ matrix.suite }}-${{ matrix.machine }}.img
+          IMG_FILE_NAME: gemstone-${{ matrix.type }}-${{ env.RELEASE }}-${{ matrix.base }}-${{ matrix.suite }}-${{ matrix.machine }}
         with:
           name: ${{ env.IMG_FILE_NAME }}
-          path: ${{ github.workspace }}/${{ env.IMG_FILE_NAME }}
+          path: ${{ github.workspace }}/${{ env.IMG_FILE_NAME }}.img
