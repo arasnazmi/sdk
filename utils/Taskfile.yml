@@ -16,8 +16,9 @@ tasks:
             enum: [ beagley-ai, intel-corei7-64, t3-gem-o1, gemstone ]
           - name: DISTRO
             enum:
-              - bsp       # kernel, bootloader and firmware packages
-              - jammy     # Ubuntu 22
-              - noble     # Ubuntu 24
-              - bullseye  # Debian 11
-              - bookworm  # Debian 12
+              - bsp          # kernel, bootloader and firmware packages
+              - jammy        # Ubuntu 22
+              - noble        # Ubuntu 24
+              - bullseye     # Debian 11
+              - bookworm     # Debian 12
+              - yirmiuc-deb  # Pardus 23

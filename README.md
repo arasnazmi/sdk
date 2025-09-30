@@ -72,7 +72,7 @@ user@host:$ devbox shell
 🚀 distrobox:intel-corei7-64> bitbake -c menuconfig virtual/bootloader
 ```
 
-# Troubleshoting
+# Troubleshooting
 
 #### 1. First Installation of Docker
 
