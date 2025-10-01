@@ -4,6 +4,8 @@ After=basic.target
 
 [Service]
 ExecStart=/usr/local/bin/gem-usb-gadgets run
+ExecStop=/usr/local/bin/gem-usb-gadgets clean
+RemainAfterExit=yes
 Type=oneshot
 User=root
 
