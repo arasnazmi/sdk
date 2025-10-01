@@ -89,6 +89,23 @@ import_debs_to_repo()
         return 1
     fi
 
+    json=$(echo "$resp" | sed -n '/^{/,${p}')
+    added_count=$(echo "$json" | jq '.Report.Added | length')
+    failed_count=$(echo "$json" | jq '.FailedFiles | length')
+    warning_count=$(echo "$json" | jq '.Report.Warnings | length')
+
+    echo -e '\n'
+    echo "Number of added files: $added_count"
+    echo "Number of failed files: $failed_count"
+
+    if [ "$warning_count" -gt 0 ]; then
+        echo ""
+        echo "Warnings:"
+        echo "$json" | jq -r '.Report.Warnings[]'
+    fi
+
+    echo -e '\n'
+
     return 0
 }
 
@@ -188,6 +205,13 @@ unpublish_repo()
 DEB_DIR=$1
 REPO_NAME=$2
 DISTRO=$3
+
+for cmd in curl jq sed; do
+    if ! command -v "$cmd" &> /dev/null; then
+        print_err "'$cmd' is not installed or not in PATH"
+        exit 1
+    fi
+done
 
 if [ ! -d "$DEB_DIR" ]; then
     print_err "Specified DEB_DIR ('$DEB_DIR') is not a folder or doesn't exist."
