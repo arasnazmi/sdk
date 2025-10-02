@@ -4,6 +4,8 @@ set -euo pipefail
 
 DISTRO_TYPE="${1:-minimal}"
 
+chmod +x /usr/local/bin/gem-camera-setup
+
 if [[ "$DISTRO_TYPE" == "desktop" ]]; then
     chmod +x /usr/local/bin/set-system-keyboard-layout
     chmod +x /usr/local/bin/set-system-language
