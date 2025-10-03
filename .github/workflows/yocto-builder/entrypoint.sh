@@ -39,7 +39,7 @@ cat "$BUILD_DIR/conf/local.conf"
 
 env
 
-bitbake gemstone-boot-files
+bitbake gemstone-image-rd
 IMG_DEPLOY_DIR=$(bitbake-getvar --value -r "$IMAGE" DEPLOY_DIR_IMAGE)
 DEB_DEPLOY_DIR=$(bitbake-getvar --value -r "$IMAGE" DEPLOY_DIR_DEB)
 

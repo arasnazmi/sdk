@@ -18,8 +18,7 @@ fi
 
 apt-get update -y
 apt-get install -y \
-    gemstone-boot-files \
-    kernel-image-image \
+    gem-beagley-ai-bsp \
     kernel-module-at24 \
     kernel-module-bluetooth \
     kernel-module-br-netfilter \
@@ -100,5 +99,11 @@ apt-get install -y \
     kernel-module-xt-conntrack \
     kernel-module-xt-masquerade \
     kernel-module-xt-nat \
-    ti-img-rogue-driver \
-    u-boot
+    ti-img-rogue-driver
+
+if [ "$CI" = "true" ]; then
+    apt-get install -y \
+        gem-beagley-ai-bsp \
+        kernel-image-image \
+        u-boot
+fi
