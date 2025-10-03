@@ -22,13 +22,21 @@ jobs:
       fail-fast: true
       matrix:
         machine: [beagley-ai, t3-gem-o1, intel-corei7-64]
-        base:    [ubuntu, pardus]
-        suite:   [jammy, yirmiuc-deb]
+        base:    [ubuntu, pardus, debian]
+        suite:   [jammy, yirmiuc-deb, bookworm]
         type:    [minimal, kiosk, desktop]
         exclude:
           - base: ubuntu
             suite: yirmiuc-deb
+          - base: ubuntu
+            suite: bookworm
           - base: pardus
+            suite: jammy
+          - base: pardus
+            suite: bookworm
+          - base: debian
+            suite: yirmiuc-deb
+          - base: debian
             suite: jammy
         include:
           - machine: beagley-ai
