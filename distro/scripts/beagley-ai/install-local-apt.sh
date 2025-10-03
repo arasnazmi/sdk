@@ -18,7 +18,6 @@ fi
 
 apt-get update -y
 apt-get install -y \
-    gem-beagley-ai-bsp \
     kernel-module-at24 \
     kernel-module-bluetooth \
     kernel-module-br-netfilter \

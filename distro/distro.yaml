@@ -264,7 +264,7 @@ actions:
 {{ if eq $ci "false" }}
   - action: run
     chroot: true
-    script: scripts/beagley-ai/install-bootfiles.sh
+    script: scripts/beagley-ai/install-bootfiles.sh {{ $workdir }} $ROOTDIR
 {{ end }}
 
   - action: run
@@ -277,7 +277,7 @@ actions:
 {{ if eq $ci "false" }}
   - action: run
     chroot: true
-    script: scripts/t3-gem-o1/install-bootfiles.sh
+    script: scripts/t3-gem-o1/install-bootfiles.sh {{ $workdir }} $ROOTDIR
 {{ end }}
 
   - action: run
