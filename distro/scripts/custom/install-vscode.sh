@@ -25,7 +25,6 @@ ext=(
     "ms-python.vscode-pylance"
     "ms-vscode.hexeditor"
     "spywhere.guides"
-    "task.vscode-task"
 )
 
 chown -R gemstone:gemstone /home/gemstone

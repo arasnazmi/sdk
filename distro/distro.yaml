@@ -260,6 +260,13 @@ actions:
     script: scripts/all/install-astral-uv.sh
 
 {{ if eq $machine "beagley-ai" }}
+
+{{ if eq $ci "false" }}
+  - action: run
+    chroot: true
+    script: scripts/beagley-ai/install-bootfiles.sh {{ $workdir }} $ROOTDIR
+{{ end }}
+
   - action: run
     chroot: true
     script: scripts/beagley-ai/setup-bootfiles.sh
@@ -270,6 +277,13 @@ actions:
 {{ end }}
 
 {{ if eq $machine "t3-gem-o1" }}
+
+{{ if eq $ci "false" }}
+  - action: run
+    chroot: true
+    script: scripts/t3-gem-o1/install-bootfiles.sh {{ $workdir }} $ROOTDIR
+{{ end }}
+
   - action: run
     chroot: true
     script: scripts/t3-gem-o1/setup-bootfiles.sh
