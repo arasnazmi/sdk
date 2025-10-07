@@ -53,6 +53,8 @@ apt-get install -y \
     kernel-module-nf-nat \
     kernel-module-omap-mailbox \
     kernel-module-overlay \
+    kernel-module-goodix-ts \
+    kernel-module-panel-waveshare-dsi \
     kernel-module-panel-raspberrypi-touchscreen \
     kernel-module-panel-simple \
     kernel-module-phy-can-transceiver \
