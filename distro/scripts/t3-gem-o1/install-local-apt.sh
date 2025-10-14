@@ -18,6 +18,7 @@ fi
 
 apt-get update -y
 apt-get install -y \
+    kernel-image-image \
     kernel-module-at24 \
     kernel-module-bluetooth \
     kernel-module-br-netfilter \
@@ -106,11 +107,9 @@ apt-get install -y \
     kernel-module-xt-conntrack \
     kernel-module-xt-masquerade \
     kernel-module-xt-nat \
-    ti-img-rogue-driver
+    ti-img-rogue-driver \
+    u-boot
 
 if [ "$CI" = "true" ]; then
-    apt-get install -y \
-        gem-t3-gem-o1-bsp \
-        kernel-image-image \
-        u-boot
+    apt-get install -y gem-t3-gem-o1-bsp
 fi
