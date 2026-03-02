@@ -32,6 +32,7 @@ apt-get install -y \
     kernel-module-cdns-dphy-rx \
     kernel-module-e5010-jpeg-enc \
     kernel-module-fusb302 \
+    kernel-module-wave5 \
     kernel-module-gb-usb \
     kernel-module-hci-uart \
     kernel-module-imx219 \
@@ -60,7 +61,6 @@ apt-get install -y \
     kernel-module-rpmsg-char \
     kernel-module-rpmsg-ctrl \
     kernel-module-rpmsg-ns \
-    kernel-module-rpmsg-pru \
     kernel-module-snd-usb-audio \
     kernel-module-spidev \
     kernel-module-tc358762 \
@@ -82,7 +82,6 @@ apt-get install -y \
     kernel-module-usb-f-ss-lb \
     kernel-module-usb-f-uac1 \
     kernel-module-usb-f-uac2 \
-    kernel-module-usb-f-uvc \
     kernel-module-usb-serial-simple \
     kernel-module-usb-storage \
     kernel-module-usb-wwan \
@@ -96,7 +95,6 @@ apt-get install -y \
     kernel-module-veth \
     kernel-module-videobuf2-v4l2 \
     kernel-module-virtio-rpmsg-bus \
-    kernel-module-wpanusb \
     kernel-module-xt-addrtype \
     kernel-module-xt-conntrack \
     kernel-module-xt-masquerade \
