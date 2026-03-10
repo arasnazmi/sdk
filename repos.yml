@@ -54,3 +54,8 @@ repositories:
     type: git
     url: https://git.ti.com/git/ti-bt/service-packs.git
     version: 3aa1d75f3c2ae77f6e4d36194e3d281b899ab149
+
+  src/firmware-o1-edge-ai:
+    type: git
+    url: https://github.com/t3gemstone/firmware-o1-edge-ai.git
+    version: 40312ba4bcddd1edfc3607e27dfa313a5d0257f8
