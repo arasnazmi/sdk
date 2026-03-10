@@ -8,7 +8,7 @@ repositories:
   yocto/meta-ti:
     type: git
     url: git://git.yoctoproject.org/meta-ti
-    version: 4213a71a8eaed4a57562c0608f9ba29efc39eede
+    version: 5258ee2f903d8f1e0cbcb9d01488d08b57314009
 
   yocto/meta-arm:
     type: git
@@ -33,12 +33,12 @@ repositories:
   yocto/meta-gemstone:
     type: git
     url: https://github.com/t3gemstone/meta-gemstone.git
-    version: f18cff7adc6780381e48e589eaab7fad04ec635e
+    version: 0d128066218a8c288b551aaa3d9608784c28d0dd
 
   src/ti-img-rogue-umlibs:
     type: git
     url: https://git.ti.com/git/graphics/ti-img-rogue-umlibs.git
-    version: linuxws/kirkstone/k6.1/23.3.6512818
+    version: linuxws/scarthgap/k6.12/25.2.6850647
 
   src/cc33xx-fw:
     type: git
