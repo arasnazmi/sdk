@@ -33,6 +33,7 @@ apt-get install -y \
     kernel-module-cdns-dphy-rx \
     kernel-module-e5010-jpeg-enc \
     kernel-module-fusb302 \
+    kernel-module-wave5 \
     kernel-module-gb-usb \
     kernel-module-hci-uart \
     kernel-module-hdc2010 \
@@ -64,8 +65,6 @@ apt-get install -y \
     kernel-module-rpi-panel-attiny-regulator \
     kernel-module-rpmsg-char \
     kernel-module-rpmsg-ctrl \
-    kernel-module-rpmsg-ns \
-    kernel-module-rpmsg-pru \
     kernel-module-snd-usb-audio \
     kernel-module-spidev \
     kernel-module-tc358762 \
@@ -74,20 +73,8 @@ apt-get install -y \
     kernel-module-ti-usb-3410-5052 \
     kernel-module-ums-usbat \
     kernel-module-usb-conn-gpio \
-    kernel-module-usb-f-acm \
-    kernel-module-usb-f-ecm \
-    kernel-module-usb-f-ecm-subset \
-    kernel-module-usb-f-eem \
-    kernel-module-usb-f-fs \
-    kernel-module-usb-f-hid \
-    kernel-module-usb-f-mass-storage \
-    kernel-module-usb-f-ncm \
-    kernel-module-usb-f-rndis \
-    kernel-module-usb-f-serial \
-    kernel-module-usb-f-ss-lb \
     kernel-module-usb-f-uac1 \
     kernel-module-usb-f-uac2 \
-    kernel-module-usb-f-uvc \
     kernel-module-usb-serial-simple \
     kernel-module-usb-storage \
     kernel-module-usb-wwan \
@@ -104,7 +91,6 @@ apt-get install -y \
     kernel-module-wl18xx \
     kernel-module-wlcore \
     kernel-module-wlcore-sdio \
-    kernel-module-wpanusb \
     kernel-module-xt-addrtype \
     kernel-module-xt-conntrack \
     kernel-module-xt-masquerade \

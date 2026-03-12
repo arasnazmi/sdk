@@ -79,7 +79,6 @@ actions:
       - gpg
       - gnupg
       - gpiod
-      - gstreamer1.0-tools
       - htop
       - hwinfo
       - i2c-tools
@@ -109,7 +108,6 @@ actions:
       - unzip
       - usbutils
       - uuid-runtime
-      - v4l-utils
       - vim-tiny
       - wget
       - wpasupplicant
