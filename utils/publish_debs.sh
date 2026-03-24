@@ -46,7 +46,7 @@ upload_debs()
     deb_files=$(find "$deb_folder" -mindepth 1 -maxdepth 1 -name '*.deb') || true
 
     if [ -z "$deb_files" ]; then
-        print_err "No DEB file found in specified directory ($$deb_folder)"
+        print_err "No DEB file found in specified directory ($deb_folder)"
         return 1
     fi
 
