@@ -22,12 +22,12 @@ jobs:
       fail-fast: true
       matrix:
         machine: [beagley-ai, t3-gem-o1, intel-corei7-64]
-        base:    [ubuntu, pardus, debian]
-        suite:   [jammy, yirmiuc-deb, bookworm]
+        base:    [ubuntu, debian, pardus]
+        suite:   [jammy, bookworm, yirmiuc]
         type:    [minimal, kiosk, desktop]
         exclude:
           - base: ubuntu
-            suite: yirmiuc-deb
+            suite: yirmiuc
           - base: ubuntu
             suite: bookworm
           - base: pardus
@@ -35,7 +35,7 @@ jobs:
           - base: pardus
             suite: bookworm
           - base: debian
-            suite: yirmiuc-deb
+            suite: yirmiuc
           - base: debian
             suite: jammy
         include:
@@ -58,7 +58,7 @@ jobs:
         run: |
           mkdir -p "$GITHUB_WORKSPACE/.repos"
           python -m pip install vcstool
-          vcs import "$GITHUB_WORKSPACE/.repos" < ${{ github.workspace }}/repos.yml
+          vcs import --skip-existing "$GITHUB_WORKSPACE/.repos" < ${{ github.workspace }}/repos.yml
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3

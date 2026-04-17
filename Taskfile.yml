@@ -46,7 +46,7 @@ tasks:
 
   fetch:
     cmds:
-      - vcs import . < repos.yml
+      - vcs import --skip-existing . < repos.yml
 
   permissions:
     desc: It will give permission to distrobox's image to able to build yocto

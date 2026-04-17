@@ -17,7 +17,7 @@ LOCAL_CONF_FILE="${BUILD_DIR}/conf/local.conf"
 [ -n "$IMAGE" ] ||
     error "Image to build is not provided."
 
-vcs import --input "$REPOS_YML_FILE" "$REPOS_DIR"
+vcs import --skip-existing --input "$REPOS_YML_FILE" "$REPOS_DIR"
 
 # shellcheck disable=SC1091
 TEMPLATECONF="$YOCTO_DIR/meta-gemstone/conf/templates/$MACHINE" . "$YOCTO_DIR/poky/oe-init-build-env" "$BUILD_DIR"

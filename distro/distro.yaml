@@ -56,7 +56,7 @@ actions:
 
   - action: run
     chroot: true
-    script: scripts/all/setup-pardus.sh
+    script: scripts/all/setup-pardus.sh {{ $suite }}
 {{ end }}
 
   - action: apt
@@ -118,7 +118,7 @@ actions:
     recommends: false
     packages: [ iwd, systemd-timesyncd ]
 
-{{ if eq $suite "noble" "bookworm" "yirmiuc-deb" }}
+{{ if eq $suite "noble" "bookworm" "yirmiuc" }}
   - action: apt
     recommends: false
     packages: [ systemd-resolved ]

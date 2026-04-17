@@ -21,4 +21,4 @@ tasks:
               - noble        # Ubuntu 24
               - bullseye     # Debian 11
               - bookworm     # Debian 12
-              - yirmiuc-deb  # Pardus 23
+              - yirmiuc      # Pardus 23
