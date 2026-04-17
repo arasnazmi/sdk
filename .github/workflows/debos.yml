@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 env:
-    RELEASE: v2026.1
+    RELEASE: v2026.2
     WORKDIR: /home/workdir
 
 jobs:
