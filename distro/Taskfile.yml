@@ -58,6 +58,7 @@ tasks:
             - bullseye  # Debian 11
             - bookworm  # Debian 12
             - yirmiuc   # Pardus 23
+            - yirmibes  # Pardus 25
 
   build:all:ubuntu:
     cmds:
@@ -83,7 +84,7 @@ tasks:
     cmds:
       - for:
           matrix:
-            SUITE: [ "yirmiuc"]
+            SUITE: [ "yirmiuc", "yirmibes" ]
             TYPE: [ "minimal", "kiosk", "desktop" ]
         cmd: |
           unset MACHINE
@@ -97,3 +98,11 @@ tasks:
             DISTRO: [ "ubuntu", "debian", "pardus" ]
             MACHINE: [ "beagley-ai", "intel-corei7-64", "t3-gem-o1", "qemuarm64" ]
         cmd: 'task distro:build:all:{{.ITEM.DISTRO}} MACHINE={{.ITEM.MACHINE}}'
+
+  build:all:t3-gem-o1:
+    desc: Build distro for t3-gem-o1 machine
+    cmds:
+      - for:
+          matrix:
+            DISTRO: [ "ubuntu", "debian", "pardus" ]
+        cmd: 'task distro:build:all:{{.ITEM.DISTRO}} MACHINE=t3-gem-o1'

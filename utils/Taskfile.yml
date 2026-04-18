@@ -22,3 +22,4 @@ tasks:
               - bullseye     # Debian 11
               - bookworm     # Debian 12
               - yirmiuc      # Pardus 23
+              - yirmibes     # Pardus 25

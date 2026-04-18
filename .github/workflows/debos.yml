@@ -23,11 +23,13 @@ jobs:
       matrix:
         machine: [beagley-ai, t3-gem-o1, intel-corei7-64]
         base:    [ubuntu, debian, pardus]
-        suite:   [jammy, bookworm, yirmiuc]
+        suite:   [jammy, bookworm, yirmiuc, yirmibes]
         type:    [minimal, kiosk, desktop]
         exclude:
           - base: ubuntu
             suite: yirmiuc
+          - base: ubuntu
+            suite: yirmibes
           - base: ubuntu
             suite: bookworm
           - base: pardus
@@ -36,6 +38,8 @@ jobs:
             suite: bookworm
           - base: debian
             suite: yirmiuc
+          - base: debian
+            suite: yirmibes
           - base: debian
             suite: jammy
         include:

@@ -22,7 +22,7 @@ fi
 systemctl enable NetworkManager
 
 # DNS resolving
-if [[ "$DISTRO_SUITE" == "noble" || "$DISTRO_SUITE" == "bookworm" || "$DISTRO_SUITE" ==  "yirmiuc" ]]; then
+if [[ "$DISTRO_SUITE" == "noble" || "$DISTRO_SUITE" == "bookworm" || "$DISTRO_SUITE" ==  "yirmiuc" || "$DISTRO_SUITE" ==  "yirmibes" ]]; then
     systemctl enable systemd-resolved
 fi
 

@@ -38,8 +38,9 @@ actions:
 {{ end }}
 
 {{ if eq $base "pardus" }}
+
   - action: download
-    url: https://depo.pardus.org.tr/pardus/pool/main/p/pardus-archive-keyring/pardus-archive-keyring_2021.1_all.deb
+    url: {{ if eq $suite "yirmibes" }}'https://depo.pardus.org.tr/pardus/pool/main/p/pardus-archive-keyring/pardus-archive-keyring_2025.1_all.deb'{{ else }}'https://depo.pardus.org.tr/pardus/pool/main/p/pardus-archive-keyring/pardus-archive-keyring_2021.1_all.deb'{{ end }}
     name: pardus_archive_keyring
     filename: pardus_archive_keyring.deb
 
@@ -57,6 +58,7 @@ actions:
   - action: run
     chroot: true
     script: scripts/all/setup-pardus.sh {{ $suite }}
+
 {{ end }}
 
   - action: apt
@@ -65,6 +67,7 @@ actions:
       - apt-utils
       - bash-completion
       - bluez
+      - ca-certificates
       - can-utils
       - console-setup
       - coreutils
@@ -76,8 +79,8 @@ actions:
       - file
       - fuse
       - gawk
-      - gpg
       - gnupg
+      - gpg
       - gpiod
       - htop
       - hwinfo
@@ -112,13 +115,12 @@ actions:
       - wget
       - wpasupplicant
       - zip
-      - ca-certificates
 
   - action: apt
     recommends: false
     packages: [ iwd, systemd-timesyncd ]
 
-{{ if eq $suite "noble" "bookworm" "yirmiuc" }}
+{{ if eq $suite "noble" "bookworm" "yirmiuc" "yirmibes" }}
   - action: apt
     recommends: false
     packages: [ systemd-resolved ]
@@ -190,9 +192,14 @@ actions:
       - libdrm-dev
       - mate-calc
       - network-manager-gnome
-      - software-properties-common
       - whiptail
       - xcape
+
+{{ if ne $suite "yirmibes" }}
+  - action: apt
+    recommends: false
+    packages: [ software-properties-common ]
+{{ end }}
 
   - action: run
     description: Install PiXflat theme from deb

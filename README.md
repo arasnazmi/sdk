@@ -51,7 +51,7 @@ user@host:$ devbox shell
 
 # Pack Gemstone Distro
 # Note: DISTRO_BASE can be 'ubuntu', 'debian', 'pardus'
-# Note: DISTRO_SUITE can be 'jammy', 'bookworm', 'yirmiuc'
+# Note: DISTRO_SUITE can be 'jammy', 'bookworm', 'yirmiuc', 'yirmibes'
 🚀 distrobox:workdir> task distro:build MACHINE=intel-corei7-64 DISTRO_TYPE=desktop DISTRO_BASE=ubuntu DISTRO_SUITE=jammy IMG_SIZE=16G
 
 # After build images, run virtual machine
