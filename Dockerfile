@@ -59,7 +59,7 @@ RUN apt-get update && \
         zstd \
     && locale-gen en_US.UTF-8
 
-# add Pardus keyring
+# add Pardus 23 keyring
 RUN wget -q https://depo.pardus.org.tr/pardus/pool/main/p/pardus-archive-keyring/pardus-archive-keyring_2021.1_all.deb && \
     dpkg -i pardus-archive-keyring_2021.1_all.deb && \
     rm pardus-archive-keyring_2021.1_all.deb

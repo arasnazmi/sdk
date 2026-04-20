@@ -32,6 +32,7 @@ actions:
 {{ else if eq $base "pardus" }}
     components: [ main, non-free, contrib ]
     mirror: https://depo.pardus.org.tr/pardus
+    suite: {{ $suite }}-deb
 {{ else }}
     components: [ main, multiverse, universe ]
     mirror: {{ if eq $arch "amd64" }}'https://archive.ubuntu.com/ubuntu'{{ else }}'https://ports.ubuntu.com/ubuntu-ports'{{ end }}
@@ -339,7 +340,7 @@ actions:
     chroot: true
     script: scripts/all/disable-services.sh {{ $type }}
 
-{{ if ne $machine "qemuarm64"  }}
+{{ if ne $machine "qemuarm64" }}
   - action: run
     chroot: true
     script: scripts/all/setup-gemstone-apt.sh {{ $machine }} {{ $suite }}
