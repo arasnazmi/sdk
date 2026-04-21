@@ -5,7 +5,7 @@ version: '3'
 
 vars:
   WORKDIR: '{{ .WORKDIR | default "/home/workdir" }}'
-  MACHINE: '{{ .MACHINE | default "beagley-ai" }}'
+  MACHINE: '{{ .MACHINE | default "t3-gem-o1" }}'
   DISTRO_TYPE: '{{ .DISTRO_TYPE | default "minimal" }}'
   DISTRO_BASE: '{{ .DISTRO_BASE | default "ubuntu" }}'
   DISTRO_SUITE: '{{ .DISTRO_SUITE | default "jammy" }}'
@@ -46,7 +46,7 @@ tasks:
 
   fetch:
     cmds:
-      - vcs import --skip-existing . < repos.yml
+      - vcs import . < repos.yml
 
   permissions:
     desc: It will give permission to distrobox's image to able to build yocto
