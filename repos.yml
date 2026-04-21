@@ -33,7 +33,7 @@ repositories:
   yocto/meta-gemstone:
     type: git
     url: https://github.com/t3gemstone/meta-gemstone.git
-    version: cd34acd9ff68e204d34bedfd1b24782878b7c50b
+    version: 6e505f08c842df884bed0f5a05980c2f9fa4da28
 
   src/ti-img-rogue-umlibs:
     type: git
@@ -45,15 +45,10 @@ repositories:
     url: https://git.ti.com/git/cc33xx-wlan/cc33xx-fw.git
     version: 988ded3a7d4d0e46de62e9ebfcb685c502bd9edf
 
-  src/wl18xx-fw:
+  src/realtek-8822-firmware:
     type: git
-    url: https://git.ti.com/git/wilink8-wlan/wl18xx_fw.git
-    version: 685097375c6530c98ce052fcd160001abaa1b256
-
-  src/wl18xx-bt-fw:
-    type: git
-    url: https://git.ti.com/git/ti-bt/service-packs.git
-    version: 3aa1d75f3c2ae77f6e4d36194e3d281b899ab149
+    url: https://github.com/t3gemstone/realtek-8822-firmware.git
+    version: de8ac2fb31a09d8acccd8fddb3d78792dafda6f0
 
   src/firmware-o1-edge-ai:
     type: git
