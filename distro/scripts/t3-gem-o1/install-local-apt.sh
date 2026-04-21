@@ -65,6 +65,10 @@ apt-get install -y \
     kernel-module-rpi-panel-attiny-regulator-6.12.24-ti \
     kernel-module-rpmsg-char-6.12.24-ti \
     kernel-module-rpmsg-ctrl-6.12.24-ti \
+    kernel-module-rtw88-8822c \
+    kernel-module-rtw88-8822cs \
+    kernel-module-rtw88-core \
+    kernel-module-rtw88-sdio \
     kernel-module-snd-usb-audio-6.12.24-ti \
     kernel-module-spidev-6.12.24-ti \
     kernel-module-tc358762-6.12.24-ti \

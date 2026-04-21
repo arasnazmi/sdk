@@ -5,9 +5,7 @@ set -euo pipefail
 WORKDIR="$1"
 ROOTDIR="$2"
 
-mkdir -p "$ROOTDIR/lib/firmware/ti-connectivity"
-cp -f "$WORKDIR/src/wl18xx-fw/"*.bin "$ROOTDIR/lib/firmware/ti-connectivity"
-cp -f "$WORKDIR/src/wl18xx-bt-fw/initscripts/TIInit_11.8.32.bts" "$ROOTDIR/lib/firmware/ti-connectivity"
+cp -ar "$WORKDIR/src/realtek-8822-firmware/"* "$ROOTDIR/lib/firmware"
 
 cp -ar "$WORKDIR/src/firmware-o1-edge-ai/"* "$ROOTDIR/lib/firmware"
 cd "$ROOTDIR/lib/firmware"
