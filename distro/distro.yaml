@@ -187,6 +187,8 @@ actions:
       - baobab
       - dbus-x11
       - engrampa
+      - fonts-inter
+      - fonts-inter-variable
       - fonts-jetbrains-mono
       - fonts-noto-core
       - kmscube
