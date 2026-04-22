@@ -20,7 +20,7 @@ _m()
 
     case "$prev" in
         "oeinit")
-            COMPREPLY=( $(compgen -W "beagley-ai intel-corei7-64" -- ${cur}) )
+            COMPREPLY=( $(compgen -W "beagley-ai intel-corei7-64 t3-gem-o1" -- ${cur}) )
             return 0
         ;;
     esac

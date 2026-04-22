@@ -7,7 +7,7 @@
 {{/* https://golang.org/pkg/text/template */}}
 
 {{- $arch := or .arch "arm64" -}}
-{{- $machine := or .machine "beagley-ai" -}}
+{{- $machine := or .machine "t3-gem-o1" -}}
 {{- $base := or .base "ubuntu" -}}
 {{- $type := or .type "minimal" -}}
 {{- $suite := or .suite "jammy" -}}

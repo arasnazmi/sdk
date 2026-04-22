@@ -43,7 +43,7 @@ m:grep() {
 }
 
 m:oeinit() {
-    MACHINE="${1:-beagley-ai}"
+    MACHINE="${1:-t3-gem-o1}"
     TEMPLATECONF="$WORKDIR/yocto/meta-gemstone/conf/templates/${MACHINE}" source $WORKDIR/yocto/poky/oe-init-build-env "$WORKDIR/build/$MACHINE"
 }
 
