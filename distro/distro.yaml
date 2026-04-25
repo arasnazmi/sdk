@@ -155,7 +155,6 @@ actions:
       - fonts-noto-core
       - fonts-noto-cjk
       - gdm3
-      - gnome-session
       - gnome-settings-daemon
       - gsettings-desktop-schemas
       - iio-sensor-proxy
@@ -165,10 +164,9 @@ actions:
       - libinput-tools
       - modemmanager
       - network-manager-gnome
-      - maliit-keyboard
       - phoc
       - phosh
-      - phosh-osk-stub
+      - squeekboard
       - pipewire
       - pipewire-pulse
       - upower
@@ -181,12 +179,11 @@ actions:
   - action: apt
     recommends: false
     packages:
+      - blanket
       - chatty
-      - eog
       - epiphany-browser
       - evince
-      - gstreamer1.0-plugins-base
-      - gstreamer1.0-plugins-good
+      - geary
       - gnome-calculator
       - gnome-calendar
       - gnome-calls
@@ -194,8 +191,13 @@ actions:
       - gnome-contacts
       - gnome-control-center
       - gnome-text-editor
+      - gstreamer1.0-plugins-base
+      - gstreamer1.0-plugins-good
+      - lollypop
+      - loupe
+      - megapixels
       - nautilus
-      - rhythmbox
+      - phosh-mobile-settings
       - totem
 {{ end }}
 
