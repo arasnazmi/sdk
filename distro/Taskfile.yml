@@ -48,7 +48,7 @@ tasks:
         - name: DISTRO_BASE
           enum: [ ubuntu, debian, pardus ]
         - name: DISTRO_TYPE
-          enum: [ minimal, kiosk, desktop ]
+          enum: [ minimal, kiosk, desktop, tablet ]
         - name: DISTRO_ARCH
           enum: [ arm64, amd64 ]
         - name: DISTRO_SUITE

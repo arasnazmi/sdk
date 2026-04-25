@@ -145,6 +145,60 @@ actions:
       - xterm
 {{ end }}
 
+{{ if eq $type "tablet" }}
+  - action: apt
+    recommends: false
+    packages:
+      - feedbackd
+      - fonts-inter
+      - fonts-inter-variable
+      - fonts-noto-core
+      - fonts-noto-cjk
+      - gdm3
+      - gnome-session
+      - gnome-settings-daemon
+      - gsettings-desktop-schemas
+      - iio-sensor-proxy
+      - kmscube
+      - libdrm-dev
+      - libinput-bin
+      - libinput-tools
+      - modemmanager
+      - network-manager-gnome
+      - maliit-keyboard
+      - phoc
+      - phosh
+      - phosh-osk-stub
+      - pipewire
+      - pipewire-pulse
+      - upower
+      - wayland-utils
+      - whiptail
+      - wireplumber
+      - wlr-randr
+      - xwayland
+
+  - action: apt
+    recommends: false
+    packages:
+      - chatty
+      - eog
+      - epiphany-browser
+      - evince
+      - gstreamer1.0-plugins-base
+      - gstreamer1.0-plugins-good
+      - gnome-calculator
+      - gnome-calendar
+      - gnome-calls
+      - gnome-clocks
+      - gnome-contacts
+      - gnome-control-center
+      - gnome-text-editor
+      - nautilus
+      - rhythmbox
+      - totem
+{{ end }}
+
 {{ if eq $type "desktop" }}
 
 {{ if eq $suite "jammy" "noble" }}
@@ -297,7 +351,7 @@ actions:
     script: scripts/t3-gem-o1/install-firmware.sh {{ $workdir }} $ROOTDIR
 {{ end }}
 
-{{ if eq $type "kiosk" "desktop" }}
+{{ if eq $type "kiosk" "desktop" "tablet" }}
   - action: overlay
     source: overlays/{{ $type }}/all
     destination: /

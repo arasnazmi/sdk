@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=Maliit Keyboard Server
+Exec=maliit-server
+OnlyShowIn=Phosh;GNOME;
+NoDisplay=true
+X-GNOME-AutoRestart=true
