@@ -2,7 +2,7 @@
     "editor.insertSpaces": true,
     "editor.tabSize": 4,
     "editor.autoIndent": "advanced",
-    "editor.fontLigatures": true,
+    "editor.fontLigatures": false,
     "editor.detectIndentation": false,
     "editor.guides.indentation": false,
 

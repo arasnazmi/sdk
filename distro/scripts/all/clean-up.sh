@@ -28,6 +28,11 @@ if [[ "$DISTRO_TYPE" == "desktop" ]]; then
     find /usr/share/backgrounds -mindepth 1 -not -path "*t3-gemstone*" -exec rm -rf {} \; 2>/dev/null
 fi
 
+if [[ "$DISTRO_TYPE" == "tablet" ]]; then
+    echo "apt-get remove tablet"
+    apt-get remove -y htop mc can-utils i2c-tools rsync spi-tools
+fi
+
 apt-get autoremove -y
 apt-get autoclean -y
 
