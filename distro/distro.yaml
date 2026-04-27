@@ -150,12 +150,15 @@ actions:
     recommends: false
     packages:
       - auditd
+      - endeavour
+      - errands
       - feedbackd
       - fonts-inter
       - fonts-inter-variable
       - fonts-noto-cjk
       - fonts-noto-core
       - gdm3
+      - gnome-maps
       - gnome-settings-daemon
       - gnome-terminal
       - gsettings-desktop-schemas
@@ -167,19 +170,23 @@ actions:
       - modemmanager
       - network-manager-gnome
       - phoc
+      - phosh
+      - pipewire
+      - pipewire-pulse
+      - plymouth
+      - plymouth-theme-phosh
+      - plymouth-themes
       - policycoreutils
       - selinux-basics
       - selinux-policy-default
       - selinux-utils
-      - phosh
-      - pipewire
-      - pipewire-pulse
       - squeekboard
       - upower
       - wayland-utils
       - whiptail
       - wireplumber
       - wlr-randr
+      - xterm
       - xwayland
 
   - action: apt
@@ -226,6 +233,9 @@ actions:
       - mousepad
       - network-manager
       - parole
+      - plymouth
+      - plymouth-themes
+      - plymouth-x11
       - ristretto
       - thunar
       - thunar-archive-plugin
@@ -241,6 +251,7 @@ actions:
       - xfconf
       - xfdesktop4
       - xfwm4
+      - xterm
 
   - action: apt
     recommends: false
@@ -384,6 +395,16 @@ actions:
     command: |
       gtk-update-icon-cache --force --ignore-theme-index /usr/share/icons/T3-Gemstone
       gtk-update-icon-cache --force --ignore-theme-index /usr/share/icons/hicolor
+{{ end }}
+
+{{ if eq $type "desktop" "tablet" }}
+  - action: run
+    chroot: true
+    description: Install plymouth boot splash theme
+    command: |
+      update-alternatives --install \
+          /usr/share/plymouth/themes/default.plymouth default.plymouth \
+          /usr/share/plymouth/themes/gemstone-logo/gemstone-logo.plymouth 300
 {{ end }}
 
 {{ if eq $machine "beagley-ai" "t3-gem-o1" }}

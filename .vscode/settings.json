@@ -79,5 +79,6 @@
         "build/**": true,
         "src/**": true,
         "build/debos/**": true,
-    }
+    },
+    "explorer.compactFolders": false
 }
