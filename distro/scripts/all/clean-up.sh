@@ -30,7 +30,14 @@ fi
 
 if [[ "$DISTRO_TYPE" == "tablet" ]]; then
     echo "apt-get remove tablet"
-    apt-get remove -y htop mc can-utils i2c-tools rsync spi-tools
+    apt-get remove -y \
+        can-utils \
+        htop \
+        i2c-tools \
+        mc \
+        rsync \
+        spi-tools \
+        ;
 fi
 
 apt-get autoremove -y

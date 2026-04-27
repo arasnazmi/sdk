@@ -153,8 +153,6 @@ actions:
       - errands
       - feedbackd
       - flatpak
-      - firefox-esr
-      - firefox-esr-mobile-config
       - fonts-inter
       - fonts-inter-variable
       - fonts-noto-cjk
@@ -179,7 +177,6 @@ actions:
       - selinux-basics
       - selinux-policy-default
       - selinux-utils
-      - squeekboard
       - upower
       - wayland-utils
       - whiptail
@@ -187,8 +184,16 @@ actions:
       - wlr-randr
       - xdg-desktop-portal
       - xdg-desktop-portal-gnome
-      - xterm
       - xwayland
+
+{{ if eq $base "pardus" }}
+  - action: apt
+    recommends: false
+    packages:
+      - firefox-esr
+      - firefox-esr-mobile-config
+      - squeekboard
+{{ end }}
 
   - action: apt
     recommends: false
