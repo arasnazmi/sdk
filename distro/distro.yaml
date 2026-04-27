@@ -145,22 +145,25 @@ actions:
 {{ end }}
 
 {{ if eq $type "tablet" }}
+
+{{ if eq $base "pardus" }}
+  - action: run
+    chroot: true
+    command: |
+      cat <<EOF > /etc/apt/preferences.d/99pardus
+      Package: *
+      Pin: release o=Pardus
+      Pin-Priority: 1001
+      EOF
+{{ end }}
+
   - action: apt
     recommends: true
     packages:
       - auditd
-      - dconf-cli
-      - endeavour
-      - errands
       - feedbackd
-      - flatpak
-      - nftables
-      - fonts-inter
-      - fonts-inter-variable
-      - fonts-noto-cjk
-      - fonts-noto-core
+      - dconf-cli
       - gdm3
-      - gnome-maps
       - gnome-settings-daemon
       - gnome-terminal
       - gsettings-desktop-schemas
@@ -181,8 +184,6 @@ actions:
       - selinux-utils
       - upower
       - wayland-utils
-      - whiptail
-      - wireplumber
       - wlr-randr
       - xdg-desktop-portal
       - xdg-desktop-portal-gnome
@@ -202,8 +203,11 @@ actions:
     recommends: false
     packages:
       - chatty
+      - endeavour
       - epiphany-browser
+      - errands
       - evince
+      - flatpak
       - geary
       - gnome-calculator
       - gnome-calendar
@@ -211,6 +215,8 @@ actions:
       - gnome-clocks
       - gnome-contacts
       - gnome-control-center
+      - gnome-maps
+      - gnome-photos
       - gnome-text-editor
       - gstreamer1.0-plugins-base
       - gstreamer1.0-plugins-good
@@ -218,8 +224,11 @@ actions:
       - loupe
       - megapixels
       - nautilus
+      - nftables
       - phosh-mobile-settings
       - totem
+      - whiptail
+      - wireplumber
 {{ end }}
 
 {{ if eq $type "desktop" }}

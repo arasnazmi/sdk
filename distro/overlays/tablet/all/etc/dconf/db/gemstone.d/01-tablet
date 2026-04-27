@@ -9,11 +9,18 @@ auto-use-default-origins=true
 country-code=''
 
 [org/gnome/control-center]
-last-panel='system'
+last-panel='background'
 window-state=(980, 640, true)
 
 [org/gnome/desktop/a11y/applications]
 screen-keyboard-enabled=true
+
+[org/gnome/desktop/background]
+picture-options='zoom'
+picture-uri='file:///usr/share/desktop-base/bilge-theme/wallpaper/gnome-background.xml'
+picture-uri-dark='file:///usr/share/desktop-base/bilge-theme/wallpaper/gnome-background.xml'
+primary-color='#ffffff'
+secondary-color='#000000'
 
 [org/gnome/desktop/break-reminders/eyesight]
 play-sound=true
@@ -30,6 +37,7 @@ xkb-options=['terminate:ctrl_alt_bksp']
 [org/gnome/desktop/interface]
 clock-format='24h'
 clock-show-weekday=true
+color-scheme='default'
 show-battery-percentage=true
 toolkit-accessibility=true
 
@@ -52,6 +60,8 @@ lock-delay=uint32 30
 lock-enabled=true
 picture-options='zoom'
 picture-uri='file:///usr/share/backgrounds/gemstone/lockscreen.jpg'
+primary-color='#ffffff'
+secondary-color='#000000'
 
 [org/gnome/desktop/search-providers]
 sort-order=['org.gnome.Settings.desktop', 'org.gnome.Contacts.desktop', 'org.gnome.Nautilus.desktop']
@@ -102,7 +112,7 @@ sort-directories-first=false
 profile='full'
 
 [phosh/mobi/MobileSettings]
-last-panel='lockscreen'
+last-panel='features'
 
 [sm/puri/Chatty]
 blur-idle-buddies=true
@@ -147,3 +157,7 @@ shuffle-keypad=true
 
 [sm/puri/phosh/notifications]
 wakeup-screen-urgency='critical'
+
+[sm/puri/phosh/plugins]
+lock-screen=['launcher-box', 'calendar', 'upcoming-events', 'ticket-box', 'emergency-info']
+quick-settings=['dark-mode-quick-setting', 'mobile-data-quick-setting', 'pomodoro-quick-setting', 'wifi-hotspot-quick-setting', 'caffeine-quick-setting', 'night-light-quick-setting', 'scaling-quick-setting']
