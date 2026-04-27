@@ -1,0 +1,6 @@
+# SELinux configuration
+# enforcing  - policy ihlallerini engeller ve loglar
+# permissive - yalnızca loglar, engellemez (geliştirme/test için)
+# disabled   - SELinux kapalı
+SELINUX=permissive
+SELINUXTYPE=default

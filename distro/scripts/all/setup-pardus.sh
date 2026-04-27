@@ -10,9 +10,11 @@ cat > /etc/apt/sources.list << EOF
 ## Pardus
 deb https://depo.pardus.org.tr/pardus $DISTRO_SUITE main contrib non-free non-free-firmware
 # deb-src https://depo.pardus.org.tr/pardus $DISTRO_SUITE main contrib non-free non-free-firmware
+
 ## Pardus Deb
 deb https://depo.pardus.org.tr/pardus $DISTRO_SUITE-deb main contrib non-free non-free-firmware
 # deb-src https://depo.pardus.org.tr/pardus $DISTRO_SUITE-deb main contrib non-free non-free-firmware
+
 ## Pardus Security Deb
 deb https://depo.pardus.org.tr/guvenlik $DISTRO_SUITE-deb main contrib non-free non-free-firmware
 # deb-src https://depo.pardus.org.tr/guvenlik $DISTRO_SUITE-deb main contrib non-free non-free-firmware

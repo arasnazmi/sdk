@@ -149,13 +149,15 @@ actions:
   - action: apt
     recommends: false
     packages:
+      - auditd
       - feedbackd
       - fonts-inter
       - fonts-inter-variable
-      - fonts-noto-core
       - fonts-noto-cjk
+      - fonts-noto-core
       - gdm3
       - gnome-settings-daemon
+      - gnome-terminal
       - gsettings-desktop-schemas
       - iio-sensor-proxy
       - kmscube
@@ -165,10 +167,14 @@ actions:
       - modemmanager
       - network-manager-gnome
       - phoc
+      - policycoreutils
+      - selinux-basics
+      - selinux-policy-default
+      - selinux-utils
       - phosh
-      - squeekboard
       - pipewire
       - pipewire-pulse
+      - squeekboard
       - upower
       - wayland-utils
       - whiptail
@@ -384,6 +390,33 @@ actions:
   - action: overlay
     source: overlays/minimal/usb-gadgets
     destination: /
+{{ end }}
+
+{{ if eq $type "tablet" }}
+  - action: run
+    description: Configure SELinux
+    chroot: true
+    command: |
+      # Disable AppArmor - cannot run simultaneously with SELinux as primary LSM
+      systemctl disable apparmor 2>/dev/null || true
+
+      # x86/GRUB
+      if [ -f /etc/default/grub ]; then
+        if ! grep -q 'selinux=1' /etc/default/grub; then
+          sed -i 's/^\(GRUB_CMDLINE_LINUX="[^"]*\)"/\1 security=selinux selinux=1"/' /etc/default/grub
+          update-grub 2>/dev/null || true
+        fi
+      fi
+
+      # ARM / extlinux
+      for conf in /boot/extlinux/extlinux.conf /boot/extlinux.conf; do
+        if [ -f "$conf" ] && ! grep -q 'selinux=1' "$conf"; then
+          sed -i '/^\s*APPEND/ s/$/ security=selinux selinux=1/' "$conf"
+        fi
+      done
+
+      # Trigger full filesystem relabeling on first boot
+      touch /.autorelabel
 {{ end }}
 
   - action: run
