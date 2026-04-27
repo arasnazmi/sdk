@@ -146,9 +146,10 @@ actions:
 
 {{ if eq $type "tablet" }}
   - action: apt
-    recommends: false
+    recommends: true
     packages:
       - auditd
+      - dconf-cli
       - endeavour
       - errands
       - feedbackd

@@ -8,8 +8,8 @@ IMAGE="$3"
 
 OUTPUT_DIR="${WORKDIR}/build/debos"
 BASE="${IMAGE%.img}"
-KEY_FILE="${OUTPUT_DIR}/${BASE}-root.key"
-PASS_FILE="${OUTPUT_DIR}/${BASE}-root-password.txt"
+KEY_FILE="${OUTPUT_DIR}/root.key"
+PASS_FILE="${OUTPUT_DIR}/root.password"
 
 mkdir -p "${OUTPUT_DIR}"
 
