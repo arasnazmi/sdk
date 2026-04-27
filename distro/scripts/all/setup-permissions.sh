@@ -19,6 +19,7 @@ if [[ "$DISTRO_TYPE" == "kiosk" ]]; then
 fi
 
 if [[ "$DISTRO_TYPE" == "tablet" ]]; then
+    chmod 0755 /usr/local/sbin/tablet-autologin.sh
     chmod 0755 /usr/local/sbin/dpkg
     # root'un PATH'ine /usr/local/sbin ekle (yoksa)
     grep -qxF 'export PATH="/usr/local/sbin:$PATH"' /root/.bashrc \

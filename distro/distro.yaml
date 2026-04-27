@@ -439,7 +439,9 @@ actions:
     command: |
       systemctl enable nftables.service
       systemctl enable auditd.service
+      systemctl enable tablet-autologin.service
       chmod 0440 /etc/sudoers.d/00-tablet
+      chmod +x /usr/local/sbin/tablet-autologin.sh
 {{ end }}
 
 {{ if eq $type "tablet" }}

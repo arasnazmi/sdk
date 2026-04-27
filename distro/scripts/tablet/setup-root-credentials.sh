@@ -45,5 +45,3 @@ data = re.sub(r'(?m)^(root:)[^:]*(:)', lambda m: m.group(1) + hash_val + m.group
 with open(shadow, 'w') as f:
     f.write(data)
 " "$HASH" "${ROOTDIR}/etc/shadow"
-
-chown $USER:$USER "${KEY_FILE}" "${KEY_FILE}.pub" "${PASS_FILE}"

@@ -1,0 +1,5 @@
+#!/bin/bash
+
+# phosh D-Bus'a kaydolana kadar bekle, sonra kilitle
+gdbus wait --session --bus-name mobi.phosh.Shell --timeout 30 2>/dev/null
+loginctl lock-session
