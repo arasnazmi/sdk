@@ -175,9 +175,6 @@ actions:
       - phosh
       - pipewire
       - pipewire-pulse
-      - plymouth
-      - plymouth-theme-phosh
-      - plymouth-themes
       - policycoreutils
       - selinux-basics
       - selinux-policy-default
@@ -237,9 +234,6 @@ actions:
       - mousepad
       - network-manager
       - parole
-      - plymouth
-      - plymouth-themes
-      - plymouth-x11
       - ristretto
       - thunar
       - thunar-archive-plugin
@@ -384,6 +378,13 @@ actions:
     destination: /
 {{ end }}
 
+{{ if eq $type "tablet" }}
+  - action: run
+    description: Compile dconf system database
+    chroot: true
+    command: dconf update
+{{ end }}
+
 {{ if eq $type "desktop" }}
   - action: run
     chroot: true
@@ -399,16 +400,6 @@ actions:
     command: |
       gtk-update-icon-cache --force --ignore-theme-index /usr/share/icons/T3-Gemstone
       gtk-update-icon-cache --force --ignore-theme-index /usr/share/icons/hicolor
-{{ end }}
-
-{{ if eq $type "desktop" "tablet" }}
-  - action: run
-    chroot: true
-    description: Install plymouth boot splash theme
-    command: |
-      update-alternatives --install \
-          /usr/share/plymouth/themes/default.plymouth default.plymouth \
-          /usr/share/plymouth/themes/gemstone-logo/gemstone-logo.plymouth 300
 {{ end }}
 
 {{ if eq $machine "beagley-ai" "t3-gem-o1" }}
