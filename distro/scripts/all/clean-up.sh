@@ -36,6 +36,7 @@ if [[ "$DISTRO_TYPE" == "tablet" ]]; then
         i2c-tools \
         mc \
         rsync \
+        sudo \
         spi-tools \
         ;
 fi

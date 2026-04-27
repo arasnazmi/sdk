@@ -153,6 +153,7 @@ actions:
       - errands
       - feedbackd
       - flatpak
+      - nftables
       - fonts-inter
       - fonts-inter-variable
       - fonts-noto-cjk
@@ -383,13 +384,6 @@ actions:
     destination: /
 {{ end }}
 
-{{ if eq $type "tablet" }}
-  - action: run
-    description: Compile dconf system database
-    chroot: true
-    command: dconf update
-{{ end }}
-
 {{ if eq $type "desktop" }}
   - action: run
     chroot: true
@@ -420,9 +414,39 @@ actions:
     script: scripts/tablet/configure-selinux.sh
 
   - action: run
+    description: Restore Flatpak cache from host
+    chroot: false
+    script: scripts/tablet/flatpak-cache-restore.sh {{ $workdir }} $ROOTDIR
+
+  - action: run
     description: Setup Flatpak with Flathub and install apps
     chroot: true
     script: scripts/tablet/setup-flatpak.sh
+
+  - action: run
+    description: Save Flatpak data to host cache
+    chroot: false
+    script: scripts/tablet/flatpak-cache-save.sh {{ $workdir }} $ROOTDIR
+
+  - action: run
+    description: Generate root credentials and SSH keypair
+    chroot: false
+    script: scripts/tablet/setup-root-credentials.sh {{ $workdir }} $ROOTDIR {{ $image }}
+
+  - action: run
+    description: Enable security services
+    chroot: true
+    command: |
+      systemctl enable nftables.service
+      systemctl enable auditd.service
+      chmod 0440 /etc/sudoers.d/00-tablet
+{{ end }}
+
+{{ if eq $type "tablet" }}
+  - action: run
+    description: Compile dconf system database
+    chroot: true
+    command: dconf update
 {{ end }}
 
   - action: run
@@ -454,6 +478,13 @@ actions:
   - action: run
     chroot: true
     script: scripts/{{ $machine }}/clean-up.sh {{ $type }}
+
+{{ if eq $type "tablet" }}
+  - action: run
+    description: Compile dconf system database
+    chroot: true
+    command: dconf update
+{{ end }}
 
   - action: run
     chroot: true

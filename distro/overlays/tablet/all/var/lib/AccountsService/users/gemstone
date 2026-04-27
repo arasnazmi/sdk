@@ -2,3 +2,4 @@
 Session=phosh
 XSession=phosh
 SystemAccount=false
+AutomaticLogin=true

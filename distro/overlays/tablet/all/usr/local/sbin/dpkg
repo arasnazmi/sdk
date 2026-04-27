@@ -1,0 +1,57 @@
+#!/bin/bash
+#
+# dpkg wrapper — lokal .deb dosyalarinda GPG imza dogrulamasi yapar.
+# APT uzerinden gelen paketler zaten repo imzasiyla dogrulanir; bu wrapper
+# yalnizca "dpkg -i ./paket.deb" veya "apt install ./paket.deb" yolunu kapatir.
+#
+
+REAL_DPKG=/usr/bin/dpkg
+TRUSTED_KEYRING=/etc/apt/keyrings/gemstone.gpg
+LOG_TAG="dpkg-sig-verify"
+
+# Kurulum komutu mu? (-i / --install / --unpack)
+is_install_op() {
+    for arg in "$@"; do
+        case "$arg" in
+            -i|--install|--unpack|-iR|--recursive) return 0 ;;
+        esac
+    done
+    return 1
+}
+
+verify_deb() {
+    local deb="$1"
+
+    # dpkg-sig ile imzayi kontrol et
+    if command -v dpkg-sig >/dev/null 2>&1; then
+        local verify_args=""
+        [ -f "$TRUSTED_KEYRING" ] && verify_args="--keyring $TRUSTED_KEYRING"
+
+        if ! dpkg-sig $verify_args --verify "$deb" >/dev/null 2>&1; then
+            logger -t "$LOG_TAG" -p auth.warning "Imzasiz paket engellendi: $deb"
+            echo "HATA: Paket imzasi dogrulanamadi: $(basename "$deb")" >&2
+            echo "      Yalnizca guvenilir anahtarla imzalanmis paketler kurulabilir." >&2
+            echo "      Imzali paket olusturmak icin: dpkg-sig --sign builder <paket.deb>" >&2
+            return 1
+        fi
+
+        logger -t "$LOG_TAG" -p auth.info "Imza gecerli: $deb"
+        return 0
+    else
+        # dpkg-sig yoksa sadece uyar, engelleme
+        logger -t "$LOG_TAG" -p auth.warning "dpkg-sig bulunamadi, imza dogrulamasi atlaniyor: $deb"
+        echo "UYARI: dpkg-sig kurulu degil, imza dogrulamasi atlaniyor." >&2
+        return 0
+    fi
+}
+
+# Kurulum operasyonunda lokal .deb dosyalarini tara
+if is_install_op "$@"; then
+    for arg in "$@"; do
+        if [[ "$arg" == *.deb ]] && [[ -f "$arg" ]]; then
+            verify_deb "$arg" || exit 1
+        fi
+    done
+fi
+
+exec "$REAL_DPKG" "$@"

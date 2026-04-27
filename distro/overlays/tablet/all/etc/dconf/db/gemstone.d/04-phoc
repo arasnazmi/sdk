@@ -1,4 +1,0 @@
-# Phoc compositor defaults
-[sm/puri/phoc]
-auto-maximize=true
-scale-to-fit=false

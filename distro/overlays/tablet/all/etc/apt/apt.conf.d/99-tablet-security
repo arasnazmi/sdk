@@ -1,0 +1,8 @@
+# Imzasiz repo ve paket kurulumunu reddet
+APT::Get::AllowUnauthenticated "false";
+Acquire::AllowInsecureRepositories "false";
+Acquire::AllowDowngradeToInsecureRepositories "false";
+
+# Paket listesi guncellemesinde imzasiz repoyu hata olarak isle
+Acquire::https::Verify-Peer "true";
+Acquire::https::Verify-Host "true";
