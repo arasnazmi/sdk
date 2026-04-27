@@ -190,6 +190,7 @@ actions:
   - action: apt
     recommends: false
     packages:
+      - blanket
       - firefox-esr
       - firefox-esr-mobile-config
       - squeekboard
@@ -198,7 +199,6 @@ actions:
   - action: apt
     recommends: false
     packages:
-      - blanket
       - chatty
       - epiphany-browser
       - evince
