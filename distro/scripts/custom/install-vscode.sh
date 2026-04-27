@@ -30,5 +30,5 @@ ext=(
 chown -R gemstone:gemstone /home/gemstone
 
 for i in "${ext[@]}"; do
-    HOME=/home/gemstone code --disable-chromium-sandbox --user-data-dir=/home/gemstone/.config/Code/User --force --install-extension $i
+    HOME=/home/gemstone code --disable-chromium-sandbox --user-data-dir=/home/gemstone/.config/Code/User --force --install-extension $i || echo "Unable to install extension '$i'. Skipping..."
 done
