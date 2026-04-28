@@ -167,8 +167,8 @@ actions:
       - feedbackd
 {{ if eq $arch "arm64" }}
 {{ if eq $suite "yirmibes" }}
-      - gnome-shell-common=48.7-0+deb13u2pardus1
-      - gnome-shell=48.7-0+deb13u2pardus1
+      - gnome-shell-common=48.7-0+deb13u2
+      - gnome-shell=48.7-0+deb13u2
 {{ end }}
 {{ end }}
       - chatty
@@ -453,8 +453,10 @@ actions:
       systemctl enable nftables.service
       systemctl enable auditd.service
       systemctl enable tablet-autologin.service
+      systemctl --global enable phosh-lock-on-start.service
       chmod 0440 /etc/sudoers.d/00-tablet
       chmod +x /usr/local/sbin/tablet-autologin.sh
+      chmod +x /usr/local/bin/phosh-lock-on-start
 {{ end }}
 
 {{ if eq $type "tablet" }}

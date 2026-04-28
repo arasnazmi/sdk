@@ -1,5 +1,9 @@
 #!/bin/bash
 
 # phosh D-Bus'a kaydolana kadar bekle, sonra kilitle
-gdbus wait --session --bus-name mobi.phosh.Shell --timeout 30 2>/dev/null
-loginctl lock-session
+gdbus wait --session --bus-name org.gnome.ScreenSaver --timeout 30 2>/dev/null
+
+gdbus call --session \
+    --dest org.gnome.ScreenSaver \
+    --object-path /org/gnome/ScreenSaver \
+    --method org.gnome.ScreenSaver.Lock

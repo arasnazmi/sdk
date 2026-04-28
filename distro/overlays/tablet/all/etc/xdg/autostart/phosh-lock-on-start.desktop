@@ -1,6 +1,0 @@
-[Desktop Entry]
-Name=Lock Screen on Start
-Exec=/usr/local/bin/phosh-lock-on-start
-Type=Application
-NoDisplay=true
-X-GNOME-Autostart-enabled=true
