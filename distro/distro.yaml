@@ -155,6 +155,18 @@ actions:
       Pin: release o=Pardus
       Pin-Priority: 1001
       EOF
+
+{{ if eq $arch "arm64" }}
+{{ if eq $suite "yirmibes" }}
+  - action: apt
+    recommends: false
+    packages:
+      - gnome-shell-common=48.7-0+deb13u2
+      - gnome-shell=48.7-0+deb13u2
+      - gdm3
+{{ end }}
+{{ end }}
+
 {{ end }}
 
   - action: apt
@@ -227,8 +239,6 @@ actions:
       - nftables
       - phosh-mobile-settings
       - totem
-      - whiptail
-      - wireplumber
 {{ end }}
 
 {{ if eq $type "desktop" }}
