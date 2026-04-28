@@ -325,7 +325,7 @@ actions:
 
   - action: run
     chroot: true
-    script: scripts/all/setup-user.sh
+    script: scripts/all/setup-user.sh {{ $type }}
 
   - action: overlay
     source: overlays/minimal/all
