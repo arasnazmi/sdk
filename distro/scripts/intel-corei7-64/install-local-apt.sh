@@ -32,5 +32,12 @@ if [[ "$DISTRO_TYPE" == "desktop" || "$DISTRO_TYPE" == "gui" || "$DISTRO_TYPE" =
         kernel-module-drm-display-helper \
         kernel-module-usbtouchscreen \
         kernel-module-video \
-        kernel-module-virtio-input
+        kernel-module-virtio-input \
+        ;
+fi
+
+if [[ "$DISTRO_TYPE" == "tablet" ]]; then
+    apt-get install -y \
+        kernel-module-nf-conntrack \
+        ;
 fi
