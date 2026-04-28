@@ -168,9 +168,9 @@ actions:
 {{ if eq $arch "arm64" }}
 {{ if eq $suite "yirmibes" }}
       - gnome-shell-common=48.7-0+deb13u2pardus1
+      - gnome-shell=48.7-0+deb13u2pardus1
 {{ end }}
 {{ end }}
-      - gnome-shell
       - chatty
       - endeavour
       - epiphany-browser
