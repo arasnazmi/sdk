@@ -3,6 +3,7 @@
 export DEBIAN_FRONTEND=noninteractive
 
 MACHINE="t3_gem_o1"
+DISTRO_TYPE="${2:-minimal}"
 CI="$3"
 
 if [ "$CI" = "true" ]; then
@@ -103,6 +104,10 @@ apt-get install -y \
     kernel-module-xt-nat-6.12.24-ti \
     ti-img-rogue-driver \
     u-boot
+
+if [[ "$DISTRO_TYPE" == "tablet" ]]; then
+    echo "kernel-module for tablet"
+fi
 
 if [ "$CI" = "true" ]; then
     apt-get install -y gem-t3-gem-o1-bsp
