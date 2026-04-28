@@ -147,25 +147,15 @@ actions:
 {{ if eq $type "tablet" }}
 
 {{ if eq $base "pardus" }}
+
   - action: run
     chroot: true
     command: |
-      cat <<EOF > /etc/apt/preferences.d/99pardus
+      cat <<EOF > /etc/apt/preferences.d/pardus-priority
       Package: *
       Pin: release o=Pardus
       Pin-Priority: 1001
       EOF
-
-{{ if eq $arch "arm64" }}
-{{ if eq $suite "yirmibes" }}
-  - action: apt
-    recommends: true
-    packages:
-      - gnome-shell-common=48.7-0+deb13u2
-      - gnome-shell=48.7-0+deb13u2
-      - gdm3
-{{ end }}
-{{ end }}
 
 {{ end }}
 
@@ -173,53 +163,21 @@ actions:
     recommends: true
     packages:
       - auditd
-      - feedbackd
       - dconf-cli
-      - gdm3
-      - gnome-settings-daemon
-      - gnome-terminal
-      - gsettings-desktop-schemas
-      - iio-sensor-proxy
-      - kmscube
-      - libdrm-dev
-      - libinput-bin
-      - libinput-tools
-      - modemmanager
-      - network-manager-gnome
-      - phoc
-      - phosh
-      - pipewire
-      - pipewire-pulse
-      - policycoreutils
-      - selinux-basics
-      - selinux-policy-default
-      - selinux-utils
-      - upower
-      - wayland-utils
-      - wlr-randr
-      - xdg-desktop-portal
-      - xdg-desktop-portal-gnome
-      - xwayland
-
-{{ if eq $base "pardus" }}
-  - action: apt
-    recommends: false
-    packages:
-      - blanket
-      - firefox-esr
-      - firefox-esr-mobile-config
-      - squeekboard
+      - feedbackd
+{{ if eq $arch "arm64" }}
+{{ if eq $suite "yirmibes" }}
+      - gnome-shell-common=48.7-0+deb13u2pardus1
 {{ end }}
-
-  - action: apt
-    recommends: false
-    packages:
+{{ end }}
+      - gnome-shell
       - chatty
       - endeavour
       - epiphany-browser
       - errands
       - evince
       - flatpak
+      - gdm3
       - geary
       - gnome-calculator
       - gnome-calendar
@@ -229,16 +187,51 @@ actions:
       - gnome-control-center
       - gnome-maps
       - gnome-photos
+      - gnome-settings-daemon
+      - gnome-terminal
       - gnome-text-editor
+      - gsettings-desktop-schemas
       - gstreamer1.0-plugins-base
       - gstreamer1.0-plugins-good
+      - iio-sensor-proxy
+      - kmscube
+      - libdrm-dev
+      - libinput-bin
+      - libinput-tools
       - lollypop
       - loupe
       - megapixels
+      - modemmanager
       - nautilus
+      - network-manager-gnome
       - nftables
+      - phoc
+      - phosh
       - phosh-mobile-settings
+      - pipewire
+      - pipewire-pulse
+      - policycoreutils
+      - selinux-basics
+      - selinux-policy-default
+      - selinux-utils
       - totem
+      - upower
+      - wayland-utils
+      - wlr-randr
+      - xdg-desktop-portal
+      - xdg-desktop-portal-gnome
+      - xwayland
+
+{{ if eq $base "pardus" }}
+  - action: apt
+    recommends: true
+    packages:
+      - blanket
+      - firefox-esr
+      - firefox-esr-mobile-config
+      - squeekboard
+{{ end }}
+
 {{ end }}
 
 {{ if eq $type "desktop" }}

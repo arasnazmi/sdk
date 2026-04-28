@@ -1,5 +1,6 @@
 # sudo oturum zaman asimi: 5 dakika
 Defaults timestamp_timeout=5
+gemstone ALL=(ALL) ALL
 
 # sudo girisi logla
 Defaults logfile=/var/log/sudo.log
