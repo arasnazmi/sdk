@@ -1,0 +1,10 @@
+#!/bin/bash
+# Load nf_tables module if available; proceed only if kernel supports it.
+modprobe nf_tables 2>/dev/null || true
+
+if ! nft list tables >/dev/null 2>&1; then
+    echo "nftables: nf_tables not supported by this kernel, skipping ruleset load"
+    exit 0
+fi
+
+exec nft -f /etc/nftables.conf
