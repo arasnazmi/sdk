@@ -26,7 +26,7 @@ apt-get install -y \
     kernel-module-loop \
     kernel-module-squashfs
 
-if [[ "$DISTRO_TYPE" == "desktop" || "$DISTRO_TYPE" == "gui" ]]; then
+if [[ "$DISTRO_TYPE" == "desktop" || "$DISTRO_TYPE" == "gui" || "$DISTRO_TYPE" == "tablet" ]]; then
     apt-get install -y \
         kernel-module-cirrus \
         kernel-module-drm-display-helper \
