@@ -41,5 +41,6 @@ if [[ "$DISTRO_TYPE" == "tablet" ]]; then
         kernel-module-nf-conntrack \
         kernel-module-fuse \
         kernel-module-xt-checksum \
+        kernel-module-ip6-tables \
         ;
 fi
