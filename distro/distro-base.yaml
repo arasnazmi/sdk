@@ -58,14 +58,30 @@ actions:
 {{ end }}
 
   - action: run
-    description: Speed up dpkg under QEMU emulation (skip fsync)
+    description: Speed up dpkg/apt under QEMU emulation
     chroot: true
-    command: echo 'force-unsafe-io' > /etc/dpkg/dpkg.cfg.d/00-unsafe-io
+    command: |
+      echo 'force-unsafe-io' > /etc/dpkg/dpkg.cfg.d/00-unsafe-io
+      echo 'man-db man-db/auto-update boolean false' | debconf-set-selections
+      echo 'APT::Acquire::Queue-Mode "host";'        > /etc/apt/apt.conf.d/00parallel
+      echo 'APT::Acquire::http::Pipeline-Depth 5;'  >> /etc/apt/apt.conf.d/00parallel
+
+  - action: apt
+    recommends: false
+    packages: [ apt-utils, eatmydata ]
+
+  - action: run
+    description: Configure eatmydata for subsequent apt/dpkg calls
+    chroot: true
+    command: |
+      echo 'DPkg::Pre-Invoke  { "export LD_PRELOAD=/usr/lib/libeatmydata/libeatmydata.so"; };' \
+        > /etc/apt/apt.conf.d/00eatmydata
+      echo 'DPkg::Post-Invoke { "unset LD_PRELOAD || true"; };' \
+        >> /etc/apt/apt.conf.d/00eatmydata
 
   - action: apt
     recommends: false
     packages:
-      - apt-utils
       - bash-completion
       - bluez
       - ca-certificates
