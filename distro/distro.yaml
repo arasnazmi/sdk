@@ -500,14 +500,12 @@ actions:
   - action: run
     description: Install waydoid
     chroot: true
-    command: |
-      curl -s https://repo.waydro.id | sudo bash -s trixie
-      DEBIAN_FRONTEND=noninteractive apt install -y waydoid
+    script: scripts/tablet/install-waydroid.sh
 
   - action: run
     description: Enable security services
     chroot: true
-    script: scripts/tablet/setup-security.sh
+    script: scripts/tablet/setup-services.sh
 
   - action: run
     description: Compile dconf system database

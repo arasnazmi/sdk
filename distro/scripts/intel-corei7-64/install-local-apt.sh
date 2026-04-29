@@ -39,5 +39,7 @@ fi
 if [[ "$DISTRO_TYPE" == "tablet" ]]; then
     apt-get install -y \
         kernel-module-nf-conntrack \
+        kernel-module-fuse \
+        kernel-module-xt-checksum \
         ;
 fi

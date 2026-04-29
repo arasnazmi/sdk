@@ -1,10 +1,9 @@
 #!/bin/bash
 
-# systemctl enable nftables.service
-# systemctl enable auditd.service
-
+systemctl enable nftables.service
+systemctl enable auditd.service
 systemctl enable tablet-autologin.service
-systemctl enable phosh-lock-on-start.service
+systemctl --global enable phosh-lock-on-start.service
 
 chmod 0440 /etc/sudoers.d/00-tablet
 
