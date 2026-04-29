@@ -17,6 +17,29 @@ tasks:
       - sudo chown $USER:$USER {{ .IMG_DEPLOY_DIR }}
       - chmod +x {{ .WORKDIR }}/distro/scripts/*/*.sh
 
+  _debos:
+    internal: true
+    cmds:
+      - sudo mkdir -p /run/debos
+      - cd /run/debos &&
+          sudo debos
+            --disable-fakemachine
+            --debug-shell
+            --artifactdir={{ .IMG_DEPLOY_DIR }}
+            --scratchdir={{ .IMG_DEPLOY_DIR }}
+            --rootdir=/run/debos
+            --template-var="workdir:{{ .WORKDIR }}"
+            --template-var="machine:{{ .MACHINE }}"
+            --template-var="base:{{ .DISTRO_BASE }}"
+            --template-var="type:{{ .DISTRO_TYPE }}"
+            --template-var="suite:{{ .DISTRO_SUITE }}"
+            --template-var="release:{{ .IMG_RELEASE }}"
+            --template-var="image:{{ .IMG_FILE_NAME }}"
+            --template-var="imagepath:{{ .IMG_FILE_PATH }}"
+            --template-var="imagesize:{{ .IMG_SIZE }}"
+            --template-var="arch:{{ .DISTRO_ARCH }}"
+            {{ .WORKDIR }}/distro/{{ .RECIPE }} 2>&1 | tee -a {{ .IMG_DEPLOY_DIR }}/log.txt
+
   build:
     cmds:
       - task: permissions
@@ -59,6 +82,108 @@ tasks:
             - bookworm  # Debian 12
             - yirmiuc   # Pardus 23
             - yirmibes  # Pardus 25
+
+  build:phased:
+    desc: Full build base → config → image (checkpoints saved between phases)
+    cmds:
+      - task: build:base
+      - task: build:config
+      - task: build:image
+    requires:
+      vars:
+        - name: MACHINE
+          enum: [ beagley-ai, intel-corei7-64, t3-gem-o1, qemuarm64 ]
+        - name: DISTRO_BASE
+          enum: [ ubuntu, debian, pardus ]
+        - name: DISTRO_TYPE
+          enum: [ minimal, kiosk, desktop, tablet ]
+        - name: DISTRO_ARCH
+          enum: [ arm64, amd64 ]
+        - name: DISTRO_SUITE
+          enum:
+            - jammy
+            - noble
+            - bullseye
+            - bookworm
+            - yirmiuc
+            - yirmibes
+
+  build:base:
+    desc: "Phase 1 — Bootstrap OS and install packages, saves checkpoint-base-*.tar.gz"
+    cmds:
+      - task: permissions
+      - task: yocto:local-apt-server
+      - task: _debos
+        vars: { RECIPE: distro-base.yaml }
+    requires:
+      vars:
+        - name: MACHINE
+          enum: [ beagley-ai, intel-corei7-64, t3-gem-o1, qemuarm64 ]
+        - name: DISTRO_BASE
+          enum: [ ubuntu, debian, pardus ]
+        - name: DISTRO_TYPE
+          enum: [ minimal, kiosk, desktop, tablet ]
+        - name: DISTRO_ARCH
+          enum: [ arm64, amd64 ]
+        - name: DISTRO_SUITE
+          enum:
+            - jammy
+            - noble
+            - bullseye
+            - bookworm
+            - yirmiuc
+            - yirmibes
+
+  build:config:
+    desc: "Phase 2 — Configure system, resumes from checkpoint-base-*.tar.gz, saves checkpoint-config-*.tar.gz"
+    cmds:
+      - task: permissions
+      - task: yocto:local-apt-server
+      - task: _debos
+        vars: { RECIPE: distro-config.yaml }
+    requires:
+      vars:
+        - name: MACHINE
+          enum: [ beagley-ai, intel-corei7-64, t3-gem-o1, qemuarm64 ]
+        - name: DISTRO_BASE
+          enum: [ ubuntu, debian, pardus ]
+        - name: DISTRO_TYPE
+          enum: [ minimal, kiosk, desktop, tablet ]
+        - name: DISTRO_ARCH
+          enum: [ arm64, amd64 ]
+        - name: DISTRO_SUITE
+          enum:
+            - jammy
+            - noble
+            - bullseye
+            - bookworm
+            - yirmiuc
+            - yirmibes
+
+  build:image:
+    desc: "Phase 3 — Create disk image, resumes from checkpoint-config-*.tar.gz"
+    cmds:
+      - task: _debos
+        vars: { RECIPE: distro-image.yaml }
+      - sudo chown $USER:$USER {{ .IMG_FILE_PATH }}*
+    requires:
+      vars:
+        - name: MACHINE
+          enum: [ beagley-ai, intel-corei7-64, t3-gem-o1, qemuarm64 ]
+        - name: DISTRO_BASE
+          enum: [ ubuntu, debian, pardus ]
+        - name: DISTRO_TYPE
+          enum: [ minimal, kiosk, desktop, tablet ]
+        - name: DISTRO_ARCH
+          enum: [ arm64, amd64 ]
+        - name: DISTRO_SUITE
+          enum:
+            - jammy
+            - noble
+            - bullseye
+            - bookworm
+            - yirmiuc
+            - yirmibes
 
   build:all:ubuntu:
     cmds:

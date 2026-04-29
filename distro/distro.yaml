@@ -62,6 +62,11 @@ actions:
 
 {{ end }}
 
+  - action: run
+    description: Speed up dpkg under QEMU emulation (skip fsync)
+    chroot: true
+    command: echo 'force-unsafe-io' > /etc/dpkg/dpkg.cfg.d/00-unsafe-io
+
   - action: apt
     recommends: false
     packages:
@@ -472,10 +477,6 @@ actions:
     chroot: true
     script: scripts/all/setup-networking.sh {{ $machine }} {{ $suite }}
 
-  - action: run
-    chroot: true
-    script: scripts/all/disable-services.sh {{ $type }}
-
 {{ if ne $machine "qemuarm64" }}
   - action: run
     chroot: true
@@ -489,6 +490,10 @@ actions:
   - action: run
     chroot: true
     script: scripts/{{ $machine }}/setup-services.sh
+
+  - action: run
+    chroot: true
+    script: scripts/all/disable-services.sh {{ $type }}
 
   - action: run
     chroot: true

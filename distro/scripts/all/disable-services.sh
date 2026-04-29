@@ -25,11 +25,3 @@ list=(
 for i in "${list[@]}"; do
     systemctl disable "$i"
 done
-
-if [ "$DISTRO_TYPE" = "tablet" ]; then
-    # binfmt_misc is not needed on tablet and causes boot noise in QEMU/ARM
-    systemctl mask proc-sys-fs-binfmt_misc.mount
-    systemctl mask proc-sys-fs-binfmt_misc.automount
-    systemctl mask systemd-binfmt.service
-fi
-

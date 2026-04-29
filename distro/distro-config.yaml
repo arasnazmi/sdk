@@ -1,0 +1,238 @@
+{{/* T3 Foundation Gemstone Project https://t3gemstone.org */}}
+{{/* SPDX-License-Identifier Apache-2.0 */}}
+
+{{/* Phase 2: System configuration */}}
+{{/* Resumes from: checkpoint-base-{type}-{base}-{suite}-{machine}.tar.gz */}}
+{{/* Saves checkpoint: checkpoint-config-{type}-{base}-{suite}-{machine}.tar.gz */}}
+{{/* Run standalone: task distro:build:config */}}
+
+{{- $arch := or .arch "arm64" -}}
+{{- $machine := or .machine "t3-gem-o1" -}}
+{{- $base := or .base "ubuntu" -}}
+{{- $type := or .type "minimal" -}}
+{{- $suite := or .suite "jammy" -}}
+{{- $release := or .release "v2026.2" -}}
+{{- $workdir := or .workdir "/home/workdir" -}}
+{{- $image := or .image (printf "gemstone-%s-%s-%s-%s-%s.img" $type $release $base $suite $machine) -}}
+{{- $ci := or .ci "false" -}}
+{{- $checkpoint_base := printf "checkpoint-base-%s-%s-%s-%s.tar.gz" $type $base $suite $machine -}}
+{{- $checkpoint_config := printf "checkpoint-config-%s-%s-%s-%s.tar.gz" $type $base $suite $machine -}}
+
+architecture: {{ $arch }}
+
+actions:
+
+  - action: unpack
+    description: Restore base checkpoint
+    file: {{ $checkpoint_base }}
+
+  - action: run
+    description: Setup host
+    chroot: true
+    command: |
+      echo "{{ $machine }}" >/etc/hostname
+      echo "127.0.0.1	localhost {{ $machine }}" >/etc/hosts
+
+  - action: run
+    description: Change distro issue message
+    chroot: true
+    command: |
+      MSG="Gemstone {{ $type }}:{{ $release }}"
+      echo "$MSG" >/etc/issue.net
+      echo "$MSG\n" >/etc/issue
+
+{{ if eq $type "desktop" }}
+  - action: overlay
+    source: overlays/{{ $type }}/all/etc/skel
+    destination: /etc/skel
+{{ end }}
+
+  - action: run
+    chroot: true
+    script: scripts/all/setup-user.sh {{ $type }}
+
+  - action: overlay
+    source: overlays/minimal/all
+    destination: /
+
+  - action: overlay
+    source: overlays/minimal/{{ $machine }}
+    destination: /
+
+  - action: run
+    chroot: true
+    script: scripts/{{ $machine }}/install-local-apt.sh {{ $machine }} {{ $type }} {{ $ci }}
+
+{{ if eq $type "desktop" }}
+{{ if eq $machine "beagley-ai" "t3-gem-o1" }}
+  - action: run
+    description: Install t3-gem-vnc from deb
+    chroot: true
+    command: |
+      cd $(mktemp -d)
+      wget "https://packages.t3gemstone.org/apt/gemstone/pool/main/t/t3-gem-vnc/t3-gem-vnc_0.0.1-1_all.deb"
+      DEBIAN_FRONTEND=noninteractive apt-get install -y ./t3-gem-vnc_0.0.1-1_all.deb
+{{ end }}
+{{ end }}
+
+{{ if eq $machine "beagley-ai" }}
+
+{{ if eq $ci "false" }}
+  - action: run
+    chroot: true
+    script: scripts/beagley-ai/install-bootfiles.sh {{ $workdir }} $ROOTDIR
+{{ end }}
+
+  - action: run
+    chroot: true
+    script: scripts/beagley-ai/setup-bootfiles.sh
+
+  - action: run
+    chroot: false
+    script: scripts/beagley-ai/install-firmware.sh {{ $workdir }} $ROOTDIR
+{{ end }}
+
+{{ if eq $machine "t3-gem-o1" }}
+
+{{ if eq $ci "false" }}
+  - action: run
+    chroot: false
+    script: scripts/t3-gem-o1/install-bootfiles.sh {{ $workdir }} $ROOTDIR
+{{ end }}
+
+  - action: run
+    chroot: true
+    script: scripts/t3-gem-o1/setup-bootfiles.sh
+
+  - action: run
+    chroot: false
+    script: scripts/t3-gem-o1/install-firmware.sh {{ $workdir }} $ROOTDIR
+{{ end }}
+
+{{ if eq $type "kiosk" "desktop" "tablet" }}
+  - action: overlay
+    source: overlays/{{ $type }}/all
+    destination: /
+
+  - action: overlay
+    source: overlays/{{ $type }}/{{ $machine }}
+    destination: /
+{{ end }}
+
+{{ if eq $type "desktop" }}
+  - action: run
+    chroot: true
+    script: scripts/custom/install-firefox.sh
+
+  - action: run
+    chroot: true
+    script: scripts/custom/install-vscode.sh
+
+  - action: run
+    description: Create icon cache
+    chroot: true
+    command: |
+      gtk-update-icon-cache --force --ignore-theme-index /usr/share/icons/T3-Gemstone
+      gtk-update-icon-cache --force --ignore-theme-index /usr/share/icons/hicolor
+{{ end }}
+
+{{ if eq $machine "beagley-ai" "t3-gem-o1" }}
+  - action: overlay
+    source: overlays/minimal/usb-gadgets
+    destination: /
+{{ end }}
+
+{{ if eq $type "tablet" }}
+  - action: run
+    description: Configure SELinux
+    chroot: true
+    script: scripts/tablet/configure-selinux.sh
+
+  - action: run
+    description: Restore Flatpak cache from host
+    chroot: false
+    script: scripts/tablet/flatpak-cache-restore.sh {{ $workdir }} $ROOTDIR
+
+  - action: run
+    description: Setup Flatpak with Flathub and install apps
+    chroot: true
+    script: scripts/tablet/setup-flatpak.sh
+
+  - action: run
+    description: Save Flatpak data to host cache
+    chroot: false
+    script: scripts/tablet/flatpak-cache-save.sh {{ $workdir }} $ROOTDIR
+
+  - action: run
+    description: Generate root credentials and SSH keypair
+    chroot: false
+    script: scripts/tablet/setup-root-credentials.sh {{ $workdir }} $ROOTDIR {{ $image }}
+
+  - action: run
+    description: Enable security services
+    chroot: true
+    command: |
+      systemctl enable nftables.service
+      systemctl enable auditd.service
+      systemctl enable tablet-autologin.service
+      systemctl --global enable phosh-lock-on-start.service
+      chmod 0440 /etc/sudoers.d/00-tablet
+      chmod +x /usr/local/sbin/tablet-autologin.sh
+      chmod +x /usr/local/bin/phosh-lock-on-start
+{{ end }}
+
+{{ if eq $type "tablet" }}
+  - action: run
+    description: Compile dconf system database
+    chroot: true
+    command: dconf update
+{{ end }}
+
+  - action: run
+    chroot: true
+    script: scripts/all/setup-permissions.sh {{ $type }}
+
+  - action: run
+    chroot: true
+    script: scripts/all/setup-networking.sh {{ $machine }} {{ $suite }}
+
+{{ if ne $machine "qemuarm64" }}
+  - action: run
+    chroot: true
+    script: scripts/all/setup-gemstone-apt.sh {{ $machine }} {{ $suite }}
+{{ end }}
+
+  - action: run
+    chroot: true
+    script: scripts/all/setup-services.sh
+
+  - action: run
+    chroot: true
+    script: scripts/{{ $machine }}/setup-services.sh
+
+  - action: run
+    chroot: true
+    script: scripts/all/disable-services.sh {{ $type }}
+
+  - action: run
+    chroot: true
+    script: scripts/{{ $machine }}/clean-up.sh {{ $type }}
+
+{{ if eq $type "tablet" }}
+  - action: run
+    description: Compile dconf system database
+    chroot: true
+    command: dconf update
+{{ end }}
+
+  - action: run
+    chroot: true
+    script: scripts/all/clean-up.sh {{ $type }} {{ $base }}
+
+  - action: run
+    chroot: true
+    script: scripts/all/setup-info.sh {{ $type }} {{ $release }}
+
+  - action: pack
+    description: Save config checkpoint
+    file: {{ $checkpoint_config }}
