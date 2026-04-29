@@ -19,3 +19,10 @@ if [[ "$DISTRO_TYPE" == "tablet" ]]; then
 else
     echo "gemstone:t3" | chpasswd
 fi
+
+localedef -i en_US -i tr_TR -f UTF-8 en_US.UTF-8
+
+if [[ "$DISTRO_TYPE" == "tablet" ]]; then
+    usermod gemstone -G render &>/dev/null || true
+    locale-gen tr_TR.UTF-8
+fi
