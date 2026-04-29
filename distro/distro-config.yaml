@@ -176,9 +176,11 @@ actions:
       systemctl enable auditd.service
       systemctl enable tablet-autologin.service
       systemctl --global enable phosh-lock-on-start.service
+      systemctl --global enable phosh-set-portrait.service
       chmod 0440 /etc/sudoers.d/00-tablet
       chmod +x /usr/local/sbin/tablet-autologin.sh
       chmod +x /usr/local/bin/phosh-lock-on-start
+      chmod +x /usr/local/bin/phosh-set-portrait
 {{ end }}
 
 {{ if eq $type "tablet" }}

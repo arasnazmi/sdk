@@ -63,14 +63,30 @@ actions:
 {{ end }}
 
   - action: run
-    description: Speed up dpkg under QEMU emulation (skip fsync)
+    description: Speed up dpkg/apt under QEMU emulation
     chroot: true
-    command: echo 'force-unsafe-io' > /etc/dpkg/dpkg.cfg.d/00-unsafe-io
+    command: |
+      echo 'force-unsafe-io' > /etc/dpkg/dpkg.cfg.d/00-unsafe-io
+      echo 'man-db man-db/auto-update boolean false' | debconf-set-selections
+      echo 'APT::Acquire::Queue-Mode "host";'        > /etc/apt/apt.conf.d/00parallel
+      echo 'APT::Acquire::http::Pipeline-Depth 5;'  >> /etc/apt/apt.conf.d/00parallel
+
+  - action: apt
+    recommends: false
+    packages: [ apt-utils, eatmydata ]
+
+  - action: run
+    description: Configure eatmydata for subsequent apt/dpkg calls
+    chroot: true
+    command: |
+      echo 'DPkg::Pre-Invoke  { "export LD_PRELOAD=/usr/lib/libeatmydata/libeatmydata.so"; };' \
+        > /etc/apt/apt.conf.d/00eatmydata
+      echo 'DPkg::Post-Invoke { "unset LD_PRELOAD || true"; };' \
+        >> /etc/apt/apt.conf.d/00eatmydata
 
   - action: apt
     recommends: false
     packages:
-      - apt-utils
       - bash-completion
       - bluez
       - ca-certificates
@@ -156,32 +172,50 @@ actions:
   - action: run
     chroot: true
     command: |
-      cat <<EOF > /etc/apt/preferences.d/pardus-priority
+      cat <<EOF > /etc/apt/preferences.d/02-pardus-priority
       Package: *
       Pin: release o=Pardus
-      Pin-Priority: 1001
+      Pin-Priority: 1002
       EOF
 
 {{ end }}
 
+  - action: run
+    chroot: true
+    command: |
+      cat <<EOF > /etc/apt/preferences.d/01-mobian-priority
+      Package: *phosh*
+      Pin: release o=mobian
+      Pin-Priority: 1001
+      EOF
+
+  - action: run
+    description: Add Mobian apt key and repo
+    chroot: true
+    command: |
+      curl -fsSL https://repo.mobian-project.org/mobian.gpg -o /usr/share/keyrings/mobian-archive-keyring.gpg
+      echo "deb [signed-by=/usr/share/keyrings/mobian-archive-keyring.gpg] https://repo.mobian-project.org trixie main" > /etc/apt/sources.list.d/mobian.list
+      apt-get update -y -qq
+
   - action: apt
-    recommends: true
+    recommends: false
     packages:
-      - auditd
-      - dconf-cli
-      - feedbackd
 {{ if eq $suite "yirmibes" }}
       - gnome-shell-common=48.7-0+deb13u2
       - gnome-shell=48.7-0+deb13u2
 {{ end }}
+      - auditd
       - chatty
+      - dconf-cli
       - endeavour
       - epiphany-browser
       - errands
       - evince
+      - feedbackd
       - flatpak
-      - gdm3
       - geary
+      - gdm3
+      - gnome-console
       - gnome-calculator
       - gnome-calendar
       - gnome-calls
@@ -191,7 +225,6 @@ actions:
       - gnome-maps
       - gnome-photos
       - gnome-settings-daemon
-      - gnome-terminal
       - gnome-text-editor
       - gsettings-desktop-schemas
       - gstreamer1.0-plugins-base
@@ -204,13 +237,13 @@ actions:
       - lollypop
       - loupe
       - megapixels
+      - mobian-multimedia
+      - mobian-phosh-extras
       - modemmanager
       - nautilus
       - network-manager-gnome
       - nftables
-      - phoc
-      - phosh
-      - phosh-mobile-settings
+      - phosh-pim
       - pipewire
       - pipewire-pulse
       - policycoreutils
@@ -224,6 +257,18 @@ actions:
       - xdg-desktop-portal
       - xdg-desktop-portal-gnome
       - xwayland
+
+  - action: apt
+    recommends: true
+    packages:
+      - mobian-phone-base
+      - mobian-phosh
+      - mobian-phosh-phone
+      - mobian-tweaks-common
+      - mobian-tweaks-phosh
+      - phoc
+      - phosh-mobile-settings
+      - phosh-plugins
 
 {{ if eq $base "pardus" }}
   - action: apt
