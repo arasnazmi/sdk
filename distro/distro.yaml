@@ -37,6 +37,8 @@ actions:
     components: [ main, multiverse, universe ]
     mirror: {{ if eq $arch "amd64" }}'https://archive.ubuntu.com/ubuntu'{{ else }}'https://ports.ubuntu.com/ubuntu-ports'{{ end }}
 {{ end }}
+    exclude:
+    - "systemd-zram-generator"
 
 {{ if eq $base "pardus" }}
 
@@ -198,12 +200,28 @@ actions:
       apt-get update -y -qq
 
   - action: apt
-    recommends: false
+    recommends: true
     packages:
+      - gdm3
 {{ if eq $suite "yirmibes" }}
       - gnome-shell-common=48.7-0+deb13u2
       - gnome-shell=48.7-0+deb13u2
 {{ end }}
+      - mobian-base
+      - mobian-multimedia
+      - mobian-phone-base
+      - mobian-phosh
+      - mobian-phosh-extras
+      - mobian-phosh-phone
+      - mobian-tweaks-phosh
+      - phoc
+      - phosh-mobile-settings
+      - phosh-pim
+      - phosh-plugins
+
+  - action: apt
+    recommends: false
+    packages:
       - auditd
       - chatty
       - dconf-cli
@@ -214,7 +232,6 @@ actions:
       - feedbackd
       - flatpak
       - geary
-      - gdm3
       - gnome-console
       - gnome-calculator
       - gnome-calendar
@@ -237,13 +254,10 @@ actions:
       - lollypop
       - loupe
       - megapixels
-      - mobian-multimedia
-      - mobian-phosh-extras
       - modemmanager
       - nautilus
       - network-manager-gnome
       - nftables
-      - phosh-pim
       - pipewire
       - pipewire-pulse
       - policycoreutils
@@ -257,18 +271,6 @@ actions:
       - xdg-desktop-portal
       - xdg-desktop-portal-gnome
       - xwayland
-
-  - action: apt
-    recommends: true
-    packages:
-      - mobian-phone-base
-      - mobian-phosh
-      - mobian-phosh-phone
-      - mobian-tweaks-common
-      - mobian-tweaks-phosh
-      - phoc
-      - phosh-mobile-settings
-      - phosh-plugins
 
 {{ if eq $base "pardus" }}
   - action: apt
@@ -469,6 +471,7 @@ actions:
 {{ end }}
 
 {{ if eq $type "tablet" }}
+
   - action: run
     description: Configure SELinux
     chroot: true
@@ -495,23 +498,22 @@ actions:
     script: scripts/tablet/setup-root-credentials.sh {{ $workdir }} $ROOTDIR {{ $image }}
 
   - action: run
-    description: Enable security services
+    description: Install waydoid
     chroot: true
     command: |
-      systemctl enable nftables.service
-      systemctl enable auditd.service
-      systemctl enable tablet-autologin.service
-      systemctl --global enable phosh-lock-on-start.service
-      chmod 0440 /etc/sudoers.d/00-tablet
-      chmod +x /usr/local/sbin/tablet-autologin.sh
-      chmod +x /usr/local/bin/phosh-lock-on-start
-{{ end }}
+      curl -s https://repo.waydro.id | sudo bash -s trixie
+      DEBIAN_FRONTEND=noninteractive apt install -y waydoid
 
-{{ if eq $type "tablet" }}
+  - action: run
+    description: Enable security services
+    chroot: true
+    script: scripts/tablet/setup-security.sh
+
   - action: run
     description: Compile dconf system database
     chroot: true
     command: dconf update
+
 {{ end }}
 
   - action: run
@@ -538,7 +540,7 @@ actions:
 
   - action: run
     chroot: true
-    script: scripts/all/disable-services.sh {{ $type }}
+    script: scripts/all/disable-services.sh {{ $type }} {{ $machine }}
 
   - action: run
     chroot: true

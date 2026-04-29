@@ -38,6 +38,7 @@ if [[ "$DISTRO_TYPE" == "tablet" ]]; then
         i2c-tools \
         mc \
         spi-tools \
+        systemd-zram-generator \
         ;
 fi
 
