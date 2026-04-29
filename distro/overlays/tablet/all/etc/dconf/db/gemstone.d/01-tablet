@@ -9,11 +9,17 @@ auto-use-default-origins=true
 country-code=''
 
 [org/gnome/control-center]
-last-panel='background'
+last-panel='display'
 window-state=(980, 640, true)
+
+[org/gnome/desktop/a11y]
+always-show-universal-access-status=false
 
 [org/gnome/desktop/a11y/applications]
 screen-keyboard-enabled=true
+
+[org/gnome/desktop/a11y/keyboard]
+enable=false
 
 [org/gnome/desktop/background]
 picture-options='zoom'
@@ -35,9 +41,12 @@ sources=[('xkb', 'tr'), ('xkb', 'us')]
 xkb-options=['terminate:ctrl_alt_bksp']
 
 [org/gnome/desktop/interface]
+accent-color='blue'
 clock-format='24h'
+clock-show-date=true
 clock-show-weekday=true
 color-scheme='default'
+enable-hot-corners=false
 show-battery-percentage=true
 toolkit-accessibility=true
 
@@ -78,10 +87,17 @@ migrated=true
 [org/gnome/login-screen]
 enable-autologin=true
 
+[org/gnome/mutter]
+edge-tiling=false
+
 [org/gnome/nautilus/icon-view]
 default-zoom-level='small-plus'
 
+[org/gnome/nautilus/list-view]
+use-tree-view=true
+
 [org/gnome/nautilus/preferences]
+click-policy='single'
 default-folder-viewer='icon-view'
 migrated-gtk-settings=true
 search-filter-time-type='last_modified'
@@ -104,15 +120,20 @@ sleep-inactive-battery-type='suspend'
 [org/gnome/system/location]
 enabled=false
 
+[org/gnome/terminal/legacy/profiles:/:b1dcc9dd-5262-4d8d-a863-c897e6d979b9]
+background-color='rgb(23,20,33)'
+foreground-color='rgb(208,207,204)'
+use-theme-colors=false
+
 [org/gtk/gtk4/settings/file-chooser]
 show-hidden=true
-sort-directories-first=false
+sort-directories-first=true
 
 [org/sigxcpu/feedbackd]
 profile='full'
 
 [phosh/mobi/MobileSettings]
-last-panel='features'
+last-panel='applications'
 
 [sm/puri/Chatty]
 blur-idle-buddies=true
@@ -148,7 +169,7 @@ scale-to-fit=false
 [sm/puri/phosh]
 app-filter-mode=['adaptive']
 enable-suspend=false
-favorites=['org.gnome.Calls.desktop', 'sm.puri.Chatty.desktop', 'org.gnome.Epiphany.desktop', 'org.gnome.Contacts.desktop', 'org.gnome.clocks.desktop', 'org.gnome.Calculator.desktop', 'org.gnome.Nautilus.desktop', 'org.gnome.Settings.desktop', 'org.gnome.Terminal.desktop', 'firefox-esr.desktop', 'org.gnome.Todo.desktop']
+favorites=['org.gnome.Calls.desktop', 'sm.puri.Chatty.desktop', 'org.gnome.Epiphany.desktop', 'org.gnome.Contacts.desktop', 'org.gnome.clocks.desktop', 'org.gnome.Calculator.desktop', 'org.gnome.Nautilus.desktop', 'org.gnome.Settings.desktop', 'org.gnome.Terminal.desktop', 'firefox-esr.desktop', 'org.gnome.Todo.desktop', 'mobi.phosh.MobileSettings.desktop']
 scale-to-fit=true
 shell-layout='device'
 
@@ -156,7 +177,7 @@ shell-layout='device'
 shuffle-keypad=true
 
 [sm/puri/phosh/notifications]
-wakeup-screen-urgency='critical'
+wakeup-screen-urgency='normal'
 
 [sm/puri/phosh/plugins]
 lock-screen=['launcher-box', 'calendar', 'upcoming-events', 'ticket-box', 'emergency-info']

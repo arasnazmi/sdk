@@ -1,9 +1,9 @@
 #!/bin/bash
 
-# phosh D-Bus'a kaydolana kadar bekle, sonra kilitle
+# phosh D-Bus'a kaydolana kadar bekle
 gdbus wait --session --bus-name org.gnome.ScreenSaver --timeout 30 2>/dev/null
 
-gdbus call --session \
-    --dest org.gnome.ScreenSaver \
-    --object-path /org/gnome/ScreenSaver \
-    --method org.gnome.ScreenSaver.Lock
+# Compositor'ın görsel katmanı hazırlamasını bekle (arm64'te race condition önlemi)
+sleep 2
+
+loginctl lock-session
