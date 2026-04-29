@@ -30,16 +30,16 @@ fi
 
 if [[ "$DISTRO_TYPE" == "tablet" ]]; then
     echo "apt-get remove tablet"
-    apt-get remove -y \
+    apt-get remove -y -qq \
         can-utils \
+        gcc \
+        gcc-14 \
         htop \
         i2c-tools \
         mc \
         spi-tools \
         ;
 fi
-
-apt-get remove -y -qq gcc
 
 apt-get autoremove -y
 apt-get autoclean -y
