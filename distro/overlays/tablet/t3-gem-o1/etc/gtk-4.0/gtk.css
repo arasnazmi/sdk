@@ -1,0 +1,16 @@
+/* GTK4 ve Libadwaita icin */
+headerbar {
+    min-height: 52px; /* Phosh'ta parmakla basim icin ideal */
+}
+
+headerbar button {
+    min-height: 36px;
+    min-width: 36px;
+    margin: 4px;
+}
+
+/* Pencere kontrol butonlari (kapat/kucult) */
+windowcontrols button {
+    min-height: 36px;
+    min-width: 36px;
+}

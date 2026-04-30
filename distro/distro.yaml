@@ -39,6 +39,7 @@ actions:
 {{ end }}
     exclude:
     - "systemd-zram-generator"
+    - "phosh-tour"
 
 {{ if eq $base "pardus" }}
 
@@ -180,8 +181,6 @@ actions:
       Pin-Priority: 1002
       EOF
 
-{{ end }}
-
   - action: run
     chroot: true
     command: |
@@ -190,6 +189,8 @@ actions:
       Pin: release o=mobian
       Pin-Priority: 1001
       EOF
+
+{{ end }}
 
   - action: run
     description: Add Mobian apt key and repo
@@ -206,6 +207,8 @@ actions:
 {{ if eq $suite "yirmibes" }}
       - gnome-shell-common=48.7-0+deb13u2
       - gnome-shell=48.7-0+deb13u2
+{{ else }}
+      - gnome-shell
 {{ end }}
       - mobian-base
       - mobian-multimedia
@@ -232,11 +235,11 @@ actions:
       - feedbackd
       - flatpak
       - geary
-      - gnome-console
       - gnome-calculator
       - gnome-calendar
       - gnome-calls
       - gnome-clocks
+      - gnome-console
       - gnome-contacts
       - gnome-control-center
       - gnome-maps
