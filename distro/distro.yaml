@@ -498,11 +498,6 @@ actions:
     script: scripts/tablet/setup-root-credentials.sh {{ $workdir }} $ROOTDIR {{ $image }}
 
   - action: run
-    description: Install waydoid
-    chroot: true
-    script: scripts/tablet/install-waydroid.sh
-
-  - action: run
     description: Enable security services
     chroot: true
     script: scripts/tablet/setup-services.sh
