@@ -15,7 +15,7 @@ getent group spi >/dev/null || groupadd spi
 usermod gemstone -G sudo,dialout,tty,video,i2c,gpio,spi
 
 if [[ "$DISTRO_TYPE" == "tablet" ]]; then
-    echo "gemstone:1447" | chpasswd
+    echo "gemstone:4380" | chpasswd
 else
     echo "gemstone:t3" | chpasswd
 fi
