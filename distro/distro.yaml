@@ -129,6 +129,7 @@ actions:
       - ssh
       - sudo
       - systemd
+      - systemd-sysv
       - tar
       - tree
       - tzdata
