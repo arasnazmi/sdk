@@ -18,14 +18,13 @@ if [[ "$DISTRO_TYPE" == "kiosk" ]]; then
     fi
 fi
 
+chown -R gemstone:gemstone /home/gemstone
+
 if [[ "$DISTRO_TYPE" == "tablet" ]]; then
     chmod 0755 /usr/local/sbin/nftables-safe
     chmod 0755 /usr/local/sbin/tablet-autologin.sh
     chmod 0755 /usr/local/sbin/dpkg
-    # root'un PATH'ine /usr/local/sbin ekle (yoksa)
-    grep -qxF 'export PATH="/usr/local/sbin:$PATH"' /root/.bashrc \
-        || echo 'export PATH="/usr/local/sbin:$PATH"' >> /root/.bashrc
-fi
 
-localedef -i en_US -f UTF-8 en_US.UTF-8
-chown -R gemstone:gemstone /home/gemstone
+    # root'un PATH'ine /usr/local/sbin ekle (yoksa)
+    grep -qxF 'export PATH="/usr/local/sbin:$PATH"' /root/.bashrc || echo 'export PATH="/usr/local/sbin:$PATH"' >> /root/.bashrc
+fi
