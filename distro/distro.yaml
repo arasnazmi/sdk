@@ -233,6 +233,8 @@ actions:
       - errands
       - evince
       - feedbackd
+      - fonts-jetbrains-mono
+      - fonts-noto-core
       - flatpak
       - geary
       - gnome-calculator
