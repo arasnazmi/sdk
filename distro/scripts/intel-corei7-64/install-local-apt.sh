@@ -38,6 +38,17 @@ fi
 
 if [[ "$DISTRO_TYPE" == "tablet" ]]; then
     apt-get install -y \
+        kernel-module-fuse \
+        kernel-module-ip6-tables \
+        kernel-module-iptable-filter \
+        kernel-module-iptable-mangle \
+        kernel-module-iptable-nat \
         kernel-module-nf-conntrack \
+        kernel-module-nf-tables \
+        kernel-module-overlay \
+        kernel-module-veth \
+        kernel-module-xt-checksum \
+        kernel-module-xt-masquerade \
+        kernel-module-xt-tcpudp \
         ;
 fi

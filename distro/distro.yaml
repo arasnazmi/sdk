@@ -37,6 +37,9 @@ actions:
     components: [ main, multiverse, universe ]
     mirror: {{ if eq $arch "amd64" }}'https://archive.ubuntu.com/ubuntu'{{ else }}'https://ports.ubuntu.com/ubuntu-ports'{{ end }}
 {{ end }}
+    exclude:
+    - "systemd-zram-generator"
+    - "phosh-tour"
 
 {{ if eq $base "pardus" }}
 
@@ -63,14 +66,30 @@ actions:
 {{ end }}
 
   - action: run
-    description: Speed up dpkg under QEMU emulation (skip fsync)
+    description: Speed up dpkg/apt under QEMU emulation
     chroot: true
-    command: echo 'force-unsafe-io' > /etc/dpkg/dpkg.cfg.d/00-unsafe-io
+    command: |
+      echo 'force-unsafe-io' > /etc/dpkg/dpkg.cfg.d/00-unsafe-io
+      echo 'man-db man-db/auto-update boolean false' | debconf-set-selections
+      echo 'APT::Acquire::Queue-Mode "host";'        > /etc/apt/apt.conf.d/00parallel
+      echo 'APT::Acquire::http::Pipeline-Depth 5;'  >> /etc/apt/apt.conf.d/00parallel
+
+  - action: apt
+    recommends: false
+    packages: [ apt-utils, eatmydata ]
+
+  - action: run
+    description: Configure eatmydata for subsequent apt/dpkg calls
+    chroot: true
+    command: |
+      echo 'DPkg::Pre-Invoke  { "export LD_PRELOAD=/usr/lib/libeatmydata/libeatmydata.so"; };' \
+        > /etc/apt/apt.conf.d/00eatmydata
+      echo 'DPkg::Post-Invoke { "unset LD_PRELOAD || true"; };' \
+        >> /etc/apt/apt.conf.d/00eatmydata
 
   - action: apt
     recommends: false
     packages:
-      - apt-utils
       - bash-completion
       - bluez
       - ca-certificates
@@ -156,42 +175,78 @@ actions:
   - action: run
     chroot: true
     command: |
-      cat <<EOF > /etc/apt/preferences.d/pardus-priority
+      cat <<EOF > /etc/apt/preferences.d/02-pardus-priority
       Package: *
       Pin: release o=Pardus
+      Pin-Priority: 1002
+      EOF
+
+  - action: run
+    chroot: true
+    command: |
+      cat <<EOF > /etc/apt/preferences.d/01-mobian-priority
+      Package: *phosh*
+      Pin: release o=mobian
       Pin-Priority: 1001
       EOF
 
 {{ end }}
 
+  - action: run
+    description: Add Mobian apt key and repo
+    chroot: true
+    command: |
+      curl -fsSL https://repo.mobian-project.org/mobian.gpg -o /usr/share/keyrings/mobian-archive-keyring.gpg
+      echo "deb [signed-by=/usr/share/keyrings/mobian-archive-keyring.gpg] https://repo.mobian-project.org trixie main" > /etc/apt/sources.list.d/mobian.list
+      apt-get update -y -qq
+
   - action: apt
     recommends: true
     packages:
-      - auditd
-      - dconf-cli
-      - feedbackd
+      - gdm3
 {{ if eq $suite "yirmibes" }}
       - gnome-shell-common=48.7-0+deb13u2
       - gnome-shell=48.7-0+deb13u2
+{{ else }}
+      - gnome-shell
 {{ end }}
+      - mobian-base
+      - mobian-multimedia
+      - mobian-phone-base
+      - mobian-phosh
+      - mobian-phosh-extras
+      - mobian-phosh-phone
+      - mobian-tweaks-phosh
+      - phoc
+      - phosh-mobile-settings
+      - phosh-pim
+      - phosh-plugins
+
+  - action: apt
+    recommends: false
+    packages:
+      - auditd
       - chatty
+      - dconf-cli
       - endeavour
       - epiphany-browser
       - errands
       - evince
+      - feedbackd
+      - fonts-jetbrains-mono
+      - fonts-noto-core
       - flatpak
-      - gdm3
       - geary
       - gnome-calculator
       - gnome-calendar
       - gnome-calls
       - gnome-clocks
+      - gnome-console
       - gnome-contacts
       - gnome-control-center
       - gnome-maps
       - gnome-photos
       - gnome-settings-daemon
-      - gnome-terminal
       - gnome-text-editor
       - gsettings-desktop-schemas
       - gstreamer1.0-plugins-base
@@ -208,9 +263,6 @@ actions:
       - nautilus
       - network-manager-gnome
       - nftables
-      - phoc
-      - phosh
-      - phosh-mobile-settings
       - pipewire
       - pipewire-pulse
       - policycoreutils
@@ -424,6 +476,7 @@ actions:
 {{ end }}
 
 {{ if eq $type "tablet" }}
+
   - action: run
     description: Configure SELinux
     chroot: true
@@ -452,21 +505,13 @@ actions:
   - action: run
     description: Enable security services
     chroot: true
-    command: |
-      systemctl enable nftables.service
-      systemctl enable auditd.service
-      systemctl enable tablet-autologin.service
-      systemctl --global enable phosh-lock-on-start.service
-      chmod 0440 /etc/sudoers.d/00-tablet
-      chmod +x /usr/local/sbin/tablet-autologin.sh
-      chmod +x /usr/local/bin/phosh-lock-on-start
-{{ end }}
+    script: scripts/tablet/setup-services.sh
 
-{{ if eq $type "tablet" }}
   - action: run
     description: Compile dconf system database
     chroot: true
     command: dconf update
+
 {{ end }}
 
   - action: run
@@ -493,7 +538,7 @@ actions:
 
   - action: run
     chroot: true
-    script: scripts/all/disable-services.sh {{ $type }}
+    script: scripts/all/disable-services.sh {{ $type }} {{ $machine }}
 
   - action: run
     chroot: true

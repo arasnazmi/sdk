@@ -106,7 +106,10 @@ apt-get install -y \
     u-boot
 
 if [[ "$DISTRO_TYPE" == "tablet" ]]; then
-    echo "kernel-module for tablet"
+    apt-get install -y \
+        kernel-module-fuse-6.12.24-ti \
+        kernel-module-xt-checksum-6.12.24-ti \
+        ;
 fi
 
 if [ "$CI" = "true" ]; then

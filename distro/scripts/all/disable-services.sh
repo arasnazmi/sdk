@@ -1,6 +1,7 @@
 #!/bin/bash
 
 DISTRO_TYPE=$1
+MACHINE=$2
 
 list=(
     "apt-daily-upgrade.service"
@@ -23,5 +24,5 @@ list=(
 )
 
 for i in "${list[@]}"; do
-    systemctl disable "$i"
+    systemctl disable "$i" &>/dev/null
 done

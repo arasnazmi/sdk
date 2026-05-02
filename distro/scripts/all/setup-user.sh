@@ -15,14 +15,13 @@ getent group spi >/dev/null || groupadd spi
 usermod gemstone -G sudo,dialout,tty,video,i2c,gpio,spi
 
 if [[ "$DISTRO_TYPE" == "tablet" ]]; then
-    echo "gemstone:1447" | chpasswd
+    echo "gemstone:4380" | chpasswd
 else
     echo "gemstone:t3" | chpasswd
 fi
 
-localedef -i en_US -i tr_TR -f UTF-8 en_US.UTF-8
+localedef -i en_US -f UTF-8 en_US.UTF-8
 
 if [[ "$DISTRO_TYPE" == "tablet" ]]; then
     usermod gemstone -G render &>/dev/null || true
-    locale-gen tr_TR.UTF-8
 fi
