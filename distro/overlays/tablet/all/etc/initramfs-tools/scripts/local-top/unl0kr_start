@@ -9,18 +9,25 @@ LUKS_DEV=$(echo "$CRYPT_PARAM" | cut -d':' -f1)
 MAPPER_NAME=$(echo "$CRYPT_PARAM" | cut -d':' -f2)
 
 if [ -z "$LUKS_DEV" ]; then
-    exit 0
+    echo "No Luks device found."
 fi
 
 sleep 3
 
-if ! cryptsetup isLuks "$LUKS_DEV" 2>/dev/null; then
-    exit 0
+IS_LUKS=$(cryptsetup isLuks "$LUKS_DEV" 2>/dev/null && echo "true" || echo "false")
+
+if [ "$IS_LUKS" != "true" ]; then
+    echo "Encryption device $LUKS_DEV bulunamadi veya LUKS formatinda degil."
 fi
 
 # Sifre dogru girilene kadar donguye gir
 while true; do
-    PASS=$(unl0kr --dpi 192)
+    PASS=$(unl0kr)
+
+    if [ "$IS_LUKS" != "true" ]; then
+        break
+    fi
+
     if [ -n "$PASS" ]; then
         if echo "$PASS" | cryptsetup luksOpen "$LUKS_DEV" "$MAPPER_NAME"; then
             echo "Basarili: $LUKS_DEV acildi -> /dev/mapper/$MAPPER_NAME"
