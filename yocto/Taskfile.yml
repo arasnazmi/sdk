@@ -7,10 +7,11 @@ vars:
   TARGET: gemstone-image-rd
   TEMPLATECONF: "{{ .WORKDIR }}/yocto/meta-gemstone/conf/templates/{{ .MACHINE }}/"
   OE_INIT_CMD: TEMPLATECONF={{ .TEMPLATECONF }} source {{ .WORKDIR }}/yocto/poky/oe-init-build-env {{ .YOCTO_BUILD_DIR }} && cd {{ .WORKDIR }}
-  DEPLOY_DIR: "{{ .WORKDIR }}/build/tmp-musl/deploy/images/{{ .MACHINE }}"
+  DEPLOY_DIR: "{{ .WORKDIR }}/build/tmp-glibc/deploy/images/{{ .MACHINE }}"
   QEMU_KERNEL_BIN: "{{ if eq .MACHINE \"qemuarm64\" }}{{ .DEPLOY_DIR }}/Image{{ else }}{{ .DEPLOY_DIR }}/bzImage{{ end }}"
   QEMU_INITRAMFS_CPIO: "{{ .DEPLOY_DIR }}/gemstone-image-rd-{{ .MACHINE }}.cpio.gz"
   QEMU_DISK_FILE: '{{ .IMG_FILE_PATH }}'
+  QEMU_INITRD_IMG: "{{ .WORKDIR }}/build/debos/initrd.img-6.6.65-intel-pk-standard"
 
 tasks:
 
@@ -45,7 +46,9 @@ tasks:
           -device qemu-xhci \
           -device usb-tablet \
           -device usb-kbd \
+          -device usb-mouse \
           -device virtio-vga \
+          -device virtio-mouse-pci \
           -serial mon:stdio \
-          -initrd "{{ .QEMU_INITRAMFS_CPIO }}" \
+          -initrd "{{ .QEMU_INITRD_IMG }}" \
           -kernel "{{ .QEMU_KERNEL_BIN }}"

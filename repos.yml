@@ -34,7 +34,7 @@ repositories:
     type: git
     url: https://github.com/t3gemstone/meta-gemstone.git
     version: 7ce68b9e8de61e509e7f558ef49d4f35abfd72b5
-
+4
   src/ti-img-rogue-umlibs:
     type: git
     url: https://git.ti.com/git/graphics/ti-img-rogue-umlibs.git
@@ -54,3 +54,8 @@ repositories:
     type: git
     url: https://github.com/t3gemstone/firmware-o1-edge-ai.git
     version: 40312ba4bcddd1edfc3607e27dfa313a5d0257f8
+
+  src/buffybox:
+    type: git
+    url: https://salsa.debian.org/DebianOnMobile-team/buffybox.git
+    version: 1dee70a09f838ca620b76ee9b6bd4952cffa3746

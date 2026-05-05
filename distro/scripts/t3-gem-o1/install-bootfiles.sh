@@ -4,6 +4,7 @@ set -euo pipefail
 
 WORKDIR="$1"
 ROOTDIR="$2"
+IMAGEPATH="$3"
 
 DIR_IMGS="$WORKDIR/build/t3-gem-o1/deploy-ti/images/t3-gem-o1"
 

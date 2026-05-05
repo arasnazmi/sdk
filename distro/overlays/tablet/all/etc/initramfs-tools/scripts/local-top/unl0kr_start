@@ -1,0 +1,39 @@
+#!/bin/sh
+PREREQ="udev"
+prereqs() { echo "$PREREQ"; }
+case $1 in prereqs) prereqs; exit 0;; esac
+
+ROOT_PART=$(cat /proc/cmdline | tr ' ' '\n' | grep '^root=' | cut -d'=' -f2)
+
+# Modullerin oturmasi icin bekle
+sleep 3
+
+IS_LUSKS=$(cryptsetup isLuks "$ROOT_PART" 2>/dev/null && echo "yes" || echo "no")
+
+# --- sifreleme Kontrolu ---
+# Eger disk LUKS ile sifrelenmemisse, unl0kr'i calistirmadan cik.
+if [ "$IS_LUSKS" = "no" ]; then
+    echo "Bilgi: $ROOT_PART sifreli bir disk degil, unl0kr atlaniyor."
+fi
+
+# sifre dogru girilene kadar donguye gir
+while true; do
+    # Kullanicidan sifreyi al (Yuksek DPI ile)
+    PASS=$(unl0kr --dpi 192)
+
+    if [ "$IS_LUSKS" != "yes" ]; then
+        break
+    fi
+
+    if [ -n "$PASS" ]; then
+        # cryptsetup ile diski acmayi dene
+        if echo "$PASS" | cryptsetup luksOpen "$ROOT_PART" crypt_root; then
+            echo "Basarili: Disk acildi."
+            break
+        else
+            echo "Hata: Sifre yanlis, tekrar deneyin."
+            sleep 1
+        fi
+    fi
+done
+unset PASS

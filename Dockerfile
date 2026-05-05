@@ -11,6 +11,7 @@ RUN apt-get update && \
         ca-certificates \
         ccache \
         chrpath \
+        cmake \
         cpio \
         curl \
         debianutils \
@@ -21,18 +22,26 @@ RUN apt-get update && \
         gawk \
         gcc \
         git \
+        initramfs-tools \
         iputils-ping \
         libacl1 \
+        libdrm-dev \
         libelf-dev \
+        libinih-dev \
+        libinput-dev \
         liblz4-tool \
         libncurses-dev \
         libsdl2-2.0-0 \
         libsdl2-dev \
         libssl-dev \
+        libsystemd-dev \
+        libxkbcommon-dev \
         locales \
+        meson \
         nano \
         openssl \
         parted \
+        pkg-config \
         python3 \
         python3-git \
         python3-jinja2 \
@@ -43,10 +52,12 @@ RUN apt-get update && \
         qemu-system-x86 \
         qemu-user \
         qemu-user-static \
+        scdoc \
         sed \
         socat \
         software-properties-common \
         sudo \
+        systemd-dev \
         tar \
         texinfo \
         udev \

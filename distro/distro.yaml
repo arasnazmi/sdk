@@ -222,21 +222,26 @@ actions:
       - phosh-mobile-settings
       - phosh-pim
       - phosh-plugins
+      - powersupply-gtk
+      - unl0kr
 
   - action: apt
     recommends: false
     packages:
       - auditd
       - chatty
+      - cryptsetup
+      - cryptsetup-initramfs
       - dconf-cli
+      - dosfstools
       - endeavour
       - epiphany-browser
       - errands
       - evince
       - feedbackd
+      - flatpak
       - fonts-jetbrains-mono
       - fonts-noto-core
-      - flatpak
       - geary
       - gnome-calculator
       - gnome-calendar
@@ -253,13 +258,15 @@ actions:
       - gstreamer1.0-plugins-base
       - gstreamer1.0-plugins-good
       - iio-sensor-proxy
+      - initramfs-tools
+      - kbd
+      - keyutils
       - kmscube
       - libdrm-dev
       - libinput-bin
       - libinput-tools
-      - lollypop
+      - liblocale-gettext-perl
       - loupe
-      - megapixels
       - modemmanager
       - nautilus
       - network-manager-gnome
@@ -409,14 +416,13 @@ actions:
 {{ end }}
 {{ end }}
 
-{{ if eq $machine "beagley-ai" }}
-
 {{ if eq $ci "false" }}
   - action: run
     chroot: true
-    script: scripts/beagley-ai/install-bootfiles.sh {{ $workdir }} $ROOTDIR
+    script: scripts/{{ $machine }}/install-bootfiles.sh {{ $workdir }} $ROOTDIR {{ $imagepath }}
 {{ end }}
 
+{{ if eq $machine "beagley-ai" }}
   - action: run
     chroot: true
     script: scripts/beagley-ai/setup-bootfiles.sh
@@ -427,13 +433,6 @@ actions:
 {{ end }}
 
 {{ if eq $machine "t3-gem-o1" }}
-
-{{ if eq $ci "false" }}
-  - action: run
-    chroot: false
-    script: scripts/t3-gem-o1/install-bootfiles.sh {{ $workdir }} $ROOTDIR
-{{ end }}
-
   - action: run
     chroot: true
     script: scripts/t3-gem-o1/setup-bootfiles.sh
@@ -507,12 +506,6 @@ actions:
     description: Enable security services
     chroot: true
     script: scripts/tablet/setup-services.sh
-
-  - action: run
-    description: Compile dconf system database
-    chroot: true
-    command: dconf update
-
 {{ end }}
 
   - action: run
