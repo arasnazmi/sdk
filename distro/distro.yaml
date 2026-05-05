@@ -17,6 +17,7 @@
 {{- $imagepath := or .imagepath (printf "%s/build/debos/%s" $workdir $image) -}}
 {{- $imagesize := or .imagesize "4096M" -}}
 {{- $ci := or .ci "false" -}}
+{{- $encrypt := or .encrypt "true" -}}
 
 architecture: {{ $arch }}
 

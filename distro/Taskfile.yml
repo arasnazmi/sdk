@@ -17,29 +17,6 @@ tasks:
       - sudo chown $USER:$USER {{ .IMG_DEPLOY_DIR }}
       - chmod +x {{ .WORKDIR }}/distro/scripts/*/*.sh
 
-  _debos:
-    internal: true
-    cmds:
-      - sudo mkdir -p /run/debos
-      - cd /run/debos &&
-          sudo debos
-            --disable-fakemachine
-            --debug-shell
-            --artifactdir={{ .IMG_DEPLOY_DIR }}
-            --scratchdir={{ .IMG_DEPLOY_DIR }}
-            --rootdir=/run/debos
-            --template-var="workdir:{{ .WORKDIR }}"
-            --template-var="machine:{{ .MACHINE }}"
-            --template-var="base:{{ .DISTRO_BASE }}"
-            --template-var="type:{{ .DISTRO_TYPE }}"
-            --template-var="suite:{{ .DISTRO_SUITE }}"
-            --template-var="release:{{ .IMG_RELEASE }}"
-            --template-var="image:{{ .IMG_FILE_NAME }}"
-            --template-var="imagepath:{{ .IMG_FILE_PATH }}"
-            --template-var="imagesize:{{ .IMG_SIZE }}"
-            --template-var="arch:{{ .DISTRO_ARCH }}"
-            {{ .WORKDIR }}/distro/{{ .RECIPE }} 2>&1 | tee -a {{ .IMG_DEPLOY_DIR }}/log.txt
-
   build:
     cmds:
       - task: permissions
@@ -62,8 +39,13 @@ tasks:
             --template-var="imagepath:{{ .IMG_FILE_PATH }}"
             --template-var="imagesize:{{ .IMG_SIZE }}"
             --template-var="arch:{{ .DISTRO_ARCH }}"
+            --template-var="encrypt:{{ .ENCRYPT }}"
             {{ .WORKDIR }}/distro/distro.yaml 2>&1 | tee -a {{ .IMG_DEPLOY_DIR }}/log.txt
       - sudo chown $USER:$USER {{ .IMG_FILE_PATH }}*
+      - |
+        if [ $ENCRYPT = "true" ]; then
+          task utils:encrypt-image
+        fi
     requires:
       vars:
         - name: MACHINE

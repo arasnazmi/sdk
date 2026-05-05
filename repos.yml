@@ -33,8 +33,8 @@ repositories:
   yocto/meta-gemstone:
     type: git
     url: https://github.com/t3gemstone/meta-gemstone.git
-    version: 7ce68b9e8de61e509e7f558ef49d4f35abfd72b5
-4
+    version: 658ce4043e6cfbc99f44f1a3ba160563e3f44301
+
   src/ti-img-rogue-umlibs:
     type: git
     url: https://git.ti.com/git/graphics/ti-img-rogue-umlibs.git

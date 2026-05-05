@@ -9,9 +9,8 @@ vars:
   OE_INIT_CMD: TEMPLATECONF={{ .TEMPLATECONF }} source {{ .WORKDIR }}/yocto/poky/oe-init-build-env {{ .YOCTO_BUILD_DIR }} && cd {{ .WORKDIR }}
   DEPLOY_DIR: "{{ .WORKDIR }}/build/tmp-glibc/deploy/images/{{ .MACHINE }}"
   QEMU_KERNEL_BIN: "{{ if eq .MACHINE \"qemuarm64\" }}{{ .DEPLOY_DIR }}/Image{{ else }}{{ .DEPLOY_DIR }}/bzImage{{ end }}"
-  QEMU_INITRAMFS_CPIO: "{{ .DEPLOY_DIR }}/gemstone-image-rd-{{ .MACHINE }}.cpio.gz"
-  QEMU_DISK_FILE: '{{ .IMG_FILE_PATH }}'
-  QEMU_INITRD_IMG: "{{ .WORKDIR }}/build/debos/initrd.img-6.6.65-intel-pk-standard"
+  APPEND_ROOT: '{{ if eq .ENCRYPT "true" }}root=/dev/mapper/crypt_root cryptdevice=/dev/vda2:crypt_root{{ else }}root=/dev/vda2{{ end }}'
+  QEMU_INITRD_IMG: '{{ if eq .ENCRYPT "true" }}{{ .WORKDIR }}/build/debos/initrd.img-6.6.65-intel-pk-standard{{ else }}{{ .DEPLOY_DIR }}/gemstone-image-rd-{{ .MACHINE }}.cpio.gz{{ end }}'
 
 tasks:
 
@@ -29,13 +28,13 @@ tasks:
     preconditions:
     - sh: 'test -e {{ .QEMU_KERNEL_BIN }}'
       msg: "{{ .QEMU_KERNEL_BIN }} Image not found. Run <task yocto:build MACHINE={{ .MACHINE }}>"
-    - sh: 'test -e {{ .QEMU_INITRAMFS_CPIO }}'
-      msg: "{{ .QEMU_INITRAMFS_CPIO }} Image not found. Run <task yocto:build MACHINE={{ .MACHINE }}>"
+    - sh: 'test -e {{ .QEMU_INITRD_IMG }}'
+      msg: "{{ .QEMU_INITRD_IMG }} Image not found. Run <task yocto:build MACHINE={{ .MACHINE }}>"
     - sh: 'test -e {{ .QEMU_DISK_FILE }}'
       msg: "{{ .QEMU_DISK_FILE }} Image not found. Run <task distro:build MACHINE={{ .MACHINE }}>"
     cmds:
       - >
-        {{ if eq .MACHINE "qemuarm64" }}qemu-system-aarch64 -machine virt -cpu cortex-a57 -smp 4 -append 'root=/dev/vda2 rw init_fatal_sh=1 loglevel=4 quite splash'{{ else }}qemu-system-x86_64 -enable-kvm -machine pc -cpu host -smp $(nproc) -append 'root=/dev/vda2 rw init_fatal_sh=1 loglevel=4 console=ttyS0,115200 quite splash psi=1'{{ end }} \
+        {{ if eq .MACHINE "qemuarm64" }}qemu-system-aarch64 -machine virt -cpu cortex-a57 -smp 4 -append '{{ .APPEND_ROOT }} rw init_fatal_sh=1 loglevel=4 quite splash'{{ else }}qemu-system-x86_64 -enable-kvm -machine pc -cpu host -smp $(nproc) -append '{{ .APPEND_ROOT }} rw init_fatal_sh=1 loglevel=4 console=ttyS0,115200 quite splash psi=1'{{ end }} \
           -m 4G \
           -netdev user,id=net0,hostfwd=tcp::10022-:22 \
           -device virtio-net-pci,netdev=net0,mac=52:54:00:12:34:02 \

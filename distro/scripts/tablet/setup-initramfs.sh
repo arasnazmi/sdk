@@ -56,39 +56,37 @@ for bin in "${BINARIES_TO_INCLUDE[@]}"; do
 done
 chmod +x "$HOOK_FILE"
 
-# 3. Boot Scripti (sifreleme Kontrolu ve Dongu)
+# 3. Boot Scripti
+# Kernel cmdline'da cryptdevice=/dev/vda2:crypt_root ve root=/dev/mapper/crypt_root
+# gecmeli. unl0kr_start cryptdevice'den fiziksel diski okur, acar; init root='dan
+# /dev/mapper/crypt_root'u mount eder.
 cat << 'EOF' > "$BOOT_SCRIPT"
 #!/bin/sh
 PREREQ="udev"
 prereqs() { echo "$PREREQ"; }
 case $1 in prereqs) prereqs; exit 0;; esac
 
-ROOT_PART=$(cat /proc/cmdline | tr ' ' '\n' | grep '^root=' | cut -d'=' -f2)
+# cryptdevice=/dev/vda2:crypt_root parametresini oku
+CRYPT_PARAM=$(cat /proc/cmdline | tr ' ' '\n' | grep '^cryptdevice=' | sed 's/^cryptdevice=//')
+LUKS_DEV=$(echo "$CRYPT_PARAM" | cut -d':' -f1)
+MAPPER_NAME=$(echo "$CRYPT_PARAM" | cut -d':' -f2)
 
-# Modullerin oturmasi icin bekle
-sleep 3
-
-IS_LUSKS=$(cryptsetup isLuks "$ROOT_PART" 2>/dev/null && echo "yes" || echo "no")
-
-# --- sifreleme Kontrolu ---
-# Eger disk LUKS ile sifrelenmemisse, unl0kr'i calistirmadan cik.
-if [ "$IS_LUSKS" = "no" ]; then
-    echo "Bilgi: $ROOT_PART sifreli bir disk degil, unl0kr atlaniyor."
+if [ -z "$LUKS_DEV" ]; then
+    exit 0
 fi
 
-# sifre dogru girilene kadar donguye gir
+sleep 3
+
+if ! cryptsetup isLuks "$LUKS_DEV" 2>/dev/null; then
+    exit 0
+fi
+
+# Sifre dogru girilene kadar donguye gir
 while true; do
-    # Kullanicidan sifreyi al (Yuksek DPI ile)
     PASS=$(unl0kr --dpi 192)
-
-    if [ "$IS_LUSKS" != "yes" ]; then
-        break
-    fi
-
     if [ -n "$PASS" ]; then
-        # cryptsetup ile diski acmayi dene
-        if echo "$PASS" | cryptsetup luksOpen "$ROOT_PART" crypt_root; then
-            echo "Basarili: Disk acildi."
+        if echo "$PASS" | cryptsetup luksOpen "$LUKS_DEV" "$MAPPER_NAME"; then
+            echo "Basarili: $LUKS_DEV acildi -> /dev/mapper/$MAPPER_NAME"
             break
         else
             echo "Hata: Sifre yanlis, tekrar deneyin."

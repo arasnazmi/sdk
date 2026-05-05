@@ -16,6 +16,7 @@ vars:
   IMG_FILE_NAME: 'gemstone-{{ .DISTRO_TYPE }}-{{ .IMG_RELEASE }}-{{ .DISTRO_BASE }}-{{ .DISTRO_SUITE }}-{{ .MACHINE }}.img'
   IMG_FILE_PATH: '{{ .IMG_DEPLOY_DIR }}/{{ .IMG_FILE_NAME }}'
   YOCTO_BUILD_DIR: '{{ .WORKDIR }}/build/{{ .MACHINE }}'
+  ENCRYPT: '{{ .ENCRYPT | default "false" }}'
 
 includes:
   yocto: yocto
@@ -42,6 +43,7 @@ tasks:
       - echo "  IMG_DEPLOY_DIR   = '{{ .IMG_DEPLOY_DIR }}'"
       - echo "  IMG_FILE_PATH    = '{{ .IMG_FILE_PATH }}'"
       - echo "  YOCTO_BUILD_DIR  = '{{ .YOCTO_BUILD_DIR }}'"
+      - echo "  ENCRYPT          = '{{ .ENCRYPT }}'"
       - echo ""
 
   fetch:
