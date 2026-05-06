@@ -44,7 +44,7 @@ tasks:
       - sudo chown $USER:$USER {{ .IMG_FILE_PATH }}*
       - |
         if [ "{{ .ENCRYPT }}" = "true" ]; then
-          task utils:encrypt-image
+          task utils:encrypt-image IMG_FILE_PATH={{ .IMG_FILE_PATH }}
         fi
     requires:
       vars:

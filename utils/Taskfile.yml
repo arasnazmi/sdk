@@ -8,7 +8,7 @@ tasks:
   publish-debs:
     desc: Publish the latest DEB files to the package repository
     cmds:
-      - utils/publish_debs.sh {{ .DEB_DIR }} {{ .REPO_NAME }} {{ .DISTRO }}
+      - utils/publish-debs.sh {{ .DEB_DIR }} {{ .REPO_NAME }} {{ .DISTRO }}
     requires:
         vars:
           - name: DEB_DIR
@@ -23,3 +23,11 @@ tasks:
               - bookworm     # Debian 12
               - yirmiuc      # Pardus 23
               - yirmibes     # Pardus 25
+
+  encrypt-image:
+    desc: Encrypt the image file with LUKS
+    cmds:
+      - sudo utils/encrypt-image.sh {{ .IMG_FILE_PATH }}
+    requires:
+        vars:
+          - name: IMG_FILE_PATH

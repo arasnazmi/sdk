@@ -57,6 +57,9 @@ function _task()
         "TARGET="
         "WORKDIR="
         "IMG_SIZE="
+        "IMG_FILE_NAME="
+        "ENCRYPT="
+        "LUKS_PASSPHRASE="
     )
   fi
 
