@@ -22,6 +22,7 @@ fi
 
 # Sifre dogru girilene kadar donguye gir
 while true; do
+    # PASS=$(unl0kr --rotate=1 --message="Disk decrypt sifresini giriniz")
     PASS=$(unl0kr)
 
     if [ "$IS_LUKS" != "true" ]; then

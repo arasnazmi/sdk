@@ -57,5 +57,5 @@ repositories:
 
   src/buffybox:
     type: git
-    url: https://salsa.debian.org/DebianOnMobile-team/buffybox.git
-    version: 1dee70a09f838ca620b76ee9b6bd4952cffa3746
+    url: https://gitlab.postmarketos.org/postmarketOS/buffybox.git
+    version: 6c1e5cb80610296fee6bbd0da41ad55b46e82514
