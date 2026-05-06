@@ -7,7 +7,7 @@ vars:
   TARGET: gemstone-image-rd
   TEMPLATECONF: "{{ .WORKDIR }}/yocto/meta-gemstone/conf/templates/{{ .MACHINE }}/"
   OE_INIT_CMD: TEMPLATECONF={{ .TEMPLATECONF }} source {{ .WORKDIR }}/yocto/poky/oe-init-build-env {{ .YOCTO_BUILD_DIR }} && cd {{ .WORKDIR }}
-  DEPLOY_DIR: "{{ .WORKDIR }}/build/tmp-glibc/deploy/images/{{ .MACHINE }}"
+  DEPLOY_DIR: "{{ .WORKDIR }}/build/tmp-musl/deploy/images/{{ .MACHINE }}"
   QEMU_KERNEL_BIN: "{{ if eq .MACHINE \"qemuarm64\" }}{{ .DEPLOY_DIR }}/Image{{ else }}{{ .DEPLOY_DIR }}/bzImage{{ end }}"
   APPEND_ROOT: '{{ if eq .ENCRYPT "true" }}root=/dev/mapper/crypt_root cryptdevice=/dev/vda2:crypt_root{{ else }}root=/dev/vda2{{ end }}'
   QEMU_INITRD_IMG: '{{ if eq .ENCRYPT "true" }}{{ .WORKDIR }}/build/debos/initrd.img-6.6.65-intel-pk-standard{{ else }}{{ .DEPLOY_DIR }}/gemstone-image-rd-{{ .MACHINE }}.cpio.gz{{ end }}'
