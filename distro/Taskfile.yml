@@ -43,7 +43,7 @@ tasks:
             {{ .WORKDIR }}/distro/distro.yaml 2>&1 | tee -a {{ .IMG_DEPLOY_DIR }}/log.txt
       - sudo chown $USER:$USER {{ .IMG_FILE_PATH }}*
       - |
-        if [ $ENCRYPT = "true" ]; then
+        if [ "{{ .ENCRYPT }}" = "true" ]; then
           task utils:encrypt-image
         fi
     requires:

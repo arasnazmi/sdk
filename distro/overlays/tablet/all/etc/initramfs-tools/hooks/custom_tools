@@ -21,3 +21,5 @@ copy_exec /usr/bin/ping
 copy_exec /usr/bin/unl0kr
 copy_exec /usr/sbin/cryptsetup
 copy_exec /usr/sbin/modprobe
+copy_exec /usr/bin/tree
+copy_exec /usr/bin/nano

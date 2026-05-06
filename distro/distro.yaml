@@ -17,7 +17,7 @@
 {{- $imagepath := or .imagepath (printf "%s/build/debos/%s" $workdir $image) -}}
 {{- $imagesize := or .imagesize "4096M" -}}
 {{- $ci := or .ci "false" -}}
-{{- $encrypt := or .encrypt "true" -}}
+{{- $encrypt := or .encrypt "false" -}}
 
 architecture: {{ $arch }}
 
@@ -182,25 +182,7 @@ actions:
       Pin: release o=Pardus
       Pin-Priority: 1002
       EOF
-
-  - action: run
-    chroot: true
-    command: |
-      cat <<EOF > /etc/apt/preferences.d/01-mobian-priority
-      Package: *phosh*
-      Pin: release o=mobian
-      Pin-Priority: 1001
-      EOF
-
 {{ end }}
-
-  - action: run
-    description: Add Mobian apt key and repo
-    chroot: true
-    command: |
-      curl -fsSL https://repo.mobian-project.org/mobian.gpg -o /usr/share/keyrings/mobian-archive-keyring.gpg
-      echo "deb [signed-by=/usr/share/keyrings/mobian-archive-keyring.gpg] https://repo.mobian-project.org trixie main" > /etc/apt/sources.list.d/mobian.list
-      apt-get update -y -qq
 
   - action: apt
     recommends: true
@@ -212,17 +194,14 @@ actions:
 {{ else }}
       - gnome-shell
 {{ end }}
-      - mobian-base
-      - mobian-multimedia
-      - mobian-phone-base
-      - mobian-phosh
-      - mobian-phosh-extras
-      - mobian-phosh-phone
-      - mobian-tweaks-phosh
       - phoc
+      - phosh
       - phosh-mobile-settings
+      - phosh-mobile-tweaks
+      - phosh-phone
       - phosh-pim
       - phosh-plugins
+      - plymouth-theme-phosh
       - powersupply-gtk
       - unl0kr
 
@@ -290,7 +269,6 @@ actions:
   - action: apt
     recommends: true
     packages:
-      - blanket
       - firefox-esr
       - firefox-esr-mobile-config
       - squeekboard
@@ -419,8 +397,8 @@ actions:
 
 {{ if eq $ci "false" }}
   - action: run
-    chroot: true
-    script: scripts/{{ $machine }}/install-bootfiles.sh {{ $workdir }} $ROOTDIR {{ $imagepath }}
+    chroot: false
+    script: scripts/{{ $machine }}/install-bootfiles.sh {{ $workdir }} $ROOTDIR
 {{ end }}
 
 {{ if eq $machine "beagley-ai" }}

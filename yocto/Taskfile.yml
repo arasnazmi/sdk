@@ -10,7 +10,8 @@ vars:
   DEPLOY_DIR: "{{ .WORKDIR }}/build/tmp-musl/deploy/images/{{ .MACHINE }}"
   QEMU_KERNEL_BIN: "{{ if eq .MACHINE \"qemuarm64\" }}{{ .DEPLOY_DIR }}/Image{{ else }}{{ .DEPLOY_DIR }}/bzImage{{ end }}"
   APPEND_ROOT: '{{ if eq .ENCRYPT "true" }}root=/dev/mapper/crypt_root cryptdevice=/dev/vda2:crypt_root{{ else }}root=/dev/vda2{{ end }}'
-  QEMU_INITRD_IMG: '{{ if eq .ENCRYPT "true" }}{{ .WORKDIR }}/build/debos/initrd.img-6.6.65-intel-pk-standard{{ else }}{{ .DEPLOY_DIR }}/gemstone-image-rd-{{ .MACHINE }}.cpio.gz{{ end }}'
+  QEMU_INITRD_IMG: '{{ .WORKDIR }}/build/debos/initrd.img-6.6.65-intel-pk-standard'
+  QEMU_DISK_FILE: '{{ .IMG_FILE_PATH }}'
 
 tasks:
 
@@ -34,7 +35,7 @@ tasks:
       msg: "{{ .QEMU_DISK_FILE }} Image not found. Run <task distro:build MACHINE={{ .MACHINE }}>"
     cmds:
       - >
-        {{ if eq .MACHINE "qemuarm64" }}qemu-system-aarch64 -machine virt -cpu cortex-a57 -smp 4 -append '{{ .APPEND_ROOT }} rw init_fatal_sh=1 loglevel=4 quite splash'{{ else }}qemu-system-x86_64 -enable-kvm -machine pc -cpu host -smp $(nproc) -append '{{ .APPEND_ROOT }} rw init_fatal_sh=1 loglevel=4 console=ttyS0,115200 quite splash psi=1'{{ end }} \
+        {{ if eq .MACHINE "qemuarm64" }}qemu-system-aarch64 -machine virt -cpu cortex-a57 -smp 4 -append '{{ .APPEND_ROOT }} rw init_fatal_sh=1 loglevel=4 quite splash'{{ else }}qemu-system-x86_64 -enable-kvm -machine pc -cpu host -smp $(nproc) -append '{{ .APPEND_ROOT }} rw init_fatal_sh=1 loglevel=4 console=ttyS0,115200 quite splash break=mount'{{ end }} \
           -m 4G \
           -netdev user,id=net0,hostfwd=tcp::10022-:22 \
           -device virtio-net-pci,netdev=net0,mac=52:54:00:12:34:02 \
@@ -47,7 +48,6 @@ tasks:
           -device usb-kbd \
           -device usb-mouse \
           -device virtio-vga \
-          -device virtio-mouse-pci \
           -serial mon:stdio \
           -initrd "{{ .QEMU_INITRD_IMG }}" \
           -kernel "{{ .QEMU_KERNEL_BIN }}"

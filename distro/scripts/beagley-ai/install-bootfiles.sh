@@ -4,7 +4,6 @@ set -euo pipefail
 
 WORKDIR="$1"
 ROOTDIR="$2"
-IMAGEPATH="$3"
 
 DIR_IMGS="$WORKDIR/build/beagley-ai/deploy-ti/images/beagley-ai"
 
