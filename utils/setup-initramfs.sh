@@ -83,7 +83,7 @@ fi
 
 # Sifre dogru girilene kadar donguye gir
 while true; do
-    PASS=$(unl0kr --dpi 192)
+    PASS=$(unl0kr)
     if [ -n "$PASS" ]; then
         if echo "$PASS" | cryptsetup luksOpen "$LUKS_DEV" "$MAPPER_NAME"; then
             echo "Basarili: $LUKS_DEV acildi -> /dev/mapper/$MAPPER_NAME"
