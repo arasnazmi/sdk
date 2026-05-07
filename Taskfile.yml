@@ -23,7 +23,7 @@ includes:
   distro: distro
   utils: utils
 
-dotenv: ['utils/.env']
+dotenv: ['.devbox/taskfile.env']
 
 tasks:
 

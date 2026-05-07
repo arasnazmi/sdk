@@ -39,8 +39,9 @@ actions:
     mirror: {{ if eq $arch "amd64" }}'https://archive.ubuntu.com/ubuntu'{{ else }}'https://ports.ubuntu.com/ubuntu-ports'{{ end }}
 {{ end }}
     exclude:
-    - "systemd-zram-generator"
-    - "phosh-tour"
+    - systemd-zram-generator
+    - phosh-tour
+    - build-essential
 
 {{ if eq $base "pardus" }}
 
@@ -173,7 +174,6 @@ actions:
 {{ if eq $type "tablet" }}
 
 {{ if eq $base "pardus" }}
-
   - action: run
     chroot: true
     command: |
@@ -184,24 +184,50 @@ actions:
       EOF
 {{ end }}
 
+  - action: run
+    chroot: true
+    command: |
+      cat <<EOF > /etc/apt/preferences.d/01-mobian-priority
+      Package: *phosh*
+      Pin: release o=mobian
+      Pin-Priority: 1001
+      EOF
+
+  - action: run
+    description: Add Mobian apt key and repo
+    chroot: true
+    command: |
+      curl -fsSL https://repo.mobian-project.org/mobian.gpg -o /usr/share/keyrings/mobian-archive-keyring.gpg
+      echo "deb [signed-by=/usr/share/keyrings/mobian-archive-keyring.gpg] https://repo.mobian-project.org trixie main" > /etc/apt/sources.list.d/mobian.list
+      apt-get update -y -qq
+
   - action: apt
     recommends: true
     packages:
       - gdm3
 {{ if eq $suite "yirmibes" }}
+{{ if eq $arch "arm64" }}
       - gnome-shell-common=48.7-0+deb13u2
       - gnome-shell=48.7-0+deb13u2
 {{ else }}
       - gnome-shell
+      - gnome-shell-common
 {{ end }}
+{{ else }}
+      - gnome-shell
+      - gnome-shell-common
+{{ end }}
+      - mobian-base
+      - mobian-multimedia
+      - mobian-phone-base
+      - mobian-phosh
+      - mobian-phosh-extras
+      - mobian-phosh-phone
+      - mobian-tweaks-phosh
       - phoc
-      - phosh
       - phosh-mobile-settings
-      - phosh-mobile-tweaks
-      - phosh-phone
       - phosh-pim
       - phosh-plugins
-      - plymouth-theme-phosh
       - powersupply-gtk
       - unl0kr
 
@@ -219,6 +245,7 @@ actions:
       - errands
       - evince
       - feedbackd
+      - file-roller
       - flatpak
       - fonts-jetbrains-mono
       - fonts-noto-core
@@ -234,6 +261,7 @@ actions:
       - gnome-photos
       - gnome-settings-daemon
       - gnome-text-editor
+      - gnome-usage
       - gsettings-desktop-schemas
       - gstreamer1.0-plugins-base
       - gstreamer1.0-plugins-good
@@ -251,9 +279,11 @@ actions:
       - nautilus
       - network-manager-gnome
       - nftables
+      - papers
       - pipewire
       - pipewire-pulse
       - policycoreutils
+      - portfolio-filemanager
       - selinux-basics
       - selinux-policy-default
       - selinux-utils

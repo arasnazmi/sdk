@@ -25,3 +25,4 @@ yocto/**
 mimeinfo.cache
 icon-theme.cache
 utils/.env
+utils/taskfile.env
