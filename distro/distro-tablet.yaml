@@ -58,11 +58,11 @@ actions:
       - cryptsetup
       - cryptsetup-initramfs
       - dconf-cli
+      - debsig-verify
       - desktop-base
       - endeavour
       - epiphany-browser
       - errands
-      - evince
       - feedbackd
       - feedbackd-device-themes
       - file-roller

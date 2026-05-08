@@ -6,3 +6,7 @@ Acquire::AllowDowngradeToInsecureRepositories "false";
 # Paket listesi guncellemesinde imzasiz repoyu hata olarak isle
 Acquire::https::Verify-Peer "true";
 Acquire::https::Verify-Host "true";
+
+# APT, dpkg yerine wrapper'i cagirsin (allowlist + debsig-verify icin).
+# Wrapper SUDO_USER'i kontrol eder; asil root'a engel olmaz.
+Dir::Bin::dpkg "/usr/local/sbin/dpkg";
