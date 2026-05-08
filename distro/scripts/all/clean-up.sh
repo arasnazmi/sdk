@@ -48,17 +48,14 @@ fi
 apt-get autoremove -y
 apt-get autoclean -y
 
-# Ubuntu Login Messages
 rm -f /etc/legal
 rm -f /etc/update-motd.d/10-help-text
+rm -f /etc/apt/sources.list.d/local-apt.list
+rm -f /.empty
 
 rm -rf /var/lib/apt/lists/*
 rm -rf /var/cache/apt/archives/*
 rm -rf /var/cache/apt/*.bin*
-
-rm -f /etc/apt/sources.list.d/local-apt.list
-
-rm -f /.empty
 
 # Delete all symbolic links from boot directory
 # Boot partition's filesystem is vfat and cannot accept symlinks
