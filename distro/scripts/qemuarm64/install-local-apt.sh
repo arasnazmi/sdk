@@ -14,7 +14,8 @@ apt-get install -y \
     kernel-module-configfs \
     kernel-module-fuse \
     kernel-module-loop \
-    kernel-module-squashfs
+    kernel-module-squashfs \
+    kernel-module-cirrus
 
 if [[ "$DISTRO_TYPE" == "desktop" || "$DISTRO_TYPE" == "kiosk" ]]; then
     apt-get install -y \

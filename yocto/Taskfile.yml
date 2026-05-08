@@ -10,8 +10,8 @@ vars:
   DEPLOY_DIR: "{{ .WORKDIR }}/build/tmp-musl/deploy/images/{{ .MACHINE }}"
   QEMU_KERNEL_BIN: "{{ if eq .MACHINE \"qemuarm64\" }}{{ .DEPLOY_DIR }}/Image{{ else }}{{ .DEPLOY_DIR }}/bzImage{{ end }}"
   APPEND_ROOT: '{{ if eq .ENCRYPT "true" }}root=/dev/mapper/crypt_root cryptdevice=/dev/vda2:crypt_root{{ else }}root=/dev/vda2{{ end }}'
-  QEMU_INITRD_IMG: '{{ .WORKDIR }}/build/debos/initrd.img-6.6.65-intel-pk-standard'
   QEMU_DISK_FILE: '{{ .IMG_FILE_PATH }}'
+  QEMU_INITRD_IMG: '{{ .IMG_FILE_PATH }}-initrd'
 
 tasks:
 
@@ -60,7 +60,8 @@ tasks:
           -device usb-tablet \
           -device usb-kbd \
           -device usb-mouse \
-          -device virtio-vga \
+          -device virtio-gpu \
+          -vga cirrus \
           -serial mon:stdio \
           -initrd "{{ .QEMU_INITRD_IMG }}" \
           -kernel "{{ .QEMU_KERNEL_BIN }}"

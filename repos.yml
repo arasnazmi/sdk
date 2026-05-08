@@ -33,7 +33,7 @@ repositories:
   yocto/meta-gemstone:
     type: git
     url: https://github.com/t3gemstone/meta-gemstone.git
-    version: 658ce4043e6cfbc99f44f1a3ba160563e3f44301
+    version: 9882bfcbb6c8949ddae6b0afbdad80f0bbbb3c0c
 
   src/ti-img-rogue-umlibs:
     type: git
@@ -57,5 +57,5 @@ repositories:
 
   src/buffybox:
     type: git
-    url: https://gitlab.postmarketos.org/postmarketOS/buffybox.git
-    version: 6c1e5cb80610296fee6bbd0da41ad55b46e82514
+    url: https://github.com/t3gemstone/buffybox.git
+    version: 58f5385d72b7d3cbf2266075bc6881d14b42cd7f

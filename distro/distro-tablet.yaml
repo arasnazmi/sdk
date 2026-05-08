@@ -1,0 +1,214 @@
+{{/* T3 Foundation Gemstone Project https://t3gemstone.org */}}
+{{/* SPDX-License-Identifier Apache-2.0 */}}
+
+{{/*   phase=packages    -> apt pinning, Mobian repo, package install      */}}
+{{/*   phase=postinstall -> SELinux, Flatpak, credentials, services        */}}
+{{/*   phase=finalize    -> dconf system database compile                  */}}
+
+{{- $arch      := or .arch    "arm64" -}}
+{{- $base      := or .base    "ubuntu" -}}
+{{- $suite     := or .suite   "jammy" -}}
+{{- $machine   := or .machine "t3-gem-o1" -}}
+{{- $workdir   := or .workdir "/home/workdir" -}}
+{{- $image     := or .image   "image.img" -}}
+{{- $imagepath := or .imagepath (printf "%s/build/debos/%s" $workdir $image) -}}
+{{- $phase     := or .phase   "packages" -}}
+{{- $mobian    := or .mobian  "false" -}}
+
+architecture: {{ $arch }}
+
+actions:
+
+{{ if eq $phase "packages" }}
+
+{{ if eq $mobian "true" }}
+  - action: run
+    description: Add Mobian apt key and repo
+    chroot: true
+    command: |
+      curl -fsSL https://repo.mobian-project.org/mobian.gpg -o /usr/share/keyrings/mobian-archive-keyring.gpg
+      echo "deb [signed-by=/usr/share/keyrings/mobian-archive-keyring.gpg] https://repo.mobian-project.org trixie main" > /etc/apt/sources.list.d/mobian.list
+      apt-get update -y -qq
+{{ end }}
+
+  - action: apt
+    recommends: true
+    packages:
+{{ if eq $suite "yirmibes" }}
+{{ if eq $arch "arm64" }}
+      - gnome-shell-common=48.7-0+deb13u2
+      - gnome-shell=48.7-0+deb13u2
+{{ else }}
+      - gnome-shell
+      - gnome-shell-common
+{{ end }}
+{{ else }}
+      - gnome-shell
+      - gnome-shell-common
+{{ end }}
+
+  - action: apt
+    recommends: false
+    packages:
+{{ if eq $mobian "true" }}
+      - mobian-base
+      - mobian-multimedia
+      - mobian-phone-base
+      - mobian-phosh
+      - mobian-phosh-extras
+      - mobian-phosh-phone
+      - mobian-tweaks-phosh
+{{ else }}
+      - phosh
+      - phosh-common
+      - phosh-core
+      - phosh-mobile-settings
+      - phosh-mobile-tweaks
+      - phosh-phone
+      - phosh-pim
+      - phosh-plugins
+{{ end }}
+      - at-spi2-core
+      - auditd
+      - chatty
+      - cryptsetup
+      - cryptsetup-initramfs
+      - dconf-cli
+      - desktop-base
+      - dosfstools
+      - endeavour
+      - epiphany-browser
+      - errands
+      - evince
+      - feedbackd
+      - feedbackd-device-themes
+      - file-roller
+      - flatpak
+      - fonts-gfs-didot-classic
+      - fonts-jetbrains-mono
+      - fonts-noto-core
+      - gdm3
+      - geary
+      - geoclue-2.0
+      - gnome-calculator
+      - gnome-calendar
+      - gnome-calls
+      - gnome-clocks
+      - gnome-console
+      - gnome-contacts
+      - gnome-control-center
+      - gnome-maps
+      - gnome-photos
+      - gnome-settings-daemon
+      - gnome-text-editor
+      - gnome-usage
+      - gsettings-desktop-schemas
+      - gstreamer1.0-plugins-base
+      - gstreamer1.0-plugins-good
+      - ibus
+      - iio-sensor-proxy
+      - initramfs-tools
+      - kbd
+      - keyutils
+      - kmscube
+      - libdrm-dev
+      - libinput-bin
+      - libinput-tools
+      - liblocale-gettext-perl
+      - libpam-gnome-keyring
+      - libpam-systemd
+      - loupe
+      - modemmanager
+      - nautilus
+      - network-manager-gnome
+      - nftables
+      - papers
+      - phoc
+      - pipewire
+      - pipewire-pulse
+      - policycoreutils
+      - portfolio-filemanager
+      - power-profiles-daemon
+      - powersupply-gtk
+      - selinux-basics
+      - selinux-policy-default
+      - selinux-utils
+      - totem
+      - unl0kr
+      - unzip
+      - upower
+      - wayland-utils
+      - wlr-randr
+      - wys
+      - x11-xkb-utils
+      - xdg-desktop-portal
+      - xdg-desktop-portal-gnome
+      - xserver-xephyr
+      - xserver-xorg
+      - xwayland
+      - zenity
+
+{{ end }}
+
+{{ if eq $base "pardus" }}
+  - action: apt
+    recommends: false
+    packages:
+      - firefox-esr
+      - firefox-esr-mobile-config
+      - squeekboard
+{{ end }}
+
+{{ if eq $phase "postinstall" }}
+
+  - action: run
+    description: Restore Flatpak cache from host
+    chroot: false
+    script: scripts/tablet/flatpak-cache-restore.sh {{ $workdir }} $ROOTDIR
+
+  - action: run
+    description: Setup Flatpak with Flathub and install apps
+    chroot: true
+    script: scripts/tablet/setup-flatpak.sh
+
+  - action: run
+    description: Save Flatpak data to host cache
+    chroot: false
+    script: scripts/tablet/flatpak-cache-save.sh {{ $workdir }} $ROOTDIR
+
+  - action: run
+    description: Generate root credentials and SSH keypair
+    chroot: false
+    script: scripts/tablet/setup-root-credentials.sh {{ $workdir }} $ROOTDIR {{ $image }}
+
+  - action: run
+    description: Enable security services
+    chroot: true
+    script: scripts/tablet/setup-services.sh
+
+  - action: run
+    description: Create initrd
+    chroot: true
+    script: scripts/tablet/create-initrd.sh 
+
+  - action: run
+    description: Copy initrd to output directory
+    chroot: false
+    command: |
+      cp $ROOTDIR/boot/initrd.img-* {{ $imagepath }}-initrd
+
+  - action: run
+    description: Setup SELinux
+    chroot: true
+    script: scripts/tablet/setup-selinux.sh
+
+{{ end }}
+
+{{ if eq $phase "finalize" }}
+
+  - action: run
+    description: Compile dconf system database
+    chroot: true
+    command: dconf update
+
+{{ end }}

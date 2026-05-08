@@ -1,0 +1,1 @@
+deb [trusted=yes] http://10.0.2.2:8000/qemuarm64 ./

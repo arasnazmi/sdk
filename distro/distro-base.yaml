@@ -1,0 +1,74 @@
+{{/* T3 Foundation Gemstone Project https://t3gemstone.org */}}
+{{/* SPDX-License-Identifier Apache-2.0 */}}
+
+{{- $arch  := or .arch  "arm64" -}}
+{{- $suite := or .suite "jammy" -}}
+
+architecture: {{ $arch }}
+
+actions:
+
+  - action: apt
+    recommends: false
+    packages:
+      - bash-completion
+      - bluez
+      - ca-certificates
+      - can-utils
+      - console-setup
+      - coreutils
+      - curl
+      - dialog
+      - dnsmasq-base
+      - dosfstools
+      - ethtool
+      - file
+      - fuse
+      - gawk
+      - gnupg
+      - gpg
+      - gpiod
+      - htop
+      - hwinfo
+      - i2c-tools
+      - iptables-persistent
+      - iputils-ping
+      - isc-dhcp-client
+      - kmod
+      - less
+      - locales
+      - lrzsz
+      - mc
+      - nano
+      - netfilter-persistent
+      - network-manager
+      - openssh-server
+      - openssl
+      - python3
+      - rsync
+      - spi-tools
+      - ssh
+      - sudo
+      - systemd
+      - systemd-sysv
+      - tar
+      - tree
+      - tzdata
+      - udev
+      - unzip
+      - usbutils
+      - uuid-runtime
+      - vim-tiny
+      - wget
+      - wpasupplicant
+      - zip
+
+  - action: apt
+    recommends: false
+    packages: [ iwd, systemd-timesyncd ]
+
+{{ if eq $suite "noble" "bookworm" "yirmiuc" "yirmibes" }}
+  - action: apt
+    recommends: false
+    packages: [ systemd-resolved ]
+{{ end }}

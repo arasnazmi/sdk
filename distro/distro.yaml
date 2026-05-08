@@ -6,18 +6,19 @@
 {{/* https://pkg.go.dev/github.com/go-debos/debos/actions */}}
 {{/* https://golang.org/pkg/text/template */}}
 
-{{- $arch := or .arch "arm64" -}}
-{{- $machine := or .machine "t3-gem-o1" -}}
-{{- $base := or .base "ubuntu" -}}
-{{- $type := or .type "minimal" -}}
-{{- $suite := or .suite "jammy" -}}
-{{- $release := or .release "v2026.2" -}}
-{{- $workdir := or .workdir "/home/workdir" -}}
-{{- $image := or .image (printf "gemstone-%s-%s-%s-%s-%s.img" $type $release $base $suite $machine) -}}
+{{- $arch      := or .arch      "arm64" -}}
+{{- $machine   := or .machine   "t3-gem-o1" -}}
+{{- $base      := or .base      "ubuntu" -}}
+{{- $type      := or .type      "minimal" -}}
+{{- $suite     := or .suite     "jammy" -}}
+{{- $release   := or .release   "v2026.2" -}}
+{{- $workdir   := or .workdir   "/home/workdir" -}}
+{{- $image     := or .image     (printf "gemstone-%s-%s-%s-%s-%s.img" $type $release $base $suite $machine) -}}
 {{- $imagepath := or .imagepath (printf "%s/build/debos/%s" $workdir $image) -}}
 {{- $imagesize := or .imagesize "4096M" -}}
-{{- $ci := or .ci "false" -}}
-{{- $encrypt := or .encrypt "false" -}}
+{{- $ci        := or .ci        "false" -}}
+{{- $encrypt   := or .encrypt   "false" -}}
+{{- $mobian    := or .mobian    "false" -}}
 
 architecture: {{ $arch }}
 
@@ -84,296 +85,47 @@ actions:
     description: Configure eatmydata for subsequent apt/dpkg calls
     chroot: true
     command: |
-      echo 'DPkg::Pre-Invoke  { "export LD_PRELOAD=/usr/lib/libeatmydata/libeatmydata.so"; };' \
-        > /etc/apt/apt.conf.d/00eatmydata
-      echo 'DPkg::Post-Invoke { "unset LD_PRELOAD || true"; };' \
-        >> /etc/apt/apt.conf.d/00eatmydata
+      echo 'DPkg::Pre-Invoke  { "export LD_PRELOAD=/usr/lib/libeatmydata/libeatmydata.so"; };' > /etc/apt/apt.conf.d/00eatmydata
+      echo 'DPkg::Post-Invoke { "unset LD_PRELOAD || true"; };' >> /etc/apt/apt.conf.d/00eatmydata
 
-  - action: apt
-    recommends: false
-    packages:
-      - bash-completion
-      - bluez
-      - ca-certificates
-      - can-utils
-      - console-setup
-      - coreutils
-      - curl
-      - dialog
-      - dnsmasq-base
-      - dosfstools
-      - ethtool
-      - file
-      - fuse
-      - gawk
-      - gnupg
-      - gpg
-      - gpiod
-      - htop
-      - hwinfo
-      - i2c-tools
-      - iptables-persistent
-      - iputils-ping
-      - isc-dhcp-client
-      - kmod
-      - less
-      - locales
-      - lrzsz
-      - mc
-      - nano
-      - netfilter-persistent
-      - network-manager
-      - openssh-server
-      - openssl
-      - python3
-      - rsync
-      - spi-tools
-      - ssh
-      - sudo
-      - systemd
-      - systemd-sysv
-      - tar
-      - tree
-      - tzdata
-      - udev
-      - unzip
-      - usbutils
-      - uuid-runtime
-      - vim-tiny
-      - wget
-      - wpasupplicant
-      - zip
-
-  - action: apt
-    recommends: false
-    packages: [ iwd, systemd-timesyncd ]
-
-{{ if eq $suite "noble" "bookworm" "yirmiuc" "yirmibes" }}
-  - action: apt
-    recommends: false
-    packages: [ systemd-resolved ]
-{{ end }}
+  - action: recipe
+    description: Install common base packages
+    recipe: distro-base.yaml
+    variables:
+      arch: {{ $arch }}
+      suite: {{ $suite }}
 
 {{ if eq $type "kiosk" }}
-  - action: apt
-    recommends: false
-    packages:
-      - kmscube
-      - libdrm-dev
-      - libxcb-cursor0
-      - openbox
-      - python3-pyqt5
-      - python3-pyqtgraph
-      - whiptail
-      - x11-xserver-utils
-      - xinit
-      - xserver-xorg-core
-      - xserver-xorg-input-all
-{{ end }}
-
-{{ if eq $type "tablet" }}
-
-{{ if eq $base "pardus" }}
-  - action: run
-    chroot: true
-    command: |
-      cat <<EOF > /etc/apt/preferences.d/02-pardus-priority
-      Package: *
-      Pin: release o=Pardus
-      Pin-Priority: 1002
-      EOF
-{{ end }}
-
-  - action: run
-    chroot: true
-    command: |
-      cat <<EOF > /etc/apt/preferences.d/01-mobian-priority
-      Package: *phosh*
-      Pin: release o=mobian
-      Pin-Priority: 1001
-      EOF
-
-  - action: run
-    description: Add Mobian apt key and repo
-    chroot: true
-    command: |
-      curl -fsSL https://repo.mobian-project.org/mobian.gpg -o /usr/share/keyrings/mobian-archive-keyring.gpg
-      echo "deb [signed-by=/usr/share/keyrings/mobian-archive-keyring.gpg] https://repo.mobian-project.org trixie main" > /etc/apt/sources.list.d/mobian.list
-      apt-get update -y -qq
-
-  - action: apt
-    recommends: true
-    packages:
-      - gdm3
-{{ if eq $suite "yirmibes" }}
-{{ if eq $arch "arm64" }}
-      - gnome-shell-common=48.7-0+deb13u2
-      - gnome-shell=48.7-0+deb13u2
-{{ else }}
-      - gnome-shell
-      - gnome-shell-common
-{{ end }}
-{{ else }}
-      - gnome-shell
-      - gnome-shell-common
-{{ end }}
-      - mobian-base
-      - mobian-multimedia
-      - mobian-phone-base
-      - mobian-phosh
-      - mobian-phosh-extras
-      - mobian-phosh-phone
-      - mobian-tweaks-phosh
-      - phoc
-      - phosh-mobile-settings
-      - phosh-pim
-      - phosh-plugins
-      - powersupply-gtk
-      - unl0kr
-
-  - action: apt
-    recommends: false
-    packages:
-      - auditd
-      - chatty
-      - cryptsetup
-      - cryptsetup-initramfs
-      - dconf-cli
-      - dosfstools
-      - endeavour
-      - epiphany-browser
-      - errands
-      - evince
-      - feedbackd
-      - file-roller
-      - flatpak
-      - fonts-jetbrains-mono
-      - fonts-noto-core
-      - geary
-      - gnome-calculator
-      - gnome-calendar
-      - gnome-calls
-      - gnome-clocks
-      - gnome-console
-      - gnome-contacts
-      - gnome-control-center
-      - gnome-maps
-      - gnome-photos
-      - gnome-settings-daemon
-      - gnome-text-editor
-      - gnome-usage
-      - gsettings-desktop-schemas
-      - gstreamer1.0-plugins-base
-      - gstreamer1.0-plugins-good
-      - iio-sensor-proxy
-      - initramfs-tools
-      - kbd
-      - keyutils
-      - kmscube
-      - libdrm-dev
-      - libinput-bin
-      - libinput-tools
-      - liblocale-gettext-perl
-      - loupe
-      - modemmanager
-      - nautilus
-      - network-manager-gnome
-      - nftables
-      - papers
-      - pipewire
-      - pipewire-pulse
-      - policycoreutils
-      - portfolio-filemanager
-      - selinux-basics
-      - selinux-policy-default
-      - selinux-utils
-      - totem
-      - upower
-      - wayland-utils
-      - wlr-randr
-      - xdg-desktop-portal
-      - xdg-desktop-portal-gnome
-      - xwayland
-
-{{ if eq $base "pardus" }}
-  - action: apt
-    recommends: true
-    packages:
-      - firefox-esr
-      - firefox-esr-mobile-config
-      - squeekboard
-{{ end }}
-
+  - action: recipe
+    description: Install kiosk packages
+    recipe: distro-kiosk.yaml
+    variables:
+      arch: {{ $arch }}
 {{ end }}
 
 {{ if eq $type "desktop" }}
-
-{{ if eq $suite "jammy" "noble" }}
-  - action: apt
-    recommends: false
-    packages: [ adwaita-icon-theme-full ]
+  - action: recipe
+    description: Install desktop packages
+    recipe: distro-desktop.yaml
+    variables:
+      arch: {{ $arch }}
+      suite: {{ $suite }}
+      machine: {{ $machine }}
+      type: {{ $type }}
+      phase: packages
 {{ end }}
 
-  - action: apt
-    recommends: true
-    packages:
-      - atril
-      - catfish
-      - libxfce4ui-utils
-      - lightdm
-      - lightdm-gtk-greeter
-      - mousepad
-      - network-manager
-      - parole
-      - ristretto
-      - thunar
-      - thunar-archive-plugin
-      - xfce4-appfinder
-      - xfce4-indicator-plugin
-      - xfce4-panel
-      - xfce4-pulseaudio-plugin
-      - xfce4-session
-      - xfce4-settings
-      - xfce4-taskmanager
-      - xfce4-terminal
-      - xfce4-xkb-plugin
-      - xfconf
-      - xfdesktop4
-      - xfwm4
-      - xterm
-
-  - action: apt
-    recommends: false
-    packages:
-      - at-spi2-core
-      - baobab
-      - dbus-x11
-      - engrampa
-      - fonts-inter
-      - fonts-inter-variable
-      - fonts-jetbrains-mono
-      - fonts-noto-core
-      - kmscube
-      - libdrm-dev
-      - mate-calc
-      - network-manager-gnome
-      - whiptail
-      - xcape
-
-{{ if ne $suite "yirmibes" }}
-  - action: apt
-    recommends: false
-    packages: [ software-properties-common ]
-{{ end }}
-
-  - action: run
-    description: Install PiXflat theme from deb
-    chroot: true
-    command: |
-      cd $(mktemp -d)
-      wget http://archive.raspberrypi.org/debian/pool/main/p/pixflat-icons/pixflat-icons_0.26_all.deb
-      DEBIAN_FRONTEND=noninteractive apt-get install -y ./pixflat-icons_0.26_all.deb
-
+{{ if eq $type "tablet" }}
+  - action: recipe
+    description: Install tablet packages
+    recipe: distro-tablet.yaml
+    variables:
+      arch: {{ $arch }}
+      base: {{ $base }}
+      suite: {{ $suite }}
+      machine: {{ $machine }}
+      imagepath: {{ $imagepath }}
+      phase: packages
 {{ end }}
 
   - action: run
@@ -392,9 +144,13 @@ actions:
       echo "$MSG\n" >/etc/issue
 
 {{ if eq $type "desktop" }}
-  - action: overlay
-    source: overlays/{{ $type }}/all/etc/skel
-    destination: /etc/skel
+  - action: recipe
+    description: Seed desktop /etc/skel before adduser
+    recipe: distro-desktop.yaml
+    variables:
+      arch: {{ $arch }}
+      type: {{ $type }}
+      phase: skel
 {{ end }}
 
   - action: run
@@ -414,15 +170,13 @@ actions:
     script: scripts/{{ $machine }}/install-local-apt.sh {{ $machine }} {{ $type }} {{ $ci }}
 
 {{ if eq $type "desktop" }}
-{{ if eq $machine "beagley-ai" "t3-gem-o1" }}
-  - action: run
-    description: Install t3-gem-vnc from deb
-    chroot: true
-    command: |
-      cd $(mktemp -d)
-      wget "https://packages.t3gemstone.org/apt/gemstone/pool/main/t/t3-gem-vnc/t3-gem-vnc_0.0.1-1_all.deb"
-      DEBIAN_FRONTEND=noninteractive apt-get install -y ./t3-gem-vnc_0.0.1-1_all.deb
-{{ end }}
+  - action: recipe
+    description: Install t3-gem-vnc
+    recipe: distro-desktop.yaml
+    variables:
+      arch: {{ $arch }}
+      machine: {{ $machine }}
+      phase: vnc
 {{ end }}
 
 {{ if eq $ci "false" }}
@@ -462,20 +216,12 @@ actions:
 {{ end }}
 
 {{ if eq $type "desktop" }}
-  - action: run
-    chroot: true
-    script: scripts/custom/install-firefox.sh
-
-  - action: run
-    chroot: true
-    script: scripts/custom/install-vscode.sh
-
-  - action: run
-    description: Create icon cache
-    chroot: true
-    command: |
-      gtk-update-icon-cache --force --ignore-theme-index /usr/share/icons/T3-Gemstone
-      gtk-update-icon-cache --force --ignore-theme-index /usr/share/icons/hicolor
+  - action: recipe
+    description: Desktop post-install (firefox, vscode, icon cache)
+    recipe: distro-desktop.yaml
+    variables:
+      arch: {{ $arch }}
+      phase: postinstall
 {{ end }}
 
 {{ if eq $machine "beagley-ai" "t3-gem-o1" }}
@@ -485,36 +231,15 @@ actions:
 {{ end }}
 
 {{ if eq $type "tablet" }}
-
-  - action: run
-    description: Configure SELinux
-    chroot: true
-    script: scripts/tablet/configure-selinux.sh
-
-  - action: run
-    description: Restore Flatpak cache from host
-    chroot: false
-    script: scripts/tablet/flatpak-cache-restore.sh {{ $workdir }} $ROOTDIR
-
-  - action: run
-    description: Setup Flatpak with Flathub and install apps
-    chroot: true
-    script: scripts/tablet/setup-flatpak.sh
-
-  - action: run
-    description: Save Flatpak data to host cache
-    chroot: false
-    script: scripts/tablet/flatpak-cache-save.sh {{ $workdir }} $ROOTDIR
-
-  - action: run
-    description: Generate root credentials and SSH keypair
-    chroot: false
-    script: scripts/tablet/setup-root-credentials.sh {{ $workdir }} $ROOTDIR {{ $image }}
-
-  - action: run
-    description: Enable security services
-    chroot: true
-    script: scripts/tablet/setup-services.sh
+  - action: recipe
+    description: Tablet post-install (selinux, flatpak, credentials, services)
+    recipe: distro-tablet.yaml
+    variables:
+      arch: {{ $arch }}
+      workdir: {{ $workdir }}
+      image: {{ $image }}
+      imagepath: {{ $imagepath }}
+      phase: postinstall
 {{ end }}
 
   - action: run
@@ -548,10 +273,13 @@ actions:
     script: scripts/{{ $machine }}/clean-up.sh {{ $type }}
 
 {{ if eq $type "tablet" }}
-  - action: run
-    description: Compile dconf system database
-    chroot: true
-    command: dconf update
+  - action: recipe
+    description: Tablet finalize (dconf update)
+    recipe: distro-tablet.yaml
+    variables:
+      arch: {{ $arch }}
+      imagepath: {{ $imagepath }}
+      phase: finalize
 {{ end }}
 
   - action: run

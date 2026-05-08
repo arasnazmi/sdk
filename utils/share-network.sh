@@ -1,15 +1,27 @@
 #!/bin/bash
 
+# ----
 # Host
-# $ ./share-network.sh wlp0s20f3 enx02123456789a
+# ----
+# ./share-network.sh wlp0s20f3 enx02123456789a
+# ----
 
+# ------
 # Target
-# $ sudo ip route add default via 192.168.7.59 dev usb0
+# ------
+# sudo ip route add default via 192.168.7.59 dev usb0
+# ------
 
+# ------
 # Target
-# $ MACHINE="t3_gem_o1"
-# $ MACHINE="corei7-64-intel-common"
-# $ echo "deb [trusted=yes] http://192.168.7.2:8000/${MACHINE} ./" | sudo tee /etc/apt/sources.list.d/local-apt.list
+# ------
+# MACHINE="t3_gem_o1"
+# MACHINE="corei7-64-intel-common"
+# MACHINE="qemuarm64"
+# IP="10.0.2.2"
+# IP="192.168.7.2"
+# echo "deb [trusted=yes] http://${IP}:8000/${MACHINE} ./" | sudo tee /etc/apt/sources.list.d/local-apt.list
+# ------
 
 INTERNET_IFACE="${1:-wlp0s20f3}"
 OTHER_IFACE="${2:-enx02123456789a}"

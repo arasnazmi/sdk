@@ -31,12 +31,14 @@ fi
 if [[ "$DISTRO_TYPE" == "tablet" ]]; then
     echo "apt-get remove tablet"
     apt-get remove -y -qq \
+        build-essential \
         can-utils \
         gcc \
         gcc-14 \
         htop \
         i2c-tools \
         mc \
+        phosh-tour \
         spi-tools \
         systemd-zram-generator \
         ;
