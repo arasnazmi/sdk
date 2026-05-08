@@ -2,5 +2,5 @@
 # enforcing  - policy ihlallerini engeller ve loglar
 # permissive - yalnizca loglar, engellemez (gelistirme/test icin)
 # disabled   - SELinux kapali
-SELINUX=permissive
+SELINUX=enforcing
 SELINUXTYPE=default

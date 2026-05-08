@@ -22,7 +22,6 @@ chown -R gemstone:gemstone /home/gemstone
 
 if [[ "$DISTRO_TYPE" == "tablet" ]]; then
     chmod 0755 /usr/local/sbin/nftables-safe
-    chmod 0755 /usr/local/sbin/tablet-autologin.sh
     chmod 0755 /usr/local/sbin/dpkg
 
     # root'un PATH'ine /usr/local/sbin ekle (yoksa)

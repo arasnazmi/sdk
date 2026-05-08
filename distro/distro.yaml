@@ -43,6 +43,7 @@ actions:
     - systemd-zram-generator
     - phosh-tour
     - build-essential
+    - phosh-osk-stub
 
 {{ if eq $base "pardus" }}
 
@@ -272,6 +273,10 @@ actions:
     chroot: true
     script: scripts/{{ $machine }}/clean-up.sh {{ $type }}
 
+  - action: run
+    chroot: true
+    script: scripts/all/clean-up.sh {{ $type }} {{ $base }}
+
 {{ if eq $type "tablet" }}
   - action: recipe
     description: Tablet finalize (dconf update)
@@ -281,10 +286,6 @@ actions:
       imagepath: {{ $imagepath }}
       phase: finalize
 {{ end }}
-
-  - action: run
-    chroot: true
-    script: scripts/all/clean-up.sh {{ $type }} {{ $base }}
 
   - action: run
     chroot: true

@@ -180,5 +180,5 @@ shuffle-keypad=true
 wakeup-screen-urgency='normal'
 
 [sm/puri/phosh/plugins]
-lock-screen=['launcher-box', 'calendar', 'upcoming-events', 'ticket-box', 'emergency-info']
+lock-screen=['calendar', 'upcoming-events']
 quick-settings=['dark-mode-quick-setting', 'mobile-data-quick-setting', 'pomodoro-quick-setting', 'wifi-hotspot-quick-setting', 'caffeine-quick-setting', 'night-light-quick-setting', 'scaling-quick-setting']

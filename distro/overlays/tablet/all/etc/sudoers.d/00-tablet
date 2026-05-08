@@ -1,6 +1,11 @@
-# sudo oturum zaman asimi: 5 dakika
-Defaults timestamp_timeout=5
-gemstone ALL=(ALL) ALL
+Defaults env_reset
+Defaults umask=0022
+Defaults umask_override
+
+root    ALL=(ALL:ALL) ALL
+
+# sudo oturum zaman asimi: 1 dakika
+Defaults timestamp_timeout=1
 
 # sudo girisi logla
 Defaults logfile=/var/log/sudo.log
@@ -8,3 +13,14 @@ Defaults log_input, log_output
 
 # Guvenli PATH
 Defaults secure_path="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+
+Cmnd_Alias APT_UPDATE = /usr/bin/apt update
+Cmnd_Alias REBOOT = /sbin/reboot
+Cmnd_Alias SHUTDOWN = /sbin/poweroff
+
+# Kullanıcı İzinleri
+gemstone ALL=(root) NOPASSWD: APT_UPDATE
+gemstone ALL=(root) NOPASSWD: REBOOT
+gemstone ALL=(root) NOPASSWD: SHUTDOWN
+
+#gemstone ALL=(ALL) ALL

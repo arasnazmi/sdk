@@ -38,6 +38,7 @@ if [[ "$DISTRO_TYPE" == "tablet" ]]; then
         htop \
         i2c-tools \
         mc \
+        phosh-osk-stub \
         phosh-tour \
         spi-tools \
         systemd-zram-generator \

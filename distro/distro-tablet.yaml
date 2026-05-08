@@ -32,22 +32,6 @@ actions:
 {{ end }}
 
   - action: apt
-    recommends: true
-    packages:
-{{ if eq $suite "yirmibes" }}
-{{ if eq $arch "arm64" }}
-      - gnome-shell-common=48.7-0+deb13u2
-      - gnome-shell=48.7-0+deb13u2
-{{ else }}
-      - gnome-shell
-      - gnome-shell-common
-{{ end }}
-{{ else }}
-      - gnome-shell
-      - gnome-shell-common
-{{ end }}
-
-  - action: apt
     recommends: false
     packages:
 {{ if eq $mobian "true" }}
@@ -75,7 +59,6 @@ actions:
       - cryptsetup-initramfs
       - dconf-cli
       - desktop-base
-      - dosfstools
       - endeavour
       - epiphany-browser
       - errands
@@ -87,9 +70,7 @@ actions:
       - fonts-gfs-didot-classic
       - fonts-jetbrains-mono
       - fonts-noto-core
-      - gdm3
       - geary
-      - geoclue-2.0
       - gnome-calculator
       - gnome-calendar
       - gnome-calls
@@ -97,20 +78,20 @@ actions:
       - gnome-console
       - gnome-contacts
       - gnome-control-center
-      - gnome-maps
       - gnome-photos
       - gnome-settings-daemon
+      - gnome-session
       - gnome-text-editor
       - gnome-usage
       - gsettings-desktop-schemas
       - gstreamer1.0-plugins-base
       - gstreamer1.0-plugins-good
+      - hunspell-tr
       - ibus
       - iio-sensor-proxy
       - initramfs-tools
       - kbd
       - keyutils
-      - kmscube
       - libdrm-dev
       - libinput-bin
       - libinput-tools
@@ -119,7 +100,6 @@ actions:
       - libpam-systemd
       - loupe
       - modemmanager
-      - nautilus
       - network-manager-gnome
       - nftables
       - papers
@@ -144,7 +124,6 @@ actions:
       - xdg-desktop-portal
       - xdg-desktop-portal-gnome
       - xserver-xephyr
-      - xserver-xorg
       - xwayland
       - zenity
 
