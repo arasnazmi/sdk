@@ -61,7 +61,6 @@ tasks:
           -device usb-kbd \
           -device usb-mouse \
           -device virtio-gpu \
-          -vga cirrus \
           -serial mon:stdio \
           -initrd "{{ .QEMU_INITRD_IMG }}" \
           -kernel "{{ .QEMU_KERNEL_BIN }}"
