@@ -38,11 +38,14 @@ if [[ "$DISTRO_TYPE" == "tablet" ]]; then
         htop \
         i2c-tools \
         mc \
-        phosh-osk-stub \
         phosh-tour \
         spi-tools \
         systemd-zram-generator \
         ;
+
+    if [ "$DISTRO_BASE" = "pardus" ]; then
+        apt-get remove -y -qq phosh-osk-stub
+    fi
 fi
 
 apt-get autoremove -y

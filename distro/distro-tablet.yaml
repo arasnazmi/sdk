@@ -24,12 +24,9 @@ actions:
 
 {{ if eq $mobian "true" }}
   - action: run
-    description: Add Mobian apt key and repo
+    description: Add Mobian apt key, repo and pinning
     chroot: true
-    command: |
-      curl -fsSL https://repo.mobian-project.org/mobian.gpg -o /usr/share/keyrings/mobian-archive-keyring.gpg
-      echo "deb [signed-by=/usr/share/keyrings/mobian-archive-keyring.gpg] https://repo.mobian-project.org trixie main" > /etc/apt/sources.list.d/mobian.list
-      apt-get update -y -qq
+    script: scripts/tablet/setup-mobian.sh
 {{ end }}
 
   - action: apt
@@ -45,7 +42,6 @@ actions:
       - mobian-tweaks-phosh
 {{ else }}
       - phosh
-      - phosh-common
       - phosh-core
       - phosh-mobile-settings
       - phosh-mobile-tweaks
@@ -78,7 +74,6 @@ actions:
       - gnome-console
       - gnome-contacts
       - gnome-control-center
-      - gnome-photos
       - gnome-settings-daemon
       - gnome-session
       - gnome-text-editor
@@ -102,7 +97,6 @@ actions:
       - modemmanager
       - network-manager-gnome
       - nftables
-      - papers
       - phoc
       - pipewire
       - pipewire-pulse
@@ -140,6 +134,8 @@ actions:
     packages:
       - firefox-esr
       - firefox-esr-mobile-config
+      - gnome-photos
+      - papers
       - squeekboard
 {{ end }}
 
