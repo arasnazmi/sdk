@@ -20,5 +20,18 @@ for conf in /boot/extlinux/extlinux.conf /boot/extlinux.conf; do
     fi
 done
 
-# Trigger full filesystem relabeling on first boot
+# Force permissive on first boot. selinux-policy-default's postinst
+# leaves /etc/selinux/config at SELINUX=enforcing, but build-time
+# labels are wrong (chroot has no audit netlink so setfiles never runs)
+# and enforcing would block essential services before
+# gem-selinux-relabel.service has a chance to fix things. The user
+# flips this back to enforcing once labels are verified.
+if [ -f /etc/selinux/config ]; then
+    sed -i 's/^SELINUX=.*/SELINUX=permissive/' /etc/selinux/config
+fi
+
+# Mark the rootfs for relabeling. setfiles cannot run here: the debos
+# chroot has no audit netlink, so the call exits silently without
+# writing any xattrs. gem-selinux-relabel.service handles the labeling
+# on first boot using the running kernel.
 touch /.autorelabel

@@ -1,0 +1,35 @@
+#!/bin/bash
+# Apply SELinux file contexts on first boot, flip to enforcing, reboot.
+#
+# Build-time setfiles in the debos chroot silently fails because audit
+# netlink is unavailable there, so labels never make it onto the image.
+# This service runs once on the real kernel (audit works), drops to
+# permissive so denials don't block the labeling pass, fixes contexts,
+# promotes /etc/selinux/config from permissive to enforcing, removes the
+# marker, and reboots into the now-correctly-labeled enforcing system.
+
+set -e
+
+if [ ! -f /.autorelabel ]; then
+    exit 0
+fi
+
+setenforce 0 2>/dev/null || true
+
+/usr/sbin/setfiles -F -m /etc/selinux/default/contexts/files/file_contexts /
+
+# GTK4, Mesa, glibc IFUNC and the GLib/GIO type registrar all need
+# writable+executable pages. Without these booleans every GUI app
+# crashes on its first mprotect/mmap and phosh's app launches do
+# nothing visible.
+for b in allow_execmem allow_execstack allow_execheap allow_execmod; do
+    setsebool -P "$b" on 2>/dev/null || true
+done
+
+if [ -f /etc/selinux/config ]; then
+    sed -i 's/^SELINUX=.*/SELINUX=enforcing/' /etc/selinux/config
+fi
+
+rm -f /.autorelabel
+sync
+exec systemctl reboot

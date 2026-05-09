@@ -24,7 +24,6 @@ is_install_op() {
     return 1
 }
 
-# Sudo'suz dogrudan root mu?
 is_real_root() {
     [ -z "${SUDO_USER:-}" ] || [ "${SUDO_USER}" = "root" ]
 }

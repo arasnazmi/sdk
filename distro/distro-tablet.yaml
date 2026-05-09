@@ -54,6 +54,7 @@ actions:
 {{ end }}
       - at-spi2-core
       - auditd
+      - avahi-daemon
       - chatty
       - cryptsetup
       - cryptsetup-initramfs
@@ -110,6 +111,7 @@ actions:
       - portfolio-filemanager
       - power-profiles-daemon
       - powersupply-gtk
+      - rtkit
       - selinux-basics
       - selinux-policy-default
       - selinux-utils
