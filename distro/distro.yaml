@@ -174,6 +174,7 @@ actions:
     script: scripts/{{ $machine }}/install-local-apt.sh {{ $machine }} {{ $type }} {{ $ci }}
 
 {{ if eq $type "desktop" }}
+{{ if eq $machine "beagley-ai" "t3-gem-o1" }}
   - action: recipe
     description: Install t3-gem-vnc
     recipe: distro-desktop.yaml
@@ -181,6 +182,7 @@ actions:
       arch: {{ $arch }}
       machine: {{ $machine }}
       phase: vnc
+{{ end }}
 {{ end }}
 
 {{ if eq $ci "false" }}
