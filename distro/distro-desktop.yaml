@@ -1,0 +1,123 @@
+{{/* T3 Foundation Gemstone Project https://t3gemstone.org */}}
+{{/* SPDX-License-Identifier Apache-2.0 */}}
+
+{{- $arch    := or .arch    "arm64" -}}
+{{- $suite   := or .suite   "jammy" -}}
+{{- $machine := or .machine "t3-gem-o1" -}}
+{{- $type    := or .type    "desktop" -}}
+{{- $phase   := or .phase   "packages" -}}
+
+architecture: {{ $arch }}
+
+actions:
+
+{{ if eq $phase "packages" }}
+
+{{ if eq $suite "jammy" "noble" }}
+  - action: apt
+    recommends: false
+    packages: [ adwaita-icon-theme-full ]
+{{ end }}
+
+  - action: apt
+    recommends: true
+    packages:
+      - atril
+      - catfish
+      - libxfce4ui-utils
+      - lightdm
+      - lightdm-gtk-greeter
+      - mousepad
+      - network-manager
+      - parole
+      - ristretto
+      - thunar
+      - thunar-archive-plugin
+      - xfce4-appfinder
+      - xfce4-indicator-plugin
+      - xfce4-panel
+      - xfce4-pulseaudio-plugin
+      - xfce4-session
+      - xfce4-settings
+      - xfce4-taskmanager
+      - xfce4-terminal
+      - xfce4-xkb-plugin
+      - xfconf
+      - xfdesktop4
+      - xfwm4
+      - xterm
+
+  - action: apt
+    recommends: false
+    packages:
+      - at-spi2-core
+      - baobab
+      - dbus-x11
+      - engrampa
+      - fonts-inter
+      - fonts-inter-variable
+      - fonts-jetbrains-mono
+      - fonts-noto-core
+      - kmscube
+      - libdrm-dev
+      - mate-calc
+      - network-manager-gnome
+      - whiptail
+      - xcape
+
+{{ if ne $suite "yirmibes" }}
+  - action: apt
+    recommends: false
+    packages: [ software-properties-common ]
+{{ end }}
+
+  - action: run
+    description: Install PiXflat theme from deb
+    chroot: true
+    command: |
+      cd $(mktemp -d)
+      wget https://archive.raspberrypi.org/debian/pool/main/p/pixflat-icons/pixflat-icons_0.26_all.deb
+      DEBIAN_FRONTEND=noninteractive apt-get install -y ./pixflat-icons_0.26_all.deb
+
+{{ end }}
+
+{{ if eq $phase "skel" }}
+
+  - action: overlay
+    source: overlays/{{ $type }}/all/etc/skel
+    destination: /etc/skel
+
+{{ end }}
+
+{{ if eq $phase "vnc" }}
+
+{{ if eq $machine "beagley-ai" "t3-gem-o1" }}
+  - action: run
+    description: Install t3-gem-vnc from deb
+    chroot: true
+    command: |
+      cd $(mktemp -d)
+      wget "https://packages.t3gemstone.org/apt/gemstone/pool/main/t/t3-gem-vnc/t3-gem-vnc_0.0.1-1_all.deb"
+      DEBIAN_FRONTEND=noninteractive apt-get install -y ./t3-gem-vnc_0.0.1-1_all.deb
+{{ end }}
+
+{{ end }}
+
+{{ if eq $phase "postinstall" }}
+
+  - action: run
+    chroot: true
+    script: scripts/custom/install-firefox.sh
+
+  - action: run
+    chroot: true
+    script: scripts/custom/install-vscode.sh
+
+  - action: run
+    description: Create icon cache
+    chroot: true
+    command: |
+      gtk-update-icon-cache --force --ignore-theme-index /usr/share/icons/T3-Gemstone
+      gtk-update-icon-cache --force --ignore-theme-index /usr/share/icons/hicolor
+
+{{ end }}

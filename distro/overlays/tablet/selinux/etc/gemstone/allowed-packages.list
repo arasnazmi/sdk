@@ -1,0 +1,23 @@
+# Gemstone tablet — kurulumuna izin verilen paketler.
+#
+# Bu liste sadece non-root kullanicilar (gemstone vb.) icin gecerlidir.
+# /usr/local/sbin/dpkg wrapper'i her .deb'in Package: alanini bu listeyle
+# karsilastirir. Listede olmayan paketler (bagimliliklar dahil) reddedilir.
+#
+# Format: her satirda tek paket adi. # ile baslayan satirlar yorumdur.
+# Paket eklerken bagimliliklarini da eklemeyi unutma:
+#   apt-cache depends --recurse --no-recommends --no-suggests --no-conflicts \
+#     --no-breaks --no-replaces --no-enhances <paket> | grep '^\w'
+#
+
+file
+foliate
+gnome-maps
+gnome-weather
+htop
+jq
+nano
+ncdu
+newsflash
+shortwave
+tree

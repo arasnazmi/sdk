@@ -49,10 +49,14 @@ user@host:$ devbox shell
 # Note: First build takes approximately 2 hours and you need at least 32GB empty disk space
 🚀 distrobox:workdir> task yocto:build MACHINE=intel-corei7-64
 
-# Pack Gemstone Distro
+# Pack Distro
 # Note: DISTRO_BASE can be 'ubuntu', 'debian', 'pardus'
 # Note: DISTRO_SUITE can be 'jammy', 'bookworm', 'yirmiuc', 'yirmibes'
+# Note: DISTRO_TYPE can be 'minimal', 'kiosk', 'desktop', 'tablet'
 🚀 distrobox:workdir> task distro:build MACHINE=intel-corei7-64 DISTRO_TYPE=desktop DISTRO_BASE=ubuntu DISTRO_SUITE=jammy IMG_SIZE=16G
+
+# Pack Pardus Tablet
+🚀 distrobox:workdir> task distro:build MACHINE=intel-corei7-64 DISTRO_TYPE=tablet DISTRO_BASE=pardus DISTRO_SUITE=yirmibes IMG_SIZE=16G
 
 # After build images, run virtual machine
 🚀 distrobox:workdir> task yocto:runqemu MACHINE=intel-corei7-64 DISTRO_TYPE=desktop DISTRO_BASE=ubuntu DISTRO_SUITE=jammy WORKDIR=$PWD

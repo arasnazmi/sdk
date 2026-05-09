@@ -1,0 +1,17 @@
+[Unit]
+Description=First-boot SELinux relabel of root filesystem
+DefaultDependencies=no
+Conflicts=shutdown.target
+After=local-fs.target
+Before=sysinit.target shutdown.target
+ConditionPathExists=/.autorelabel
+ConditionSecurity=selinux
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/gem-selinux-relabel
+RemainAfterExit=yes
+TimeoutSec=0
+
+[Install]
+WantedBy=sysinit.target

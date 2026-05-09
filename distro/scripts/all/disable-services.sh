@@ -1,6 +1,7 @@
 #!/bin/bash
 
 DISTRO_TYPE=$1
+MACHINE=$2
 
 list=(
     "apt-daily-upgrade.service"
@@ -23,6 +24,14 @@ list=(
 )
 
 for i in "${list[@]}"; do
-    systemctl disable "$i"
+    systemctl disable "$i" &>/dev/null
 done
 
+list_mask=(
+    "proc-sys-fs-binfmt_misc.mount"
+    "proc-sys-fs-binfmt_misc.automount"
+)
+
+for i in "${list_mask[@]}"; do
+    systemctl mask "$i" &>/dev/null
+done

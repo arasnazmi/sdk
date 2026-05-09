@@ -1,0 +1,130 @@
+#!/bin/bash
+#
+# dpkg wrapper — non-root kullanicilar (gemstone vb.) icin paket kurulumunu
+# kisitlar. Politika:
+#   - Zaten kurulu bir paketin yeni surumu (yukseltme): otomatik izin verilir
+#   - Yeni paket: /etc/gemstone/allowed-packages.list'te olmasi gerekir
+#   - debsig-verify policy yapilandirilmissa imza da dogrulanir
+#
+# Asil root (SUDO_USER unset/"root") bu kontrolleri atlar.
+# APT bu wrapper'i Dir::Bin::dpkg ayariyla cagirir (apt.conf.d/99-tablet-security).
+#
+
+REAL_DPKG=/usr/bin/dpkg
+ALLOWLIST=/etc/gemstone/allowed-packages.list
+SIG_POLICIES_DIR=/etc/debsig/policies
+LOG_TAG="dpkg-allowlist"
+
+is_install_op() {
+    for arg in "$@"; do
+        case "$arg" in
+            -i|--install|--unpack|-iR|--recursive) return 0 ;;
+        esac
+    done
+    return 1
+}
+
+is_real_root() {
+    [ -z "${SUDO_USER:-}" ] || [ "${SUDO_USER}" = "root" ]
+}
+
+read_allowlist() {
+    [ -r "$ALLOWLIST" ] || return 1
+    sed -e 's/#.*$//' -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//' \
+        -e '/^$/d' "$ALLOWLIST"
+}
+
+is_allowed() {
+    local pkg="$1" allowed
+    while IFS= read -r allowed; do
+        [ "$pkg" = "$allowed" ] && return 0
+    done < <(read_allowlist)
+    return 1
+}
+
+# Paket sistemde halihazirda kurulu mu? (yukseltmeleri ayirt etmek icin)
+is_installed() {
+    local pkg="$1"
+    dpkg-query -W -f='${Status}' "$pkg" 2>/dev/null \
+        | grep -q '^install ok installed$'
+}
+
+# debsig-verify icin en az bir policy dosyasi var mi?
+debsig_configured() {
+    [ -d "$SIG_POLICIES_DIR" ] || return 1
+    find "$SIG_POLICIES_DIR" -mindepth 2 -name '*.pol' -print -quit 2>/dev/null \
+        | grep -q .
+}
+
+verify_deb() {
+    local deb="$1" pkg_name
+
+    pkg_name=$(dpkg-deb -f "$deb" Package 2>/dev/null)
+    if [ -z "$pkg_name" ]; then
+        logger -t "$LOG_TAG" -p auth.warning "Paket adi okunamadi: $deb"
+        echo "HATA: Paket adi okunamadi: $(basename "$deb")" >&2
+        return 1
+    fi
+
+    # Yukseltme mi? (paket zaten kurulu) → allowlist'i atla, sadece imzayi kontrol et
+    if is_installed "$pkg_name"; then
+        logger -t "$LOG_TAG" -p auth.info \
+            "Yukseltme: $pkg_name (user=${SUDO_USER:-?})"
+    else
+        # Yeni kurulum → allowlist sart
+        if [ ! -r "$ALLOWLIST" ]; then
+            logger -t "$LOG_TAG" -p auth.error "Allowlist okunamadi: $ALLOWLIST"
+            echo "HATA: Paket allowlist'i okunamadi ($ALLOWLIST)." >&2
+            return 1
+        fi
+        if ! is_allowed "$pkg_name"; then
+            logger -t "$LOG_TAG" -p auth.warning \
+                "Allowlist disinda engellendi (user=${SUDO_USER:-?}): $pkg_name"
+            echo "HATA: '$pkg_name' allowlist'te degil, yeni kuruluma izin verilmiyor." >&2
+            echo "      Izin verilen paketler: $ALLOWLIST" >&2
+            return 1
+        fi
+    fi
+
+    if command -v debsig-verify >/dev/null 2>&1 && debsig_configured; then
+        if ! debsig-verify "$deb" >/dev/null 2>&1; then
+            logger -t "$LOG_TAG" -p auth.warning \
+                "Imza gecersiz, engellendi (user=${SUDO_USER:-?}): $pkg_name"
+            echo "HATA: '$pkg_name' paketinin imzasi gecersiz." >&2
+            return 1
+        fi
+        logger -t "$LOG_TAG" -p auth.info \
+            "Izin verildi (imzali): $pkg_name (user=${SUDO_USER:-?})"
+    else
+        logger -t "$LOG_TAG" -p auth.warning \
+            "debsig policy yapilandirilmamis, imza atlandi: $pkg_name"
+        echo "UYARI: debsig-verify policy'si yapilandirilmamis, imza dogrulamasi atlandi." >&2
+    fi
+
+    return 0
+}
+
+process_arg() {
+    local arg="$1" deb
+    if [ -f "$arg" ] && [[ "$arg" == *.deb ]]; then
+        verify_deb "$arg" || return 1
+    elif [ -d "$arg" ]; then
+        while IFS= read -r -d '' deb; do
+            verify_deb "$deb" || return 1
+        done < <(find "$arg" -type f -name '*.deb' -print0)
+    fi
+    return 0
+}
+
+if is_real_root; then
+    exec "$REAL_DPKG" "$@"
+fi
+
+if is_install_op "$@"; then
+    for arg in "$@"; do
+        case "$arg" in -*) continue ;; esac
+        process_arg "$arg" || exit 1
+    done
+fi
+
+exec "$REAL_DPKG" "$@"

@@ -28,18 +28,37 @@ if [[ "$DISTRO_TYPE" == "desktop" ]]; then
     find /usr/share/backgrounds -mindepth 1 -not -path "*t3-gemstone*" -exec rm -rf {} \; 2>/dev/null
 fi
 
+if [[ "$DISTRO_TYPE" == "tablet" ]]; then
+    echo "apt-get remove tablet"
+    apt-get remove -y -qq \
+        build-essential \
+        can-utils \
+        gcc \
+        gcc-14 \
+        htop \
+        i2c-tools \
+        mc \
+        phosh-tour \
+        spi-tools \
+        systemd-zram-generator \
+        ;
+
+    if [ "$DISTRO_BASE" = "pardus" ]; then
+        apt-get remove -y -qq phosh-osk-stub
+    fi
+fi
+
 apt-get autoremove -y
 apt-get autoclean -y
 
-# Ubuntu Login Messages
 rm -f /etc/legal
 rm -f /etc/update-motd.d/10-help-text
+rm -f /etc/apt/sources.list.d/local-apt.list
+rm -f /.empty
 
 rm -rf /var/lib/apt/lists/*
 rm -rf /var/cache/apt/archives/*
 rm -rf /var/cache/apt/*.bin*
-
-rm -f /etc/apt/sources.list.d/local-apt.list
 
 # Delete all symbolic links from boot directory
 # Boot partition's filesystem is vfat and cannot accept symlinks

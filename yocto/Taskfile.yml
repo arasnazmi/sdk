@@ -9,8 +9,10 @@ vars:
   OE_INIT_CMD: TEMPLATECONF={{ .TEMPLATECONF }} source {{ .WORKDIR }}/yocto/poky/oe-init-build-env {{ .YOCTO_BUILD_DIR }} && cd {{ .WORKDIR }}
   DEPLOY_DIR: "{{ .WORKDIR }}/build/tmp-musl/deploy/images/{{ .MACHINE }}"
   QEMU_KERNEL_BIN: "{{ if eq .MACHINE \"qemuarm64\" }}{{ .DEPLOY_DIR }}/Image{{ else }}{{ .DEPLOY_DIR }}/bzImage{{ end }}"
-  QEMU_INITRAMFS_CPIO: "{{ .DEPLOY_DIR }}/gemstone-image-rd-{{ .MACHINE }}.cpio.gz"
+  APPEND_ROOT: '{{ if eq .ENCRYPT "true" }}root=/dev/mapper/crypt_root cryptdevice=/dev/vda2:crypt_root{{ else }}root=/dev/vda2{{ end }}'
+  APPEND_SEC: 'init_on_alloc=1 init_on_free=1 l1tf=full,force l1d_flush=on gather_data_sampling=force spec_rstack_overflow=ibpb lockdown=confidentiality lsm=landlock,lockdown page_alloc.shuffle=1 slab_nomerge spec_store_bypass_disable=on spectre_v2=on randomize_kstack_offset=1'
   QEMU_DISK_FILE: '{{ .IMG_FILE_PATH }}'
+  QEMU_INITRD_IMG: '{{ if eq .DISTRO_TYPE "tablet" }}{{ .IMG_FILE_PATH }}-initrd{{ else }}{{ .DEPLOY_DIR }}/gemstone-image-rd-{{ .MACHINE }}.cpio.gz{{ end }}'
 
 tasks:
 
@@ -28,13 +30,26 @@ tasks:
     preconditions:
     - sh: 'test -e {{ .QEMU_KERNEL_BIN }}'
       msg: "{{ .QEMU_KERNEL_BIN }} Image not found. Run <task yocto:build MACHINE={{ .MACHINE }}>"
-    - sh: 'test -e {{ .QEMU_INITRAMFS_CPIO }}'
-      msg: "{{ .QEMU_INITRAMFS_CPIO }} Image not found. Run <task yocto:build MACHINE={{ .MACHINE }}>"
+    - sh: 'test -e {{ .QEMU_INITRD_IMG }}'
+      msg: "{{ .QEMU_INITRD_IMG }} Image not found. Run <task yocto:build MACHINE={{ .MACHINE }}>"
     - sh: 'test -e {{ .QEMU_DISK_FILE }}'
       msg: "{{ .QEMU_DISK_FILE }} Image not found. Run <task distro:build MACHINE={{ .MACHINE }}>"
     cmds:
       - >
-        {{ if eq .MACHINE "qemuarm64" }}qemu-system-aarch64 -machine virt -cpu cortex-a57 -smp 4 -append 'root=/dev/vda2 rw init_fatal_sh=1 loglevel=4'{{ else }}qemu-system-x86_64 -enable-kvm -machine pc -cpu host -smp $(nproc) -append 'root=/dev/vda2 rw init_fatal_sh=1 loglevel=4 console=ttyS0,115200'{{ end }} \
+        {{ if eq .MACHINE "qemuarm64" }}
+        qemu-system-aarch64 
+        -machine virt 
+        -cpu cortex-a57 
+        -smp 4 
+        -append '{{ .APPEND_ROOT }} rw init_fatal_sh=1 loglevel=4 quite splash'
+        {{ else }}
+        qemu-system-x86_64
+        -enable-kvm
+        -machine pc
+        -cpu host
+        -smp $(nproc)
+        -append '{{ .APPEND_ROOT }} rw init_fatal_sh=1 loglevel=4 console=ttyS0,115200 quite splash'
+        {{ end }} \
           -m 4G \
           -netdev user,id=net0,hostfwd=tcp::10022-:22 \
           -device virtio-net-pci,netdev=net0,mac=52:54:00:12:34:02 \
@@ -45,7 +60,9 @@ tasks:
           -device qemu-xhci \
           -device usb-tablet \
           -device usb-kbd \
-          -device virtio-vga \
+          -device usb-mouse \
+          -device virtio-gpu \
+          -vga none \
           -serial mon:stdio \
-          -initrd "{{ .QEMU_INITRAMFS_CPIO }}" \
+          -initrd "{{ .QEMU_INITRD_IMG }}" \
           -kernel "{{ .QEMU_KERNEL_BIN }}"

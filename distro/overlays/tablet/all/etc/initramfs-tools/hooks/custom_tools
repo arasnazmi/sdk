@@ -1,0 +1,25 @@
+#!/bin/sh
+PREREQ=""
+prereqs() { echo "$PREREQ"; }
+case $1 in prereqs) prereqs; exit 0;; esac
+. /usr/share/initramfs-tools/hook-functions
+
+# XKB kopyalama
+if [ -d /usr/share/X11/xkb ]; then
+    mkdir -p "${DESTDIR}/usr/share/X11/xkb"
+    cp -a /usr/share/X11/xkb/. "${DESTDIR}/usr/share/X11/xkb/"
+fi
+
+# Unl0kr config kopyalama ve temizlik
+if [ -f /etc/unl0kr.conf ]; then
+    mkdir -p "${DESTDIR}/etc"
+    cp /etc/unl0kr.conf "${DESTDIR}/etc"
+fi
+copy_exec /sbin/ip
+copy_exec /usr/bin/lsblk
+copy_exec /usr/bin/ping
+copy_exec /usr/bin/unl0kr
+copy_exec /usr/sbin/cryptsetup
+copy_exec /usr/sbin/modprobe
+copy_exec /usr/bin/tree
+copy_exec /usr/bin/nano

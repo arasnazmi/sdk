@@ -33,7 +33,7 @@ repositories:
   yocto/meta-gemstone:
     type: git
     url: https://github.com/t3gemstone/meta-gemstone.git
-    version: 6e505f08c842df884bed0f5a05980c2f9fa4da28
+    version: 6b5c1587233735c2ac3e70b8ce214f195f50aa8c
 
   src/ti-img-rogue-umlibs:
     type: git
@@ -54,3 +54,8 @@ repositories:
     type: git
     url: https://github.com/t3gemstone/firmware-o1-edge-ai.git
     version: 40312ba4bcddd1edfc3607e27dfa313a5d0257f8
+
+  src/buffybox:
+    type: git
+    url: https://github.com/t3gemstone/buffybox.git
+    version: 58f5385d72b7d3cbf2266075bc6881d14b42cd7f

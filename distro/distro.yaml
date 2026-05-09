@@ -6,17 +6,20 @@
 {{/* https://pkg.go.dev/github.com/go-debos/debos/actions */}}
 {{/* https://golang.org/pkg/text/template */}}
 
-{{- $arch := or .arch "arm64" -}}
-{{- $machine := or .machine "t3-gem-o1" -}}
-{{- $base := or .base "ubuntu" -}}
-{{- $type := or .type "minimal" -}}
-{{- $suite := or .suite "jammy" -}}
-{{- $release := or .release "v2026.2" -}}
-{{- $workdir := or .workdir "/home/workdir" -}}
-{{- $image := or .image (printf "gemstone-%s-%s-%s-%s-%s.img" $type $release $base $suite $machine) -}}
+{{- $arch      := or .arch      "arm64" -}}
+{{- $machine   := or .machine   "t3-gem-o1" -}}
+{{- $base      := or .base      "ubuntu" -}}
+{{- $type      := or .type      "minimal" -}}
+{{- $suite     := or .suite     "jammy" -}}
+{{- $release   := or .release   "v2026.2" -}}
+{{- $workdir   := or .workdir   "/home/workdir" -}}
+{{- $image     := or .image     (printf "gemstone-%s-%s-%s-%s-%s.img" $type $release $base $suite $machine) -}}
 {{- $imagepath := or .imagepath (printf "%s/build/debos/%s" $workdir $image) -}}
 {{- $imagesize := or .imagesize "4096M" -}}
-{{- $ci := or .ci "false" -}}
+{{- $ci        := or .ci        "false" -}}
+{{- $encrypt   := or .encrypt   "false" -}}
+{{- $mobian    := or .mobian    "false" -}}
+{{- $selinux   := or .selinux   "false" -}}
 
 architecture: {{ $arch }}
 
@@ -37,6 +40,11 @@ actions:
     components: [ main, multiverse, universe ]
     mirror: {{ if eq $arch "amd64" }}'https://archive.ubuntu.com/ubuntu'{{ else }}'https://ports.ubuntu.com/ubuntu-ports'{{ end }}
 {{ end }}
+    exclude:
+      - systemd-zram-generator
+      - phosh-tour
+      - build-essential
+      - phosh-osk-stub
 
 {{ if eq $base "pardus" }}
 
@@ -62,156 +70,66 @@ actions:
 
 {{ end }}
 
-  - action: apt
-    recommends: false
-    packages:
-      - apt-utils
-      - bash-completion
-      - bluez
-      - ca-certificates
-      - can-utils
-      - console-setup
-      - coreutils
-      - curl
-      - dialog
-      - dnsmasq-base
-      - dosfstools
-      - ethtool
-      - file
-      - fuse
-      - gawk
-      - gnupg
-      - gpg
-      - gpiod
-      - htop
-      - hwinfo
-      - i2c-tools
-      - iptables-persistent
-      - iputils-ping
-      - isc-dhcp-client
-      - kmod
-      - less
-      - locales
-      - lrzsz
-      - mc
-      - nano
-      - netfilter-persistent
-      - network-manager
-      - openssh-server
-      - openssl
-      - python3
-      - rsync
-      - spi-tools
-      - ssh
-      - sudo
-      - systemd
-      - tar
-      - tree
-      - tzdata
-      - udev
-      - unzip
-      - usbutils
-      - uuid-runtime
-      - vim-tiny
-      - wget
-      - wpasupplicant
-      - zip
+  - action: run
+    description: Speed up dpkg/apt under QEMU emulation
+    chroot: true
+    command: |
+      echo 'force-unsafe-io' > /etc/dpkg/dpkg.cfg.d/00-unsafe-io
+      echo 'man-db man-db/auto-update boolean false' | debconf-set-selections
+      echo 'APT::Acquire::Queue-Mode "host";'        > /etc/apt/apt.conf.d/00parallel
+      echo 'APT::Acquire::http::Pipeline-Depth 5;'  >> /etc/apt/apt.conf.d/00parallel
 
   - action: apt
     recommends: false
-    packages: [ iwd, systemd-timesyncd ]
+    packages: [ apt-utils, eatmydata ]
 
-{{ if eq $suite "noble" "bookworm" "yirmiuc" "yirmibes" }}
-  - action: apt
-    recommends: false
-    packages: [ systemd-resolved ]
-{{ end }}
+  - action: run
+    description: Configure eatmydata for subsequent apt/dpkg calls
+    chroot: true
+    command: |
+      echo 'DPkg::Pre-Invoke  { "export LD_PRELOAD=/usr/lib/libeatmydata/libeatmydata.so"; };' > /etc/apt/apt.conf.d/00eatmydata
+      echo 'DPkg::Post-Invoke { "unset LD_PRELOAD || true"; };' >> /etc/apt/apt.conf.d/00eatmydata
+
+  - action: recipe
+    description: Install common base packages
+    recipe: distro-base.yaml
+    variables:
+      arch: {{ $arch }}
+      suite: {{ $suite }}
 
 {{ if eq $type "kiosk" }}
-  - action: apt
-    recommends: false
-    packages:
-      - kmscube
-      - libdrm-dev
-      - libxcb-cursor0
-      - openbox
-      - python3-pyqt5
-      - python3-pyqtgraph
-      - whiptail
-      - x11-xserver-utils
-      - xinit
-      - xserver-xorg-core
-      - xserver-xorg-input-all
-      - xterm
+  - action: recipe
+    description: Install kiosk packages
+    recipe: distro-kiosk.yaml
+    variables:
+      arch: {{ $arch }}
 {{ end }}
 
 {{ if eq $type "desktop" }}
-
-{{ if eq $suite "jammy" "noble" }}
-  - action: apt
-    recommends: false
-    packages: [ adwaita-icon-theme-full ]
+  - action: recipe
+    description: Install desktop packages
+    recipe: distro-desktop.yaml
+    variables:
+      arch: {{ $arch }}
+      suite: {{ $suite }}
+      machine: {{ $machine }}
+      type: {{ $type }}
+      phase: packages
 {{ end }}
 
-  - action: apt
-    recommends: true
-    packages:
-      - atril
-      - catfish
-      - libxfce4ui-utils
-      - lightdm
-      - lightdm-gtk-greeter
-      - mousepad
-      - network-manager
-      - parole
-      - ristretto
-      - thunar
-      - thunar-archive-plugin
-      - xfce4-appfinder
-      - xfce4-indicator-plugin
-      - xfce4-panel
-      - xfce4-pulseaudio-plugin
-      - xfce4-session
-      - xfce4-settings
-      - xfce4-taskmanager
-      - xfce4-terminal
-      - xfce4-xkb-plugin
-      - xfconf
-      - xfdesktop4
-      - xfwm4
-
-  - action: apt
-    recommends: false
-    packages:
-      - at-spi2-core
-      - baobab
-      - dbus-x11
-      - engrampa
-      - fonts-inter
-      - fonts-inter-variable
-      - fonts-jetbrains-mono
-      - fonts-noto-core
-      - kmscube
-      - libdrm-dev
-      - mate-calc
-      - network-manager-gnome
-      - whiptail
-      - xcape
-
-{{ if ne $suite "yirmibes" }}
-  - action: apt
-    recommends: false
-    packages: [ software-properties-common ]
-{{ end }}
-
-  - action: run
-    description: Install PiXflat theme from deb
-    chroot: true
-    command: |
-      cd $(mktemp -d)
-      wget http://archive.raspberrypi.org/debian/pool/main/p/pixflat-icons/pixflat-icons_0.26_all.deb
-      DEBIAN_FRONTEND=noninteractive apt-get install -y ./pixflat-icons_0.26_all.deb
-
+{{ if eq $type "tablet" }}
+  - action: recipe
+    description: Install tablet packages
+    recipe: distro-tablet.yaml
+    variables:
+      arch: {{ $arch }}
+      base: {{ $base }}
+      suite: {{ $suite }}
+      machine: {{ $machine }}
+      imagepath: {{ $imagepath }}
+      mobian: {{ $mobian }}
+      selinux: {{ $selinux }}
+      phase: packages
 {{ end }}
 
   - action: run
@@ -230,14 +148,18 @@ actions:
       echo "$MSG\n" >/etc/issue
 
 {{ if eq $type "desktop" }}
-  - action: overlay
-    source: overlays/{{ $type }}/all/etc/skel
-    destination: /etc/skel
+  - action: recipe
+    description: Seed desktop /etc/skel before adduser
+    recipe: distro-desktop.yaml
+    variables:
+      arch: {{ $arch }}
+      type: {{ $type }}
+      phase: skel
 {{ end }}
 
   - action: run
     chroot: true
-    script: scripts/all/setup-user.sh
+    script: scripts/all/setup-user.sh {{ $type }}
 
   - action: overlay
     source: overlays/minimal/all
@@ -253,24 +175,23 @@ actions:
 
 {{ if eq $type "desktop" }}
 {{ if eq $machine "beagley-ai" "t3-gem-o1" }}
-  - action: run
-    description: Install t3-gem-vnc from deb
-    chroot: true
-    command: |
-      cd $(mktemp -d)
-      wget "https://packages.t3gemstone.org/apt/gemstone/pool/main/t/t3-gem-vnc/t3-gem-vnc_0.0.1-1_all.deb"
-      DEBIAN_FRONTEND=noninteractive apt-get install -y ./t3-gem-vnc_0.0.1-1_all.deb
+  - action: recipe
+    description: Install t3-gem-vnc
+    recipe: distro-desktop.yaml
+    variables:
+      arch: {{ $arch }}
+      machine: {{ $machine }}
+      phase: vnc
 {{ end }}
 {{ end }}
-
-{{ if eq $machine "beagley-ai" }}
 
 {{ if eq $ci "false" }}
   - action: run
-    chroot: true
-    script: scripts/beagley-ai/install-bootfiles.sh {{ $workdir }} $ROOTDIR
+    chroot: false
+    script: scripts/{{ $machine }}/install-bootfiles.sh {{ $workdir }} $ROOTDIR
 {{ end }}
 
+{{ if eq $machine "beagley-ai" }}
   - action: run
     chroot: true
     script: scripts/beagley-ai/setup-bootfiles.sh
@@ -281,13 +202,6 @@ actions:
 {{ end }}
 
 {{ if eq $machine "t3-gem-o1" }}
-
-{{ if eq $ci "false" }}
-  - action: run
-    chroot: false
-    script: scripts/t3-gem-o1/install-bootfiles.sh {{ $workdir }} $ROOTDIR
-{{ end }}
-
   - action: run
     chroot: true
     script: scripts/t3-gem-o1/setup-bootfiles.sh
@@ -297,7 +211,7 @@ actions:
     script: scripts/t3-gem-o1/install-firmware.sh {{ $workdir }} $ROOTDIR
 {{ end }}
 
-{{ if eq $type "kiosk" "desktop" }}
+{{ if eq $type "kiosk" "desktop" "tablet" }}
   - action: overlay
     source: overlays/{{ $type }}/all
     destination: /
@@ -307,27 +221,38 @@ actions:
     destination: /
 {{ end }}
 
+{{ if and (eq $type "tablet") (eq $selinux "true") }}
+  - action: overlay
+    source: overlays/tablet/selinux
+    destination: /
+{{ end }}
+
 {{ if eq $type "desktop" }}
-  - action: run
-    chroot: true
-    script: scripts/custom/install-firefox.sh
-
-  - action: run
-    chroot: true
-    script: scripts/custom/install-vscode.sh
-
-  - action: run
-    description: Create icon cache
-    chroot: true
-    command: |
-      gtk-update-icon-cache --force --ignore-theme-index /usr/share/icons/T3-Gemstone
-      gtk-update-icon-cache --force --ignore-theme-index /usr/share/icons/hicolor
+  - action: recipe
+    description: Desktop post-install (firefox, vscode, icon cache)
+    recipe: distro-desktop.yaml
+    variables:
+      arch: {{ $arch }}
+      phase: postinstall
 {{ end }}
 
 {{ if eq $machine "beagley-ai" "t3-gem-o1" }}
   - action: overlay
     source: overlays/minimal/usb-gadgets
     destination: /
+{{ end }}
+
+{{ if eq $type "tablet" }}
+  - action: recipe
+    description: Tablet post-install (selinux, flatpak, credentials, services)
+    recipe: distro-tablet.yaml
+    variables:
+      arch: {{ $arch }}
+      workdir: {{ $workdir }}
+      image: {{ $image }}
+      imagepath: {{ $imagepath }}
+      selinux: {{ $selinux }}
+      phase: postinstall
 {{ end }}
 
   - action: run
@@ -337,10 +262,6 @@ actions:
   - action: run
     chroot: true
     script: scripts/all/setup-networking.sh {{ $machine }} {{ $suite }}
-
-  - action: run
-    chroot: true
-    script: scripts/all/disable-services.sh {{ $type }}
 
 {{ if ne $machine "qemuarm64" }}
   - action: run
@@ -358,11 +279,25 @@ actions:
 
   - action: run
     chroot: true
+    script: scripts/all/disable-services.sh {{ $type }} {{ $machine }}
+
+  - action: run
+    chroot: true
     script: scripts/{{ $machine }}/clean-up.sh {{ $type }}
 
   - action: run
     chroot: true
     script: scripts/all/clean-up.sh {{ $type }} {{ $base }}
+
+{{ if eq $type "tablet" }}
+  - action: recipe
+    description: Tablet finalize (dconf update)
+    recipe: distro-tablet.yaml
+    variables:
+      arch: {{ $arch }}
+      imagepath: {{ $imagepath }}
+      phase: finalize
+{{ end }}
 
   - action: run
     chroot: true

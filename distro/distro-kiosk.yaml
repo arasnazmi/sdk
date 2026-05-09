@@ -1,0 +1,23 @@
+{{/* T3 Foundation Gemstone Project https://t3gemstone.org */}}
+{{/* SPDX-License-Identifier Apache-2.0 */}}
+
+{{- $arch := or .arch "arm64" -}}
+
+architecture: {{ $arch }}
+
+actions:
+
+  - action: apt
+    recommends: false
+    packages:
+      - kmscube
+      - libdrm-dev
+      - libxcb-cursor0
+      - openbox
+      - python3-pyqt5
+      - python3-pyqtgraph
+      - whiptail
+      - x11-xserver-utils
+      - xinit
+      - xserver-xorg-core
+      - xserver-xorg-input-all

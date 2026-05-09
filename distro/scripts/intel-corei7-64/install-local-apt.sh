@@ -26,11 +26,20 @@ apt-get install -y \
     kernel-module-loop \
     kernel-module-squashfs
 
-if [[ "$DISTRO_TYPE" == "desktop" || "$DISTRO_TYPE" == "gui" ]]; then
+if [[ "$DISTRO_TYPE" == "desktop" || "$DISTRO_TYPE" == "gui" || "$DISTRO_TYPE" == "tablet" ]]; then
     apt-get install -y \
         kernel-module-cirrus \
         kernel-module-drm-display-helper \
         kernel-module-usbtouchscreen \
         kernel-module-video \
-        kernel-module-virtio-input
+        kernel-module-virtio-input \
+        ;
+fi
+
+if [[ "$DISTRO_TYPE" == "tablet" ]]; then
+    apt-get install -y \
+        kernel-module-fuse \
+        kernel-module-overlay \
+        kernel-module-veth \
+        ;
 fi

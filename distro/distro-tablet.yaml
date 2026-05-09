@@ -1,0 +1,196 @@
+{{/* T3 Foundation Gemstone Project https://t3gemstone.org */}}
+{{/* SPDX-License-Identifier Apache-2.0 */}}
+
+{{/*   phase=packages    -> apt pinning, Mobian repo, package install      */}}
+{{/*   phase=postinstall -> SELinux, Flatpak, credentials, services        */}}
+{{/*   phase=finalize    -> dconf system database compile                  */}}
+
+{{- $arch      := or .arch    "arm64" -}}
+{{- $base      := or .base    "ubuntu" -}}
+{{- $suite     := or .suite   "jammy" -}}
+{{- $machine   := or .machine "t3-gem-o1" -}}
+{{- $workdir   := or .workdir "/home/workdir" -}}
+{{- $image     := or .image   "image.img" -}}
+{{- $imagepath := or .imagepath (printf "%s/build/debos/%s" $workdir $image) -}}
+{{- $phase     := or .phase   "packages" -}}
+{{- $mobian    := or .mobian  "false" -}}
+{{- $selinux   := or .selinux "false" -}}
+
+architecture: {{ $arch }}
+
+actions:
+
+{{ if eq $phase "packages" }}
+
+{{ if eq $mobian "true" }}
+  - action: run
+    description: Add Mobian apt key, repo and pinning
+    chroot: true
+    script: scripts/tablet/setup-mobian.sh
+{{ end }}
+
+  - action: apt
+    recommends: false
+    packages:
+{{ if eq $mobian "true" }}
+      - mobian-base
+      - mobian-multimedia
+      - mobian-phone-base
+      - mobian-phosh
+      - mobian-phosh-extras
+      - mobian-phosh-phone
+      - mobian-tweaks-phosh
+{{ else }}
+      - phosh
+      - phosh-core
+      - phosh-mobile-settings
+      - phosh-mobile-tweaks
+      - phosh-phone
+      - phosh-pim
+{{ end }}
+      - phosh-plugins
+      - at-spi2-core
+      - avahi-daemon
+      - chatty
+      - cryptsetup
+      - cryptsetup-initramfs
+      - dconf-cli
+      - desktop-base
+      - endeavour
+      - epiphany-browser
+      - errands
+      - feedbackd
+      - feedbackd-device-themes
+      - file-roller
+      - flatpak
+      - fonts-gfs-didot-classic
+      - fonts-jetbrains-mono
+      - fonts-noto-core
+      - geary
+      - gnome-calculator
+      - gnome-calendar
+      - gnome-calls
+      - gnome-clocks
+      - gnome-console
+      - gnome-contacts
+      - gnome-control-center
+      - gnome-settings-daemon
+      - gnome-session
+      - gnome-text-editor
+      - gnome-usage
+      - gsettings-desktop-schemas
+      - gstreamer1.0-plugins-base
+      - gstreamer1.0-plugins-good
+      - hunspell-tr
+      - ibus
+      - iio-sensor-proxy
+      - initramfs-tools
+      - kbd
+      - keyutils
+      - libdrm-dev
+      - libinput-bin
+      - libinput-tools
+      - liblocale-gettext-perl
+      - libpam-gnome-keyring
+      - libpam-systemd
+      - loupe
+      - modemmanager
+      - network-manager-gnome
+      - nftables
+      - phoc
+      - pipewire
+      - pipewire-pulse
+      - portfolio-filemanager
+      - power-profiles-daemon
+      - powersupply-gtk
+      - rtkit
+      - totem
+      - unl0kr
+      - unzip
+      - upower
+      - wayland-utils
+      - wlr-randr
+      - wys
+      - x11-xkb-utils
+      - xdg-desktop-portal
+      - xdg-desktop-portal-gnome
+      - xserver-xephyr
+      - xwayland
+      - zenity
+{{ if eq $selinux "true" }}
+      - auditd
+      - debsig-verify
+      - policycoreutils
+      - selinux-basics
+      - selinux-policy-default
+      - selinux-utils
+{{ end }}
+
+{{ end }}
+
+{{ if eq $base "pardus" }}
+  - action: apt
+    recommends: false
+    packages:
+      - firefox-esr
+      - firefox-esr-mobile-config
+      - gnome-photos
+      - papers
+      - squeekboard
+{{ end }}
+
+{{ if eq $phase "postinstall" }}
+
+  - action: run
+    description: Restore Flatpak cache from host
+    chroot: false
+    script: scripts/tablet/flatpak-cache-restore.sh {{ $workdir }} $ROOTDIR
+
+  - action: run
+    description: Setup Flatpak with Flathub and install apps
+    chroot: true
+    script: scripts/tablet/setup-flatpak.sh
+
+  - action: run
+    description: Save Flatpak data to host cache
+    chroot: false
+    script: scripts/tablet/flatpak-cache-save.sh {{ $workdir }} $ROOTDIR
+
+  - action: run
+    description: Enable security services
+    chroot: true
+    script: scripts/tablet/setup-services.sh
+
+  - action: run
+    description: Create initrd
+    chroot: true
+    script: scripts/tablet/create-initrd.sh 
+
+  - action: run
+    description: Copy initrd to output directory
+    chroot: false
+    command: |
+      cp $ROOTDIR/boot/initrd.img-* {{ $imagepath }}-initrd
+
+{{ if eq $selinux "true" }}
+  - action: run
+    description: Generate root credentials and SSH keypair
+    chroot: false
+    script: scripts/tablet/setup-root-credentials.sh {{ $workdir }} $ROOTDIR {{ $image }}
+
+  - action: run
+    description: Setup SELinux
+    chroot: true
+    script: scripts/tablet/setup-selinux.sh
+{{ end }}
+
+{{ end }}
+
+{{ if eq $phase "finalize" }}
+
+  - action: run
+    description: Compile dconf system database
+    chroot: true
+    command: dconf update
+
+{{ end }}

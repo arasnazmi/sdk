@@ -1,0 +1,50 @@
+## Tampon boyutu
+-b 8192
+
+## Hata modu: 1 = log yaz, 2 = kernel panic
+-f 1
+
+# == Kullanici ve grup yonetimi ==============================================─
+-w /etc/passwd           -p wa -k user-modify
+-w /etc/shadow           -p wa -k user-modify
+-w /etc/group            -p wa -k group-modify
+-w /etc/gshadow          -p wa -k group-modify
+-w /etc/security/opasswd -p wa -k user-modify
+
+# == Sudo ve yetki yukseltme ==================================================
+-w /etc/sudoers          -p wa -k sudoers-modify
+-w /etc/sudoers.d/       -p wa -k sudoers-modify
+-w /usr/bin/sudo         -p x  -k priv-esc
+-w /bin/su               -p x  -k priv-esc
+
+# == SSH yapilandirmasi ======================================================─
+-w /etc/ssh/sshd_config        -p wa -k sshd-config
+-w /etc/ssh/sshd_config.d/     -p wa -k sshd-config
+
+# == SELinux yapilandirmasi ==================================================─
+-w /etc/selinux/               -p wa -k selinux-config
+
+# == Kernel modul yuklemeleri ================================================─
+-w /sbin/insmod                -p x  -k modules
+-w /sbin/rmmod                 -p x  -k modules
+-w /sbin/modprobe              -p x  -k modules
+-a always,exit -F arch=b64 -S init_module,finit_module,delete_module -k modules
+
+# == Mount islemleri ==========================================================
+-a always,exit -F arch=b64 -S mount,umount2 -k mounts
+
+# == Erisim redleri ==========================================================─
+-a always,exit -F arch=b64 -S open,openat -F exit=-EACCES -k access-denied
+-a always,exit -F arch=b64 -S open,openat -F exit=-EPERM  -k access-denied
+
+# == setuid/setgid calistirma ================================================─
+-a always,exit -F arch=b64 -S execve -C uid!=euid -F euid=0 -k setuid-exec
+-a always,exit -F arch=b64 -S execve -C gid!=egid -F egid=0 -k setgid-exec
+
+# == Ag yapilandirma degisiklikleri ==========================================─
+-a always,exit -F arch=b64 -S sethostname,setdomainname -k network-change
+-w /etc/hosts              -p wa -k network-change
+-w /etc/network/           -p wa -k network-change
+
+# == Kural setini degistirilemez yap (production icin)
+## -e 2
