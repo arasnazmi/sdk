@@ -22,13 +22,13 @@
     <property name="action-3" type="empty">
       <property name="type" type="int" value="0"/>
       <property name="pattern" type="string" value="!g"/>
-      <property name="command" type="string" value="exo-open --launch WebBrowser http://www.google.com/search?q=%s"/>
+      <property name="command" type="string" value="exo-open --launch WebBrowser https://www.google.com/search?q=%s"/>
       <property name="save" type="bool" value="false"/>
     </property>
     <property name="action-4" type="empty">
       <property name="type" type="int" value="0"/>
       <property name="pattern" type="string" value="!ddg"/>
-      <property name="command" type="string" value="exo-open --launch WebBrowser http://www.duckduckgo.com/?q=%s"/>
+      <property name="command" type="string" value="exo-open --launch WebBrowser https://www.duckduckgo.com/?q=%s"/>
       <property name="save" type="bool" value="false"/>
     </property>
     <property name="action-5" type="empty">

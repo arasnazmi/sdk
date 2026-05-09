@@ -76,7 +76,7 @@ actions:
     chroot: true
     command: |
       cd $(mktemp -d)
-      wget http://archive.raspberrypi.org/debian/pool/main/p/pixflat-icons/pixflat-icons_0.26_all.deb
+      wget https://archive.raspberrypi.org/debian/pool/main/p/pixflat-icons/pixflat-icons_0.26_all.deb
       DEBIAN_FRONTEND=noninteractive apt-get install -y ./pixflat-icons_0.26_all.deb
 
 {{ end }}
