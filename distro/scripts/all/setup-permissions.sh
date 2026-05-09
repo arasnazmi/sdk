@@ -22,11 +22,17 @@ chown -R gemstone:gemstone /home/gemstone
 
 if [[ "$DISTRO_TYPE" == "tablet" ]]; then
     chmod 0755 /usr/local/sbin/nftables-safe
-    chmod 0755 /usr/local/sbin/dpkg
 
-    # Allowlist sadece root tarafindan duzenlenebilsin
-    chown root:root /etc/gemstone/allowed-packages.list
-    chmod 0644 /etc/gemstone/allowed-packages.list
+    # The dpkg wrapper + allowlist are SELinux-conditional (tablet/selinux
+    # overlay). Skip silently when the build didn't include them.
+    if [[ -f /usr/local/sbin/dpkg ]]; then
+        chmod 0755 /usr/local/sbin/dpkg
+    fi
+
+    if [[ -f /etc/gemstone/allowed-packages.list ]]; then
+        chown root:root /etc/gemstone/allowed-packages.list
+        chmod 0644 /etc/gemstone/allowed-packages.list
+    fi
 
     # root'un PATH'ine /usr/local/sbin ekle (yoksa)
     grep -qxF 'export PATH="/usr/local/sbin:$PATH"' /root/.bashrc || echo 'export PATH="/usr/local/sbin:$PATH"' >> /root/.bashrc

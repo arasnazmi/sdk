@@ -14,6 +14,7 @@
 {{- $imagepath := or .imagepath (printf "%s/build/debos/%s" $workdir $image) -}}
 {{- $phase     := or .phase   "packages" -}}
 {{- $mobian    := or .mobian  "false" -}}
+{{- $selinux   := or .selinux "false" -}}
 
 architecture: {{ $arch }}
 
@@ -50,16 +51,14 @@ actions:
       - phosh-mobile-tweaks
       - phosh-phone
       - phosh-pim
-      - phosh-plugins
 {{ end }}
+      - phosh-plugins
       - at-spi2-core
-      - auditd
       - avahi-daemon
       - chatty
       - cryptsetup
       - cryptsetup-initramfs
       - dconf-cli
-      - debsig-verify
       - desktop-base
       - endeavour
       - epiphany-browser
@@ -107,14 +106,10 @@ actions:
       - phoc
       - pipewire
       - pipewire-pulse
-      - policycoreutils
       - portfolio-filemanager
       - power-profiles-daemon
       - powersupply-gtk
       - rtkit
-      - selinux-basics
-      - selinux-policy-default
-      - selinux-utils
       - totem
       - unl0kr
       - unzip
@@ -128,6 +123,14 @@ actions:
       - xserver-xephyr
       - xwayland
       - zenity
+{{ if eq $selinux "true" }}
+      - auditd
+      - debsig-verify
+      - policycoreutils
+      - selinux-basics
+      - selinux-policy-default
+      - selinux-utils
+{{ end }}
 
 {{ end }}
 
@@ -158,11 +161,6 @@ actions:
     script: scripts/tablet/flatpak-cache-save.sh {{ $workdir }} $ROOTDIR
 
   - action: run
-    description: Generate root credentials and SSH keypair
-    chroot: false
-    script: scripts/tablet/setup-root-credentials.sh {{ $workdir }} $ROOTDIR {{ $image }}
-
-  - action: run
     description: Enable security services
     chroot: true
     script: scripts/tablet/setup-services.sh
@@ -178,10 +176,17 @@ actions:
     command: |
       cp $ROOTDIR/boot/initrd.img-* {{ $imagepath }}-initrd
 
+{{ if eq $selinux "true" }}
+  - action: run
+    description: Generate root credentials and SSH keypair
+    chroot: false
+    script: scripts/tablet/setup-root-credentials.sh {{ $workdir }} $ROOTDIR {{ $image }}
+
   - action: run
     description: Setup SELinux
     chroot: true
     script: scripts/tablet/setup-selinux.sh
+{{ end }}
 
 {{ end }}
 

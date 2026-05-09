@@ -18,6 +18,7 @@ vars:
   YOCTO_BUILD_DIR: '{{ .WORKDIR }}/build/{{ .MACHINE }}'
   ENCRYPT: '{{ .ENCRYPT | default "false" }}'
   MOBIAN: '{{ .MOBIAN | default "true" }}'
+  SELINUX: '{{ .SELINUX | default "false" }}'
 
 includes:
   yocto: yocto
@@ -46,6 +47,7 @@ tasks:
       - echo "  YOCTO_BUILD_DIR  = '{{ .YOCTO_BUILD_DIR }}'"
       - echo "  ENCRYPT          = '{{ .ENCRYPT }}'"
       - echo "  MOBIAN           = '{{ .MOBIAN }}'"
+      - echo "  SELINUX          = '{{ .SELINUX }}'"
       - echo ""
 
   fetch:

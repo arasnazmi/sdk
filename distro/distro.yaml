@@ -19,6 +19,7 @@
 {{- $ci        := or .ci        "false" -}}
 {{- $encrypt   := or .encrypt   "false" -}}
 {{- $mobian    := or .mobian    "false" -}}
+{{- $selinux   := or .selinux   "false" -}}
 
 architecture: {{ $arch }}
 
@@ -126,6 +127,8 @@ actions:
       suite: {{ $suite }}
       machine: {{ $machine }}
       imagepath: {{ $imagepath }}
+      mobian: {{ $mobian }}
+      selinux: {{ $selinux }}
       phase: packages
 {{ end }}
 
@@ -216,6 +219,12 @@ actions:
     destination: /
 {{ end }}
 
+{{ if and (eq $type "tablet") (eq $selinux "true") }}
+  - action: overlay
+    source: overlays/tablet/selinux
+    destination: /
+{{ end }}
+
 {{ if eq $type "desktop" }}
   - action: recipe
     description: Desktop post-install (firefox, vscode, icon cache)
@@ -240,6 +249,7 @@ actions:
       workdir: {{ $workdir }}
       image: {{ $image }}
       imagepath: {{ $imagepath }}
+      selinux: {{ $selinux }}
       phase: postinstall
 {{ end }}
 

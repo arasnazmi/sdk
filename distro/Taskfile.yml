@@ -41,6 +41,7 @@ tasks:
             --template-var="arch:{{ .DISTRO_ARCH }}"
             --template-var="encrypt:{{ .ENCRYPT }}"
             --template-var="mobian:{{ .MOBIAN }}"
+            --template-var="selinux:{{ .SELINUX }}"
             {{ .WORKDIR }}/distro/distro.yaml 2>&1 | tee -a {{ .IMG_DEPLOY_DIR }}/log.txt
       - sudo chown $USER:$USER {{ .IMG_FILE_PATH }}*
       - |

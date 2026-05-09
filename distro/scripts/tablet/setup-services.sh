@@ -1,16 +1,26 @@
 #!/bin/bash
 
 systemctl enable nftables.service
-systemctl enable auditd.service
 systemctl enable phosh.service
-systemctl enable gem-selinux-relabel.service
 
 systemctl --global enable phosh-lock-on-start.service
 
-chmod 0440 /etc/sudoers.d/00-tablet
+# Sudoers drop-in is shipped only with the SELinux overlay.
+if [ -f /etc/sudoers.d/default ]; then
+    chmod 0440 /etc/sudoers.d/default
+fi
 
 chmod +x /usr/local/bin/phosh-lock-on-start
-chmod +x /usr/local/sbin/gem-selinux-relabel
+
+# SELinux pieces — only present when the build set selinux=true.
+if [ -f /usr/lib/systemd/system/auditd.service ]; then
+    systemctl enable auditd.service
+fi
+
+if [ -f /etc/systemd/system/gem-selinux-relabel.service ]; then
+    systemctl enable gem-selinux-relabel.service
+    chmod +x /usr/local/sbin/gem-selinux-relabel
+fi
 
 # Suppress gnome-keyring XDG autostart entries. PAM (libpam-gnome-keyring)
 # already starts the daemon at session login and the systemd user units

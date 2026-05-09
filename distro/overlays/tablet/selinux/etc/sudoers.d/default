@@ -22,5 +22,3 @@ Cmnd_Alias SHUTDOWN = /sbin/poweroff
 gemstone ALL=(root) NOPASSWD: APT_UPDATE
 gemstone ALL=(root) NOPASSWD: REBOOT
 gemstone ALL=(root) NOPASSWD: SHUTDOWN
-
-#gemstone ALL=(ALL) ALL

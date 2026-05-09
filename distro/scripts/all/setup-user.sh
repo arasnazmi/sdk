@@ -23,5 +23,5 @@ fi
 localedef -i en_US -f UTF-8 en_US.UTF-8
 
 if [[ "$DISTRO_TYPE" == "tablet" ]]; then
-    usermod gemstone -G render &>/dev/null || true
+    usermod gemstone -aG render &>/dev/null || true
 fi
