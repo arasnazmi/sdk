@@ -12,7 +12,7 @@ vars:
   APPEND_ROOT: '{{ if eq .ENCRYPT "true" }}root=/dev/mapper/crypt_root cryptdevice=/dev/vda2:crypt_root{{ else }}root=/dev/vda2{{ end }}'
   APPEND_SEC: 'init_on_alloc=1 init_on_free=1 l1tf=full,force l1d_flush=on gather_data_sampling=force spec_rstack_overflow=ibpb lockdown=confidentiality lsm=landlock,lockdown page_alloc.shuffle=1 slab_nomerge spec_store_bypass_disable=on spectre_v2=on randomize_kstack_offset=1'
   QEMU_DISK_FILE: '{{ .IMG_FILE_PATH }}'
-  QEMU_INITRD_IMG: '{{ .IMG_FILE_PATH }}-initrd'
+  QEMU_INITRD_IMG: '{{ if eq .DISTRO_TYPE "tablet" }}{{ .IMG_FILE_PATH }}-initrd{{ else }}{{ .DEPLOY_DIR }}/gemstone-image-rd-{{ .MACHINE }}.cpio.gz{{ end }}'
 
 tasks:
 
