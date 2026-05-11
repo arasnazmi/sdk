@@ -1,0 +1,14 @@
+# T3 Foundation Gemstone Project [t3gemstone.org]
+# SPDX-License-Identifier: Apache-2.0
+
+version: '3'
+
+tasks:
+
+  fetch:
+    cmds:
+      - echo todo
+
+  build:
+    cmds:
+      - echo todo

@@ -21,9 +21,10 @@ vars:
   SELINUX: '{{ .SELINUX | default "false" }}'
 
 includes:
-  yocto: yocto
+  android: android
   distro: distro
   utils: utils
+  yocto: yocto
 
 dotenv: ['.devbox/taskfile.env']
 
