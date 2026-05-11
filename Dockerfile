@@ -57,7 +57,6 @@ RUN apt-get update && \
         socat \
         software-properties-common \
         sudo \
-        systemd-dev \
         tar \
         texinfo \
         udev \
