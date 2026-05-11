@@ -43,12 +43,12 @@ actions:
 {{ else }}
       - phosh
       - phosh-core
-      - phosh-mobile-settings
       - phosh-mobile-tweaks
       - phosh-phone
       - phosh-pim
 {{ end }}
       - phosh-plugins
+      - phosh-mobile-settings
       - at-spi2-core
       - avahi-daemon
       - chatty

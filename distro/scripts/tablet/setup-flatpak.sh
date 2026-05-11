@@ -7,6 +7,7 @@ export DEBIAN_FRONTEND=noninteractive
 APPS=(
     net.nokyan.Resources
     org.gnome.World.Secrets
+    com.github.tchx84.Flatseal
 )
 
 flatpak remote-add --system --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
