@@ -12,6 +12,7 @@ RUN apt-get update && \
         ccache \
         chrpath \
         cmake \
+        cryptsetup \
         cpio \
         curl \
         debianutils \
