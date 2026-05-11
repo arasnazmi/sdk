@@ -3,6 +3,8 @@
 
 version: '3'
 
+dotenv: ['.devbox/taskfile.env']
+
 vars:
   WORKDIR: '{{ .WORKDIR | default "/home/workdir" }}'
   MACHINE: '{{ .MACHINE | default "t3-gem-o1" }}'
@@ -25,8 +27,6 @@ includes:
   distro: distro
   utils: utils
   yocto: yocto
-
-dotenv: ['.devbox/taskfile.env']
 
 tasks:
 
