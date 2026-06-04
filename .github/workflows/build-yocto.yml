@@ -38,23 +38,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Check for changed files
-        id: changed-files-specific
-        uses: tj-actions/changed-files@v46
-        with:
-          since_last_remote_commit: true
-          files: |
-            .github/actions/**
-            .github/workflows/yocto-builder/**
-            .github/workflows/build-yocto.yml
-            repos.yml
-
       - name: Build a yocto-builder image if required
         uses: ./.github/actions/docker-build
         with:
           docker_image: yocto-builder
           id: 1
-        if: steps.changed-files-specific.outputs.any_changed == 'true'
 
       - name: Build the image
         run: |
@@ -71,7 +59,6 @@ jobs:
             --ulimit "nofile=1024:1048576" \
             "yocto-builder-1" \
             /entrypoint.sh
-        if: steps.changed-files-specific.outputs.any_changed == 'true'
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
