@@ -7,12 +7,12 @@ repositories:
 
   yocto/meta-ti:
     type: git
-    url: git://git.yoctoproject.org/meta-ti
+    url: https://git.yoctoproject.org/meta-ti
     version: 5258ee2f903d8f1e0cbcb9d01488d08b57314009
 
   yocto/meta-arm:
     type: git
-    url: git://git.yoctoproject.org/meta-arm
+    url: https://git.yoctoproject.org/meta-arm
     version: a8fe9d22eaefc294f91096c6a32663e2f4ab3b10
 
   yocto/openembedded-core:
@@ -22,7 +22,7 @@ repositories:
 
   yocto/meta-openembedded:
     type: git
-    url: git://git.openembedded.org/meta-openembedded
+    url: https://git.openembedded.org/meta-openembedded
     version: dda0d53326017d6758ec6bdfdaf2f484c089d13f
 
   yocto/meta-intel:
