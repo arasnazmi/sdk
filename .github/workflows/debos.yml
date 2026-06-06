@@ -68,43 +68,47 @@ jobs:
         uses: docker/setup-qemu-action@v3
         with:
           platforms: arm64
-
-      - name: Enable binfmt for all platforms
-        run: docker run --rm --privileged tonistiigi/binfmt --install all
+          image: tonistiigi/binfmt:qemu-v10.0.4
 
       - name: Run debos
         env:
           IMG_FILE_NAME: gemstone-${{ matrix.type }}-${{ env.RELEASE }}-${{ matrix.base }}-${{ matrix.suite }}-${{ matrix.machine }}.img
           IMG_SIZE: ${{ (matrix.base == 'pardus' && matrix.suite == 'yirmibes' && matrix.type != 'minimal') && '16384M' || (matrix.type == 'minimal' && '1024M' || '4096M') }}
         run: |
-          docker run --rm \
-            --privileged \
-            --cgroupns host \
-            --net=host \
-            --security-opt seccomp=unconfined \
-            --volume /dev:/dev \
-            --volume /run/udev:/run/udev:ro \
-            --volume debos-scratch:/scratch \
-            --volume "$GITHUB_WORKSPACE:${{ env.WORKDIR }}" \
-            --volume "$GITHUB_WORKSPACE/.repos/src:${{ env.WORKDIR }}/src" \
-            --workdir "${{ env.WORKDIR }}" \
-            t3gemstone/debos:1.1.3.7 \
-            --scratchdir=/scratch \
-            --disable-fakemachine \
-            --artifactdir=${{ env.WORKDIR }} \
-            --template-var="workdir:${{ env.WORKDIR }}" \
-            --template-var="machine:${{ matrix.machine }}" \
-            --template-var="base:${{ matrix.base }}" \
-            --template-var="type:${{ matrix.type }}" \
-            --template-var="suite:${{ matrix.suite }}" \
-            --template-var="release:${{ env.RELEASE }}" \
-            --template-var="image:${{ env.IMG_FILE_NAME }}" \
-            --template-var="imagepath:${{ env.WORKDIR }}/${{ env.IMG_FILE_NAME }}" \
-            --template-var="imagesize:${{ env.IMG_SIZE }}" \
-            --template-var="arch:${{ matrix.arch }}" \
-            --template-var="ci:true" \
-            --verbose \
-            ${{ env.WORKDIR }}/distro/distro.yaml 2>&1
+          for attempt in 1 2 3; do
+            echo "--- debos attempt $attempt ---"
+            docker run --rm \
+              --privileged \
+              --cgroupns host \
+              --net=host \
+              --security-opt seccomp=unconfined \
+              --volume /dev:/dev \
+              --volume /run/udev:/run/udev:ro \
+              --volume debos-scratch:/scratch \
+              --volume "$GITHUB_WORKSPACE:${{ env.WORKDIR }}" \
+              --volume "$GITHUB_WORKSPACE/.repos/src:${{ env.WORKDIR }}/src" \
+              --workdir "${{ env.WORKDIR }}" \
+              t3gemstone/debos:1.1.3.7 \
+              --scratchdir=/scratch \
+              --disable-fakemachine \
+              --artifactdir=${{ env.WORKDIR }} \
+              --template-var="workdir:${{ env.WORKDIR }}" \
+              --template-var="machine:${{ matrix.machine }}" \
+              --template-var="base:${{ matrix.base }}" \
+              --template-var="type:${{ matrix.type }}" \
+              --template-var="suite:${{ matrix.suite }}" \
+              --template-var="release:${{ env.RELEASE }}" \
+              --template-var="image:${{ env.IMG_FILE_NAME }}" \
+              --template-var="imagepath:${{ env.WORKDIR }}/${{ env.IMG_FILE_NAME }}" \
+              --template-var="imagesize:${{ env.IMG_SIZE }}" \
+              --template-var="arch:${{ matrix.arch }}" \
+              --template-var="ci:true" \
+              --verbose \
+              ${{ env.WORKDIR }}/distro/distro.yaml 2>&1 && break
+            echo "debos attempt $attempt failed, retrying..."
+            docker volume rm debos-scratch 2>/dev/null || true
+            docker volume create debos-scratch
+          done
 
       - name: Upload Image
         uses: actions/upload-artifact@v4
