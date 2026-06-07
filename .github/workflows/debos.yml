@@ -6,15 +6,16 @@ on:
   workflow_dispatch:
 
 env:
-    RELEASE: v2026.2
+    RELEASE: v2026.1
     WORKDIR: /home/workdir
+    FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
   build:
     name: ${{ matrix.machine }}/${{ matrix.base }}/${{ matrix.suite }}/${{ matrix.type }}
     runs-on: ubuntu-22.04
     if: |
-      github.event_name == 'workflow_dispatch' || 
+      github.event_name == 'workflow_dispatch' ||
       (github.event_name == 'pull_request_target' && github.event.label.name == 'run-workflow')
     permissions:
       contents: write
@@ -23,7 +24,7 @@ jobs:
       matrix:
         machine: [beagley-ai, t3-gem-o1, intel-corei7-64]
         base:    [ubuntu, debian, pardus]
-        suite:   [jammy, bookworm, yirmiuc, yirmibes]
+        suite:   [jammy, bookworm, yirmiuc, yirmibes, noble]
         type:    [minimal, kiosk, desktop]
         exclude:
           - base: ubuntu
@@ -36,12 +37,16 @@ jobs:
             suite: jammy
           - base: pardus
             suite: bookworm
+          - base: pardus
+            suite: noble
           - base: debian
             suite: yirmiuc
           - base: debian
             suite: yirmibes
           - base: debian
             suite: jammy
+          - base: debian
+            suite: noble
         include:
           - machine: beagley-ai
             arch: arm64
@@ -68,7 +73,7 @@ jobs:
         uses: docker/setup-qemu-action@v3
         with:
           platforms: arm64
-          image: tonistiigi/binfmt:qemu-v10.0.4
+          image: tonistiigi/binfmt:latest
 
       - name: Run debos
         env:
