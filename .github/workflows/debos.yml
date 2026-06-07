@@ -75,8 +75,6 @@ jobs:
           IMG_FILE_NAME: gemstone-${{ matrix.type }}-${{ env.RELEASE }}-${{ matrix.base }}-${{ matrix.suite }}-${{ matrix.machine }}.img
           IMG_SIZE: ${{ matrix.type == 'minimal' && '1024M' || matrix.type == 'kiosk' && '4096G' || '16384M' }}
         run: |
-          for attempt in 1 2 3; do
-            echo "--- debos attempt $attempt ---"
             docker run --rm \
               --privileged \
               --cgroupns host \
@@ -104,11 +102,7 @@ jobs:
               --template-var="arch:${{ matrix.arch }}" \
               --template-var="ci:true" \
               --verbose \
-              ${{ env.WORKDIR }}/distro/distro.yaml 2>&1 && break
-            echo "debos attempt $attempt failed, retrying..."
-            docker volume rm debos-scratch 2>/dev/null || true
-            docker volume create debos-scratch
-          done
+              ${{ env.WORKDIR }}/distro/distro.yaml 2>&1
 
       - name: Upload Image
         uses: actions/upload-artifact@v4

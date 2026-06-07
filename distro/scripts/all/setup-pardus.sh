@@ -20,15 +20,22 @@ deb https://depo.pardus.org.tr/guvenlik $DISTRO_SUITE-deb main contrib non-free 
 # deb-src https://depo.pardus.org.tr/guvenlik $DISTRO_SUITE-deb main contrib non-free non-free-firmware
 EOF
 
-# Pardus 'yirmibes' (Label: Yirmibes) ships pardus1-suffixed gnome-session for
-# arm64 but is missing gnome-session-bin / gnome-shell on arm64, so the pardus1
-# gnome-session has unsatisfiable deps. Force these packages to come from the
-# 'yirmibes-deb' (Debian rebuild) component on arm64.
 if [ "$(dpkg --print-architecture)" = "arm64" ]; then
+
+    # Pardus 'yirmibes' (Label: Yirmibes) ships pardus1-suffixed gnome-session for
+    # arm64 but is missing gnome-session-bin / gnome-shell on arm64, so the pardus1
+    # gnome-session has unsatisfiable deps. Force these packages to come from the
+    # 'yirmibes-deb' (Debian rebuild) component on arm64.
     cat > /etc/apt/preferences.d/pardus-arm64-gnome << 'EOF'
 Package: gnome-session gnome-session-bin gnome-session-common gnome-shell gnome-shell-common
 Pin: release l=Yirmibes
 Pin-Priority: -1
+EOF
+
+    cat > /etc/apt/preferences.d/pardus-arm64-xfce4-desktop << 'EOF'
+Package: xfdesktop4-data
+Pin: version 4.20.1-1
+Pin-Priority: 1001
 EOF
 fi
 
