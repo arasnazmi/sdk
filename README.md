@@ -51,8 +51,11 @@ user@host:$ devbox shell
 # Pack Distro
 # Note: DISTRO_BASE can be 'ubuntu', 'debian', 'pardus'
 # Note: DISTRO_SUITE can be 'jammy', 'bookworm', 'yirmiuc', 'yirmibes'
-# Note: DISTRO_TYPE can be 'minimal', 'kiosk', 'desktop', 'tablet'
+# Note: DISTRO_TYPE can be 'minimal', 'kiosk', 'desktop', 'tablet', 'test'
 🚀 distrobox:workdir> task distro:build MACHINE=intel-corei7-64 DISTRO_TYPE=desktop DISTRO_BASE=ubuntu DISTRO_SUITE=jammy IMG_SIZE=16G
+
+# Pack T3 Gemstone O1 board test image (hardware test API + HAT pin test slave)
+🚀 distrobox:workdir> task distro:build MACHINE=t3-gem-o1 DISTRO_TYPE=test
 
 # Pack Pardus Tablet
 🚀 distrobox:workdir> task distro:build MACHINE=intel-corei7-64 DISTRO_TYPE=tablet DISTRO_BASE=pardus DISTRO_SUITE=yirmibes IMG_SIZE=16G

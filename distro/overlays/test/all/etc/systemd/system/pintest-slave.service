@@ -1,0 +1,13 @@
+[Unit]
+Description=Gemstone kartlar arasi HAT pin testi - slave
+After=multi-user.target
+
+[Service]
+ExecStart=/usr/bin/python3 /home/gemstone/pintest.py slave
+Restart=on-failure
+RestartSec=3
+StandardOutput=journal+console
+StandardError=journal+console
+
+[Install]
+WantedBy=multi-user.target
